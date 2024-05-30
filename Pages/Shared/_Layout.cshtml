@@ -101,7 +101,6 @@
             </div>
         </nav>
     </header> *@
-    <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <body class="  ">
@@ -659,7 +658,7 @@
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a href="#" class="   d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="#" class="  d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <img src="~/assets/images/user/1.jpg" class="img-fluid rounded-circle me-3" alt="user">
                                         <div class="caption">
                                             <h6 class="mb-0 line-height">Bni Cyst</h6>
@@ -841,22 +840,7 @@
             </div>
             @RenderBody()
            
-        <!-- Wrapper End-->
-        <!-- Backend Bundle JavaScript -->
-        <script src="~/assets/js/libs.min.js"></script>
-        <!-- slider JavaScript -->
-        <script src="~/assets/js/slider.js"></script>
-        <!-- masonry JavaScript -->
-        <script src="~/assets/js/masonry.pkgd.min.js"></script>
-        <!-- SweetAlert JavaScript -->
-        <script src="~/assets/js/enchanter.js"></script>
-        <!-- SweetAlert JavaScript -->
-        <script src="~/assets/js/sweetalert.js"></script>
-        <!-- app JavaScript -->
-        <script src="~/assets/js/charts/weather-chart.js"></script>
-        <script src="~/assets/js/app.js"></script>
-        <script src="~/assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
-        <script src="~/assets/js/lottie.js"></script>
+      
 
 
         <!-- offcanvas start -->
@@ -993,8 +977,26 @@
                 }
             }
 
+            document.addEventListener('DOMContentLoaded', function () {
+                const dropdownArrow = document.getElementById('drop-down-arrow');
+                const dropdownMenu = document.querySelector('.caption-menu');
 
+                dropdownArrow.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default anchor behavior
+                    dropdownArrow.classList.toggle('show');
+                });
 
+                document.addEventListener('click', function (event) {
+                    if (!dropdownArrow.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                       dropdownArrow.classList.toggle('show');
+                    }
+                });
+
+                // Prevent dropdown menu from closing when clicking inside
+                dropdownMenu.addEventListener('click', function (event) {
+                    event.stopPropagation(); // Prevent click event from bubbling up
+                });
+            });
 
 
 
@@ -1022,6 +1024,22 @@
     
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Wrapper End-->
+    <!-- Backend Bundle JavaScript -->
+    <script src="~/assets/js/libs.min.js"></script>
+    <!-- slider JavaScript -->
+    <script src="~/assets/js/slider.js"></script>
+    <!-- masonry JavaScript -->
+    <script src="~/assets/js/masonry.pkgd.min.js"></script>
+    <!-- SweetAlert JavaScript -->
+    <script src="~/assets/js/enchanter.js"></script>
+    <!-- SweetAlert JavaScript -->
+    <script src="~/assets/js/sweetalert.js"></script>
+    <!-- app JavaScript -->
+    <script src="~/assets/js/charts/weather-chart.js"></script>
+    <script src="~/assets/js/app.js"></script>
+    <script src="~/assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+    <script src="~/assets/js/lottie.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
