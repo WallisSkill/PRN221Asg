@@ -914,23 +914,30 @@
 
             connection.start().catch(err => console.error(err.toString()));
             let chatOffset = 250;
+            const openChatBoxes = [];
 
             function openChat(userId) {
                 let chatBox = document.getElementById(`chatBox-${userId}`);
+                const chatContainer = document.getElementById('chatContainer');
+
                 if (!chatBox) {
+                    if (openChatBoxes.length >= 3) {
+                        const oldestChatBoxId = openChatBoxes.shift();
+                        closeChat(oldestChatBoxId);
+                    }
                     chatBox = createChatBox(userId);
-                    const chatContainer = document.getElementById('chatContainer');
                     const chatBoxes = chatContainer.querySelectorAll('.chat-box');
                     const totalWidth = Array.from(chatBoxes).reduce((acc, box) => acc + box.offsetWidth, 0);
 
                     chatBox.style.right = `${totalWidth + chatOffset}px`;
 
                     const index = chatBoxes.length + 1;
-                    const marginRight = index * 10; // Change the multiplier as needed
+                    const marginRight = index * 10;
 
                     chatBox.style.marginRight = `${marginRight}px`;
-
+                    
                     chatContainer.appendChild(chatBox);
+                    openChatBoxes.push(userId);
                 }
             }
 
