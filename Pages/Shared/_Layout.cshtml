@@ -1016,6 +1016,12 @@
             connection.start().catch(err => console.error(err.toString()));
 ////////////////////////////DarkMode
             function toggleDarkMode() {
+                const body = document.body;
+                const isDarkMode = body.classList.toggle('bg-dark');
+
+                // Save the current mode to localStorage
+                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
                 // Toggle bg-dark and text-white for elements containing "iq" in their class names
                 const elementsWithIq = document.querySelectorAll('[class*="iq"]');
                 elementsWithIq.forEach(element => {
@@ -1045,11 +1051,8 @@
                     element.classList.toggle('bg-dark');
                 });
 
-                const body = document.body;
-                body.classList.toggle('bg-dark');
-
                 // Add text-white to all <h5> and <h6> elements
-                const h5Elements = document.querySelectorAll('h5');
+                const h5Elements = document.querySelectorAll('.card-body h5');
                 h5Elements.forEach(element => {
                     element.classList.toggle('text-white');
                 });
@@ -1074,8 +1077,9 @@
                     element.classList.toggle('bg-dark');
                 });
 
+                // Toggle the icon class for the button
                 const button = document.getElementById("changeView");
-                if (!body.classList.contains('bg-dark')) {
+                if (isDarkMode) {
                     button.classList.remove('ri-moon-line');
                     button.classList.add('ri-sun-line');
                 } else {
@@ -1083,7 +1087,15 @@
                     button.classList.add('ri-moon-line');
                 }
             }
-///////////////////////////
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const darkMode = localStorage.getItem('darkMode');
+                if (darkMode === 'enabled') {
+                    toggleDarkMode();
+                }
+            });
+
+            ///////////////////////////
             let chatOffset = 250;
             const openChatBoxes = [];
 
