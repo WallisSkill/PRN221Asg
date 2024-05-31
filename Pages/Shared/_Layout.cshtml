@@ -687,7 +687,7 @@
 </li>
 <li class="nav-item dropdown">
     <a href="#" class="dropdown-toggle" id="mail-drop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="ri-moon-line" onclick="toggleDarkMode()"></i>
+        <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
     </a>
     <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop">
         <div class="card shadow-none m-0">
@@ -1073,6 +1073,15 @@
                 chatElements.forEach(element => {
                     element.classList.toggle('bg-dark');
                 });
+
+                const button = document.getElementById("changeView");
+                if (!body.classList.contains('bg-dark')) {
+                    button.classList.remove('ri-moon-line');
+                    button.classList.add('ri-sun-line');
+                } else {
+                    button.classList.remove('ri-sun-line');
+                    button.classList.add('ri-moon-line');
+                }
             }
 ///////////////////////////
             let chatOffset = 250;
@@ -1102,7 +1111,8 @@
                     openChatBoxes.push(userId);
                 }
             }
-
+            
+///////////////chatbox
 
             function createChatBox(userId) {
                 const chatBox = document.createElement('div');
@@ -1157,7 +1167,7 @@
                     });
                 }
             }
-
+////////////////////////////
             document.addEventListener('DOMContentLoaded', function () {
                 const dropdownArrow = document.getElementById('drop-down-arrow');
                 const dropdownMenu = document.querySelector('.caption-menu');
