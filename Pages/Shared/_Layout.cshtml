@@ -1079,7 +1079,7 @@
 
                 // Toggle the icon class for the button
                 const button = document.getElementById("changeView");
-                if (isDarkMode) {
+                if (!isDarkMode) {
                     button.classList.remove('ri-moon-line');
                     button.classList.add('ri-sun-line');
                 } else {
