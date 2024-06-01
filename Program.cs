@@ -2,8 +2,11 @@ using DependencyInjectionAutomatic.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
+using PRN221_Assignment.Repository;
+using PRN221_Assignment.Repository.Interface;
+using PRN221_Assignment.Services;
+using PRN221_Assignment.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<social_mediaContext>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 builder.Services.AddRazorPages();
 builder.Services.AutoRegisterServices();
 builder.Services.AddAuthentication(
@@ -22,6 +24,13 @@ builder.Services.AddAuthentication(
         option.LoginPath = "/Login";
         option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     });
+
+
+
+#region Service Connect
+builder.Services.AddTransient<ILoginService, LoginService>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+#endregion
 
 var app = builder.Build();
 
@@ -36,10 +45,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.MapGet("/", async context =>
-{
-    context.Response.Redirect("/Login");
-});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
