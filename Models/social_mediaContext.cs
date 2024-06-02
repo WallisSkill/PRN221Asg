@@ -29,9 +29,11 @@ namespace PRN221_Assignment.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection")); }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server=WiS;database=social_media;user=sa;password=123456;TrustServerCertificate=True");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,7 +41,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<Bookmark>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.PostId })
-                    .HasName("PK__bookmark__CA534F79B30C5000");
+                    .HasName("PK__bookmark__CA534F79C54F4E71");
 
                 entity.ToTable("bookmarks");
 
@@ -56,13 +58,13 @@ namespace PRN221_Assignment.Models
                     .WithMany(p => p.Bookmarks)
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__bookmarks__post___5BE2A6F2");
+                    .HasConstraintName("FK__bookmarks__post___5CD6CB2B");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Bookmarks)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__bookmarks__user___5CD6CB2B");
+                    .HasConstraintName("FK__bookmarks__user___5DCAEF64");
             });
 
             modelBuilder.Entity<Comment>(entity =>
@@ -91,19 +93,19 @@ namespace PRN221_Assignment.Models
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__comments__post_i__440B1D61");
+                    .HasConstraintName("FK__comments__post_i__44FF419A");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__comments__user_i__44FF419A");
+                    .HasConstraintName("FK__comments__user_i__45F365D3");
             });
 
             modelBuilder.Entity<CommentLike>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.CommentId })
-                    .HasName("PK__comment___D7C76067A292EE95");
+                    .HasName("PK__comment___D7C7606737A4A4EB");
 
                 entity.ToTable("comment_likes");
 
@@ -122,25 +124,25 @@ namespace PRN221_Assignment.Models
                     .WithMany(p => p.CommentLikes)
                     .HasForeignKey(d => d.CommentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__comment_l__comme__534D60F1");
+                    .HasConstraintName("FK__comment_l__comme__5441852A");
 
                 entity.HasOne(d => d.Emotion)
                     .WithMany(p => p.CommentLikes)
                     .HasForeignKey(d => d.EmotionId)
-                    .HasConstraintName("FK__comment_l__emoti__5165187F");
+                    .HasConstraintName("FK__comment_l__emoti__52593CB8");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.CommentLikes)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__comment_l__user___52593CB8");
+                    .HasConstraintName("FK__comment_l__user___534D60F1");
             });
 
             modelBuilder.Entity<Emotion>(entity =>
             {
                 entity.ToTable("emotion");
 
-                entity.HasIndex(e => e.EmotionUrl, "UQ__emotion__765A2B5C915291CB")
+                entity.HasIndex(e => e.EmotionUrl, "UQ__emotion__765A2B5C6B58D2C7")
                     .IsUnique();
 
                 entity.Property(e => e.EmotionId)
@@ -156,7 +158,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<Follow>(entity =>
             {
                 entity.HasKey(e => new { e.FollowerId, e.FolloweeId })
-                    .HasName("PK__follows__710D19E68E053302");
+                    .HasName("PK__follows__710D19E6DBA0A4F7");
 
                 entity.ToTable("follows");
 
@@ -173,13 +175,13 @@ namespace PRN221_Assignment.Models
                     .WithMany(p => p.FollowFollowees)
                     .HasForeignKey(d => d.FolloweeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__follows__followe__5812160E");
+                    .HasConstraintName("FK__follows__followe__59063A47");
 
                 entity.HasOne(d => d.Follower)
                     .WithMany(p => p.FollowFollowers)
                     .HasForeignKey(d => d.FollowerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__follows__followe__571DF1D5");
+                    .HasConstraintName("FK__follows__followe__5812160E");
             });
 
             modelBuilder.Entity<Message>(entity =>
@@ -207,20 +209,20 @@ namespace PRN221_Assignment.Models
                     .WithMany(p => p.MessageReceivers)
                     .HasForeignKey(d => d.ReceiverId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__messages__receiv__628FA481");
+                    .HasConstraintName("FK__messages__receiv__6383C8BA");
 
                 entity.HasOne(d => d.Sender)
                     .WithMany(p => p.MessageSenders)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__messages__sender__619B8048");
+                    .HasConstraintName("FK__messages__sender__628FA481");
             });
 
             modelBuilder.Entity<Photo>(entity =>
             {
                 entity.ToTable("photos");
 
-                entity.HasIndex(e => e.PhotoUrl, "UQ__photos__1464808B6DD0DC76")
+                entity.HasIndex(e => e.PhotoUrl, "UQ__photos__1464808B7E9912EB")
                     .IsUnique();
 
                 entity.Property(e => e.PhotoId).HasColumnName("photo_id");
@@ -261,19 +263,19 @@ namespace PRN221_Assignment.Models
                 entity.HasOne(d => d.Photo)
                     .WithMany(p => p.Posts)
                     .HasForeignKey(d => d.PhotoId)
-                    .HasConstraintName("FK__post__photo_id__403A8C7D");
+                    .HasConstraintName("FK__post__photo_id__412EB0B6");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Posts)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__post__user_id__3F466844");
+                    .HasConstraintName("FK__post__user_id__403A8C7D");
             });
 
             modelBuilder.Entity<PostLike>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.PostId })
-                    .HasName("PK__post_lik__CA534F79A48EBE18");
+                    .HasName("PK__post_lik__CA534F797AC96CA3");
 
                 entity.ToTable("post_likes");
 
@@ -291,26 +293,26 @@ namespace PRN221_Assignment.Models
                 entity.HasOne(d => d.Emotion)
                     .WithMany(p => p.PostLikes)
                     .HasForeignKey(d => d.EmotionId)
-                    .HasConstraintName("FK__post_like__emoti__4BAC3F29");
+                    .HasConstraintName("FK__post_like__emoti__4CA06362");
 
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.PostLikes)
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__post_like__post___4D94879B");
+                    .HasConstraintName("FK__post_like__post___4E88ABD4");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.PostLikes)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__post_like__user___4CA06362");
+                    .HasConstraintName("FK__post_like__user___4D94879B");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("users");
 
-                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572D5E78BEE")
+                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572716F164D")
                     .IsUnique();
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -322,12 +324,18 @@ namespace PRN221_Assignment.Models
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
-                    .HasColumnName("created_at");
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(30)
                     .IsUnicode(false)
                     .HasColumnName("email");
+
+                entity.Property(e => e.Fullname)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("fullname");
 
                 entity.Property(e => e.Password)
                     .HasMaxLength(255)

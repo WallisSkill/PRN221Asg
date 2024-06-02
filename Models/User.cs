@@ -21,6 +21,7 @@ namespace PRN221_Assignment.Models
         public int UserId { get; set; }
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
+        public string Fullname { get; set; } = null!;
         public string? ProfilePhotoUrl { get; set; }
         public string? Bio { get; set; }
         public DateTime? CreatedAt { get; set; }
