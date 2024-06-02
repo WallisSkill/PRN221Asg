@@ -104,7 +104,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<CommentLike>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.CommentId })
-                    .HasName("PK__comment___D7C76067B2A367CB");
+                    .HasName("PK__comment___D7C7606737A4A4EB");
 
                 entity.ToTable("comment_likes");
 
@@ -141,7 +141,7 @@ namespace PRN221_Assignment.Models
             {
                 entity.ToTable("emotion");
 
-                entity.HasIndex(e => e.EmotionUrl, "UQ__emotion__765A2B5C16F90E3A")
+                entity.HasIndex(e => e.EmotionUrl, "UQ__emotion__765A2B5C6B58D2C7")
                     .IsUnique();
 
                 entity.Property(e => e.EmotionId)
@@ -157,7 +157,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<Follow>(entity =>
             {
                 entity.HasKey(e => new { e.FollowerId, e.FolloweeId })
-                    .HasName("PK__follows__710D19E6C8DB29E8");
+                    .HasName("PK__follows__710D19E6DBA0A4F7");
 
                 entity.ToTable("follows");
 
@@ -221,7 +221,7 @@ namespace PRN221_Assignment.Models
             {
                 entity.ToTable("photos");
 
-                entity.HasIndex(e => e.PhotoUrl, "UQ__photos__1464808BDE553307")
+                entity.HasIndex(e => e.PhotoUrl, "UQ__photos__1464808B7E9912EB")
                     .IsUnique();
 
                 entity.Property(e => e.PhotoId).HasColumnName("photo_id");
@@ -274,7 +274,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<PostLike>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.PostId })
-                    .HasName("PK__post_lik__CA534F792A393A03");
+                    .HasName("PK__post_lik__CA534F797AC96CA3");
 
                 entity.ToTable("post_likes");
 
@@ -311,7 +311,7 @@ namespace PRN221_Assignment.Models
             {
                 entity.ToTable("users");
 
-                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572A8D92706")
+                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572716F164D")
                     .IsUnique();
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");

@@ -29,7 +29,9 @@ namespace PRN221_Assignment.Pages
                 List<Claim> listClaim = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, userLogin.Fullname),
-                new Claim(ClaimTypes.Name, userLogin.Fullname)
+                new Claim(ClaimTypes.Name, userLogin.Username),
+                new Claim(ClaimTypes.Email, userLogin.Email),
+                new Claim("profile_picture", userLogin.ProfilePhotoUrl ?? "./assets/images/user/null.png")
             };
                 ClaimsIdentity ci = new ClaimsIdentity(listClaim, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
                 ClaimsPrincipal cp = new ClaimsPrincipal(ci);
@@ -37,6 +39,12 @@ namespace PRN221_Assignment.Pages
                 return RedirectToPage("/Index");
             }
             return Page();
+        }
+        
+        public async Task<IActionResult> OnGetLogout()
+        {
+            await HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToPage("/Login");
         }
     }
 }

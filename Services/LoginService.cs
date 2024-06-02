@@ -12,7 +12,7 @@ namespace PRN221_Assignment.Services
     {
         private readonly IUserRepository _userRepository;
 
-        public User ExistUser (string username, string password)
+        public User? ExistUser (string username, string password)
         {
             var user = _userRepository.GetUser(username, password);
             return user;

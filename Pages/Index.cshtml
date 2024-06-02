@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -19,7 +21,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="user-img">
-                                    <img src="~/assets/images/user/1.jpg" alt="userimg" class="avatar-60 rounded-circle">
+                                    <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle">
                                 </div>
                                 <form class="post-text ms-3 w-100 " data-bs-toggle="modal" data-bs-target="#post-modal" action="javascript:void();">
                                     <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;">

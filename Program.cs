@@ -23,11 +23,8 @@ builder.Services.AddAuthentication(
     {
         option.LoginPath = "/Login";
         option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        option.LogoutPath = "/Logout";
     });
-
-
-
-
 
 var app = builder.Build();
 
