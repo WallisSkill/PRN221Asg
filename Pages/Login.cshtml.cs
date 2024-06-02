@@ -40,5 +40,11 @@ namespace PRN221_Assignment.Pages
             }
             return Page();
         }
+        
+        public async Task<IActionResult> OnGetLogout()
+        {
+            await HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToPage("/Login");
+        }
     }
 }
