@@ -29,7 +29,9 @@ namespace PRN221_Assignment.Pages
                 List<Claim> listClaim = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, userLogin.Username),
-                new Claim(ClaimTypes.Name, userLogin.Username)
+                new Claim(ClaimTypes.Name, userLogin.Username),
+                new Claim(ClaimTypes.Email, userLogin.Email),
+                new Claim("profile_picture", userLogin.ProfilePhotoUrl)
             };
                 ClaimsIdentity ci = new ClaimsIdentity(listClaim, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
                 ClaimsPrincipal cp = new ClaimsPrincipal(ci);
