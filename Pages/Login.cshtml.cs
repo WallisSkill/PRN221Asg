@@ -28,8 +28,8 @@ namespace PRN221_Assignment.Pages
             {
                 List<Claim> listClaim = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, userLogin.Username),
-                new Claim(ClaimTypes.Name, userLogin.Username)
+                new Claim(ClaimTypes.NameIdentifier, userLogin.Fullname),
+                new Claim(ClaimTypes.Name, userLogin.Fullname)
             };
                 ClaimsIdentity ci = new ClaimsIdentity(listClaim, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
                 ClaimsPrincipal cp = new ClaimsPrincipal(ci);

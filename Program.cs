@@ -27,10 +27,7 @@ builder.Services.AddAuthentication(
 
 
 
-#region Service Connect
-builder.Services.AddTransient<ILoginService, LoginService>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-#endregion
+
 
 var app = builder.Build();
 
