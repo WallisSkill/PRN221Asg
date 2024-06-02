@@ -25,13 +25,6 @@ builder.Services.AddAuthentication(
         option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     });
 
-
-
-#region Service Connect
-builder.Services.AddTransient<ILoginService, LoginService>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
-#endregion
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
