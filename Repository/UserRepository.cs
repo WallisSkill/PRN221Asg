@@ -11,7 +11,7 @@ namespace PRN221_Assignment.Repository
     {
         private readonly social_mediaContext _context;
 
-        public User GetUser(string username, string password)
+        public User? GetUser(string username, string password)
         {
             var query = _context.Set<User>().FirstOrDefault(x => x.Username == username && x.Password == password);
             return query;

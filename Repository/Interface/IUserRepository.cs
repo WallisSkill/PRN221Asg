@@ -4,6 +4,6 @@ namespace PRN221_Assignment.Repository.Interface
 {
     public interface IUserRepository
     {
-        User GetUser(string username, string password);
+        User? GetUser(string username, string password);
     }
 }
