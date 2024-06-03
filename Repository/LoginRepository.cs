@@ -7,7 +7,7 @@ namespace PRN221_Assignment.Repository
 {
     [Service]
     [RequiredArgsConstructor]
-    public partial class UserRepository : IUserRepository
+    public partial class LoginRepository : ILoginRepository
     {
         private readonly social_mediaContext _context;
 

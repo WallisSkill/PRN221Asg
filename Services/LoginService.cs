@@ -10,11 +10,11 @@ namespace PRN221_Assignment.Services
     [RequiredArgsConstructor]
     public partial class LoginService : ILoginService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly ILoginRepository _loginRepository;
 
         public User? ExistUser (string username, string password)
         {
-            var user = _userRepository.GetUser(username, password);
+            var user = _loginRepository.GetUser(username, password);
             return user;
         }
     }

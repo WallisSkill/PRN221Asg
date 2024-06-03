@@ -29,10 +29,11 @@ namespace PRN221_Assignment.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection")); }
-
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server=VIRUS;database=social_media;user=sa;password=123456;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -104,7 +105,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<CommentLike>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.CommentId })
-                    .HasName("PK__comment___D7C7606737A4A4EB");
+                    .HasName("PK__comment___D7C76067B2A367CB");
 
                 entity.ToTable("comment_likes");
 
@@ -141,7 +142,7 @@ namespace PRN221_Assignment.Models
             {
                 entity.ToTable("emotion");
 
-                entity.HasIndex(e => e.EmotionUrl, "UQ__emotion__765A2B5C6B58D2C7")
+                entity.HasIndex(e => e.EmotionUrl, "UQ__emotion__765A2B5C16F90E3A")
                     .IsUnique();
 
                 entity.Property(e => e.EmotionId)
@@ -157,7 +158,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<Follow>(entity =>
             {
                 entity.HasKey(e => new { e.FollowerId, e.FolloweeId })
-                    .HasName("PK__follows__710D19E6DBA0A4F7");
+                    .HasName("PK__follows__710D19E6C8DB29E8");
 
                 entity.ToTable("follows");
 
@@ -221,7 +222,7 @@ namespace PRN221_Assignment.Models
             {
                 entity.ToTable("photos");
 
-                entity.HasIndex(e => e.PhotoUrl, "UQ__photos__1464808B7E9912EB")
+                entity.HasIndex(e => e.PhotoUrl, "UQ__photos__1464808BDE553307")
                     .IsUnique();
 
                 entity.Property(e => e.PhotoId).HasColumnName("photo_id");
@@ -274,7 +275,7 @@ namespace PRN221_Assignment.Models
             modelBuilder.Entity<PostLike>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.PostId })
-                    .HasName("PK__post_lik__CA534F797AC96CA3");
+                    .HasName("PK__post_lik__CA534F792A393A03");
 
                 entity.ToTable("post_likes");
 
@@ -311,7 +312,7 @@ namespace PRN221_Assignment.Models
             {
                 entity.ToTable("users");
 
-                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572716F164D")
+                entity.HasIndex(e => e.Username, "UQ__users__F3DBC572A8D92706")
                     .IsUnique();
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -326,6 +327,10 @@ namespace PRN221_Assignment.Models
                     .HasColumnName("created_at")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.Dob)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dob");
+
                 entity.Property(e => e.Email)
                     .HasMaxLength(30)
                     .IsUnicode(false)
@@ -335,6 +340,8 @@ namespace PRN221_Assignment.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("fullname");
+
+                entity.Property(e => e.Gender).HasColumnName("gender");
 
                 entity.Property(e => e.Password)
                     .HasMaxLength(255)

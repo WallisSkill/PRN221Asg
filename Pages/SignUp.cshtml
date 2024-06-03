@@ -1,9 +1,8 @@
-﻿
-@page
+﻿@page
 @{
     Layout = null;
 }
-@model PRN221_Assignment.Pages.LoginModel
+@model PRN221_Assignment.Pages.SignUpModel
 @{
 }
 
@@ -13,7 +12,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-    <title>LoginPage</title>
 
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
     <link rel="stylesheet" href="../assets/css/libs.min.css">
@@ -68,24 +66,41 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 bg-white pt-5 pt-5 pb-lg-0 pb-5" >
+                    <div class="col-md-6 bg-white pt-5 pt-5 pb-lg-0 pb-5">
                         <div class="sign-in-from">
-                            <h1 class="mb-0">Sign in</h1>
+                            <h1 class="mb-0">Sign Up</h1>
+                            <p>Enter your email address and password to access admin panel.</p>
                             <form class="mt-4" method="post">
                                 <div class="form-group">
-                                    <label class="form-label" for="exampleInputEmail1">Username</label>
-                                    <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter username">
+                                    <input asp-for="user.Email" type="email" class="form-control mb-0" id="exampleInputEmail2" placeholder="Enter email" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="exampleInputPassword1">Password</label>
-                                    <a href="#" class="float-end">Forgot password?</a>
-                                    <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                                    <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Username" required />
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="user.Fullname" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Full Name" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date of birth</label>
+                                    <div class="date-picker" id="date-picker" style="display: flex">
+                                        <select class="form-control mb-0" id="day" style="width: 100%; margin: 0 5px 0 0"></select>
+                                        <select class="form-control mb-0" id="month" style="width: 100%; margin: 0 5px 0 5px"></select>
+                                        <select class="form-control mb-0" id="year" style="width: 100%; margin: 0 0 0 5px"></select>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="display: flex">
+                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 -25px" value="0"/> Male
+                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 5px" value="1"/> Female
+                                    <input type="radio" name="gender" style="width: 100%; margin: 0 0 0 5px" value="2"/> Other
                                 </div>
                                 <div class="d-inline-block w-100">
-                                    <button type="submit" class="btn btn-primary float-end">Sign in</button>
+                                    <button type="submit" class="btn btn-primary float-end">Sign Up</button>
                                 </div>
                                 <div class="sign-info">
-                                    <span class="dark-color d-inline-block line-height-2">Don't have an account? <a href="/SignUp">Sign up</a></span>
+                                    <span class="dark-color d-inline-block line-height-2">Already Have Account ? <a href="/Login">Log In</a></span>
                                 </div>
                             </form>
                         </div>
@@ -110,6 +125,35 @@
     <script src="../assets/js/app.js"></script>
     <script src="../vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
     <script src="../assets/js/lottie.js"></script>
+    <script>
+        const today = new Date();
+        const days = Array.from({ length: 31 }, (_, i) => i + 1);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const years = Array.from({ length: 100 }, (_, i) => i + today.getFullYear() - 99);
 
+        function populateSelect(element, options) {
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option;
+                opt.textContent = option;
+                element.appendChild(opt);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const daySelect = document.getElementById('day');
+            const monthSelect = document.getElementById('month');
+            const yearSelect = document.getElementById('year');
+
+            populateSelect(daySelect, days);
+            populateSelect(monthSelect, months);
+            populateSelect(yearSelect, years);
+
+            const today = new Date();
+            daySelect.value = today.getDate();
+            monthSelect.value = months[today.getMonth()];
+            yearSelect.value = today.getFullYear();
+        });
+    </script>
 </body>
 </html>

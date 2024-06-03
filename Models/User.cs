@@ -26,6 +26,8 @@ namespace PRN221_Assignment.Models
         public string? Bio { get; set; }
         public DateTime? CreatedAt { get; set; }
         public string Email { get; set; } = null!;
+        public int? Gender { get; set; }
+        public DateTime? Dob { get; set; }
 
         public virtual ICollection<Bookmark> Bookmarks { get; set; }
         public virtual ICollection<CommentLike> CommentLikes { get; set; }
