@@ -1055,6 +1055,11 @@
                     element.classList.toggle('bg-dark');
                 });
 
+                const modaltitleElements = document.querySelectorAll('.modal-title');
+                modaltitleElements.forEach(element => {
+                    element.classList.toggle('text-white');
+                });
+
                 // Add text-white to all <h5> and <h6> elements
                 const h5Elements = document.querySelectorAll('.card-body h5');
                 h5Elements.forEach(element => {
