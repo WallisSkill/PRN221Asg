@@ -85,16 +85,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Date of birth</label>
-                                    <div class="date-picker" id="date-picker" style="display: flex">
-                                        <select class="form-control mb-0" id="day" style="width: 100%; margin: 0 5px 0 0"></select>
-                                        <select class="form-control mb-0" id="month" style="width: 100%; margin: 0 5px 0 5px"></select>
-                                        <select class="form-control mb-0" id="year" style="width: 100%; margin: 0 0 0 5px"></select>
+                                    <div class="date-picker" id="date-picker" style="display: flex" >
+                                        <select class="form-control mb-0" id="day" name="day" style="width: 100%; margin: 0 5px 0 0"></select>
+                                        <select class="form-control mb-0" id="month" name="month" style="width: 100%; margin: 0 5px 0 5px"></select>
+                                        <select class="form-control mb-0" id="year" name="year" style="width: 100%; margin: 0 0 0 5px"></select>
                                     </div>
                                 </div>
                                 <div class="form-group" style="display: flex">
-                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 -25px" value="0"/> Male
-                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 5px" value="1"/> Female
-                                    <input type="radio" name="gender" style="width: 100%; margin: 0 0 0 5px" value="2"/> Other
+                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 -25px" value="0" checked/> Male
+                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 5px" value="1" /> Female
+                                    <input type="radio" name="gender" style="width: 100%; margin: 0 0 0 5px" value="2" /> Other
                                 </div>
                                 <div class="d-inline-block w-100">
                                     <button type="submit" class="btn btn-primary float-end">Sign Up</button>
@@ -140,18 +140,27 @@
             });
         }
 
+        function populateSelectMonth(element, options) {
+            options.forEach((option, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = option;
+                element.appendChild(opt);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const daySelect = document.getElementById('day');
             const monthSelect = document.getElementById('month');
             const yearSelect = document.getElementById('year');
 
             populateSelect(daySelect, days);
-            populateSelect(monthSelect, months);
+            populateSelectMonth(monthSelect, months);
             populateSelect(yearSelect, years);
 
             const today = new Date();
             daySelect.value = today.getDate();
-            monthSelect.value = months[today.getMonth()];
+            monthSelect.value = today.getMonth();
             yearSelect.value = today.getFullYear();
         });
     </script>
