@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PRN221_Assignment.Models
 {
@@ -31,7 +28,7 @@ namespace PRN221_Assignment.Models
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("HungConnect")); }
+            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection")); }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
