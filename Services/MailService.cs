@@ -12,19 +12,19 @@ namespace PRN221_Assignment.Services
     public partial class MailService : IMailService
     {
         private readonly ILogger<MailService> _logger;
-        public bool SendMail(string _to, string _subject, string _body)
+        public bool SendMail(string to, string subject, string body)
         {
             MailMessage message = new MailMessage()
             {
                 From = new MailAddress(ConstantMail.Sender, ConstantMail.SenderName),
-                Subject = _subject,
-                Body = _body,
+                Subject = subject,
+                Body = body,
                 BodyEncoding = System.Text.Encoding.UTF8,
                 SubjectEncoding = System.Text.Encoding.UTF8,
                 IsBodyHtml = true,
             };
 
-            message.To.Add(new MailAddress(_to));
+            message.To.Add(new MailAddress(to));
             message.ReplyToList.Add(new MailAddress(ConstantMail.Sender));
             message.Sender = new MailAddress(ConstantMail.Sender);
 
