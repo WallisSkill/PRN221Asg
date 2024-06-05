@@ -74,14 +74,15 @@
                             <form class="mt-4" method="post">
                                 <div class="form-group">
                                     <label class="form-label" for="exampleInputEmail1">Username</label>
-                                    <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter username">
+                                    <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter username" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="exampleInputPassword1">Password</label>
-                                    <a href="#" class="float-end">Forgot password?</a>
-                                    <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                                    <a href="/RecoverPassword" class="float-end">Forgot password?</a>
+                                    <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" required>
                                 </div>
-                                <div class="d-inline-block w-100">
+                                <div class=" w-100" style="display: flex; justify-content: space-between">
+                                    <p style="color: orangered">@Model.error</p>
                                     <button type="submit" class="btn btn-primary float-end">Sign in</button>
                                 </div>
                                 <div class="sign-info">
