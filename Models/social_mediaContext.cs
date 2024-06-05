@@ -31,7 +31,7 @@ namespace PRN221_Assignment.Models
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("HungConnect")); }
+            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection")); }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
