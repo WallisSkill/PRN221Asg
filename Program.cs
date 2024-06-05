@@ -1,12 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using PRN221_Assignment.Models;
-using PRN221_Assignment.Repository;
-using PRN221_Assignment.Repository.Interface;
-using PRN221_Assignment.Services;
-using PRN221_Assignment.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
