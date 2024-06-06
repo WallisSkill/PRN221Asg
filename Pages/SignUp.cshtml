@@ -1,6 +1,6 @@
 ﻿@page
 @{
-    Layout = null;
+Layout = null;
 }
 @model PRN221_Assignment.Pages.SignUpModel
 @{
@@ -13,7 +13,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 
-    <link rel="shortcut icon" href="../assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="../assets/images/favicon.ico"/>
     <link rel="stylesheet" href="../assets/css/libs.min.css">
     <link rel="stylesheet" href="../assets/css/socialv.css?v=4.0.0">
     <link rel="stylesheet" href="../assets/vendor/_fortawesome/fontawesome-free/css/all.min.css">
@@ -21,149 +21,178 @@
     <link rel="stylesheet" href="../assets/vendor/vanillajs-datepicker/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="../assets/vendor/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="../assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
+    <title>Sign up</title>
 
 </head>
 <body class=" ">
-    <!-- loader Start -->
-    <div id="loading">
-        <div id="loading-center">
-        </div>
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
     </div>
-    <!-- loader END -->
+</div>
+<!-- loader END -->
 
-    <div class="wrapper">
-        <section class="sign-in-page">
-            <div id="container-inside">
-                <div id="circle-small"></div>
-                <div id="circle-medium"></div>
-                <div id="circle-large"></div>
-                <div id="circle-xlarge"></div>
-                <div id="circle-xxlarge"></div>
-            </div>
-            <div class="container p-0">
-                <div class="row no-gutters">
-                    <div class="col-md-6 text-center pt-5">
-                        <div class="sign-in-detail text-white">
-                            <a class="sign-in-logo mb-5" href="#"><img src="../assets/images/logo-full.png" class="img-fluid" alt="logo"></a>
-                            <div class="sign-slider overflow-hidden ">
-                                <ul class="swiper-wrapper list-inline m-0 p-0 ">
-                                    <li class="swiper-slide">
-                                        <img src="../assets/images/login/1.png" class="img-fluid mb-4" alt="logo">
-                                        <h4 class="mb-1 text-white">Find new friends</h4>
-                                        <p>It is a long established fact that a reader will be distracted by the readable content.</p>
-                                    </li>
-                                    <li class="swiper-slide">
-                                        <img src="../assets/images/login/2.png" class="img-fluid mb-4" alt="logo">
-                                        <h4 class="mb-1 text-white">Connect with the world</h4>
-                                        <p>It is a long established fact that a reader will be distracted by the readable content.</p>
-                                    </li>
-                                    <li class="swiper-slide">
-                                        <img src="../assets/images/login/3.png" class="img-fluid mb-4" alt="logo">
-                                        <h4 class="mb-1 text-white">Create new events</h4>
-                                        <p>It is a long established fact that a reader will be distracted by the readable content.</p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 bg-white pt-5 pt-5 pb-lg-0 pb-5">
-                        <div class="sign-in-from">
-                            <h1 class="mb-0">Sign Up</h1>
-                            <p>Enter your information to create account.</p>
-                            <form class="mt-4" method="post">
-                                <div class="form-group">
-                                    <input asp-for="user.Email" type="email" class="form-control mb-0" id="exampleInputEmail2" placeholder="Enter email" required>
-                                </div>
-                                <div class="form-group">
-                                    <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Username" required />
-                                </div>
-                                <div class="form-group">
-                                    <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" required>
-                                </div>
-                                <div class="form-group">
-                                    <input asp-for="user.Fullname" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Full Name" required/>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Date of birth</label>
-                                    <div class="date-picker" id="date-picker" style="display: flex" >
-                                        <select class="form-control mb-0" id="day" name="day" style="width: 100%; margin: 0 5px 0 0"></select>
-                                        <select class="form-control mb-0" id="month" name="month" style="width: 100%; margin: 0 5px 0 5px"></select>
-                                        <select class="form-control mb-0" id="year" name="year" style="width: 100%; margin: 0 0 0 5px"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group" style="display: flex">
-                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 -25px" value="0" checked/> Male
-                                    <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 5px" value="1" /> Female
-                                    <input type="radio" name="gender" style="width: 100%; margin: 0 0 0 5px" value="2" /> Other
-                                </div>
-                                <div class="w-100" style="display: flex; justify-content: space-between">
-                                    <div style="color: orangered">@Model.error</div>
-                                    <button type="submit" class="btn btn-primary float-end">Sign Up</button>
-                                </div>
-                                <div class="sign-info">
-                                    <span class="dark-color d-inline-block line-height-2">Already Have Account ? <a href="/Login">Log In</a></span>
-                                </div>
-                            </form>
+<div class="wrapper">
+    <section class="sign-in-page">
+        <div id="container-inside">
+            <div id="circle-small"></div>
+            <div id="circle-medium"></div>
+            <div id="circle-large"></div>
+            <div id="circle-xlarge"></div>
+            <div id="circle-xxlarge"></div>
+        </div>
+        <div class="container p-0">
+            <div class="row no-gutters">
+                <div class="col-md-6 text-center pt-5">
+                    <div class="sign-in-detail text-white">
+                        <a class="sign-in-logo mb-5" href="#">
+                            <img src="../assets/images/logo-full.png" class="img-fluid" alt="logo">
+                        </a>
+                        <div class="sign-slider overflow-hidden ">
+                            <ul class="swiper-wrapper list-inline m-0 p-0 ">
+                                <li class="swiper-slide">
+                                    <img src="../assets/images/login/1.png" class="img-fluid mb-4" alt="logo">
+                                    <h4 class="mb-1 text-white">Find new friends</h4>
+                                    <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                                </li>
+                                <li class="swiper-slide">
+                                    <img src="../assets/images/login/2.png" class="img-fluid mb-4" alt="logo">
+                                    <h4 class="mb-1 text-white">Connect with the world</h4>
+                                    <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                                </li>
+                                <li class="swiper-slide">
+                                    <img src="../assets/images/login/3.png" class="img-fluid mb-4" alt="logo">
+                                    <h4 class="mb-1 text-white">Create new events</h4>
+                                    <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6 bg-white pt-5 pt-5 pb-lg-0 pb-5">
+                    <div class="sign-in-from">
+                        <h1 class="mb-0">Sign Up</h1>
+                        <p>Enter your email address and password to access admin panel.</p>
+                        <form class="mt-4" method="post">
+                            <div class="form-group">
+                                <input asp-for="user.Email" type="email" class="form-control mb-0" id="exampleInputEmail2" placeholder="Enter email" required>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Username" required/>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="user.Fullname" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Full Name" required/>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date of birth</label>
+                                <div class="date-picker" id="date-picker" style="display: flex">
+                                    <select class="form-control mb-0" id="day" name="day" style="width: 100%; margin: 0 5px 0 0"></select>
+                                    <select class="form-control mb-0" id="month" name="month" style="width: 100%; margin: 0 5px 0 5px"></select>
+                                    <select class="form-control mb-0" id="year" name="year" style="width: 100%; margin: 0 0 0 5px"></select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="display: flex">
+                                <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 -25px" value="0" checked/> Male
+                                <input type="radio" name="gender" style="width: 100%; margin: 0 5px 0 5px" value="1"/> Female
+                                <input type="radio" name="gender" style="width: 100%; margin: 0 0 0 5px" value="2"/> Other
+                            </div>
+                            <div class="d-inline-block w-100">
+                                <button type="submit" class="btn btn-primary float-end">Sign Up</button>
+                            </div>
+                            <div class="sign-info">
+                                <span class="dark-color d-inline-block line-height-2">Already Have Account ? <a href="/Login">Log In</a></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
 
-    <!-- Backend Bundle JavaScript -->
-    <script src="../assets/js/libs.min.js"></script>
-    <!-- slider JavaScript -->
-    <script src="../assets/js/slider.js"></script>
-    <!-- masonry JavaScript -->
-    <script src="../assets/js/masonry.pkgd.min.js"></script>
-    <!-- SweetAlert JavaScript -->
-    <script src="../assets/js/enchanter.js"></script>
-    <!-- SweetAlert JavaScript -->
-    <script src="../assets/js/sweetalert.js"></script>
-    <!-- app JavaScript -->
-    <script src="../assets/js/charts/weather-chart.js"></script>
-    <script src="../assets/js/app.js"></script>
-    <script src="../vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
-    <script src="../assets/js/lottie.js"></script>
-    <script>
-        const today = new Date();
-        const days = Array.from({ length: 31 }, (_, i) => i + 1);
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const years = Array.from({ length: 100 }, (_, i) => i + today.getFullYear() - 99);
+<!-- Backend Bundle JavaScript -->
+<script src="../assets/js/libs.min.js"></script>
+<!-- slider JavaScript -->
+<script src="../assets/js/slider.js"></script>
+<!-- masonry JavaScript -->
+<script src="../assets/js/masonry.pkgd.min.js"></script>
+<!-- SweetAlert JavaScript -->
+<script src="../assets/js/enchanter.js"></script>
+<!-- SweetAlert JavaScript -->
+<script src="../assets/js/sweetalert.js"></script>
+<!-- app JavaScript -->
+<script src="../assets/js/charts/weather-chart.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+<script src="../assets/js/lottie.js"></script>
+<script>
+    const days = Array.from({ length: 31 }, (_, i) => i + 1);
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const years = Array.from({ length: 125 }, (_, i) => i + 1900); // Adjusted to start from 1900
 
-        function populateSelect(element, options) {
-            options.forEach(option => {
-                const opt = document.createElement('option');
-                opt.value = option;
-                opt.textContent = option;
-                element.appendChild(opt);
-            });
-        }
-
-        function populateSelectMonth(element, options) {
-            options.forEach((option, index) => {
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.textContent = option;
-                element.appendChild(opt);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const daySelect = document.getElementById('day');
-            const monthSelect = document.getElementById('month');
-            const yearSelect = document.getElementById('year');
-
-            populateSelect(daySelect, days);
-            populateSelectMonth(monthSelect, months);
-            populateSelect(yearSelect, years);
-
-            const today = new Date();
-            daySelect.value = today.getDate();
-            monthSelect.value = today.getMonth();
-            yearSelect.value = today.getFullYear();
+    function populateSelect(element, options) {
+        element.innerHTML = "";
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.label;
+            element.appendChild(opt);
         });
-    </script>
+    }
+
+    function updateDays() {
+        const month = parseInt(document.getElementById('month').value);
+        const year = parseInt(document.getElementById('year').value);
+        const daySelect = document.getElementById('day');
+        const selectedMonth = new Date(year, month + 1, 0).getDate();
+        const selectedDay = daySelect.value;
+        let updatedDays = days.slice(0, selectedMonth);
+
+        // For February, check if it's a leap year and update days accordingly
+        if (month === 1) {
+            const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            if (!isLeapYear) {
+                updatedDays = days.slice(0, 28);
+            }
+        }
+
+        populateSelect(daySelect, updatedDays.map(day => ({ value: day, label: day })));
+
+        // Check if the selected day is valid for the updated month
+        if (selectedDay <= selectedMonth) {
+            daySelect.value = selectedDay;
+        } else {
+            // If the selected day is not valid, set it to the last day of the month
+            daySelect.value = selectedMonth;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const daySelect = document.getElementById('day');
+        const monthSelect = document.getElementById('month');
+        const yearSelect = document.getElementById('year');
+
+        const selectedDay = 1; // Default to January 1
+        const selectedMonth = 0; // Default to January
+        const selectedYear = 1900; // Default to 1900
+
+        populateSelect(daySelect, days.map(day => ({ value: day, label: day })));
+        populateSelect(monthSelect, months.map((month, index) => ({ value: index, label: month })));
+        populateSelect(yearSelect, years.map(year => ({ value: year, label: year })));
+
+        daySelect.value = selectedDay;
+        monthSelect.value = selectedMonth;
+        yearSelect.value = selectedYear;
+
+        updateDays();
+
+        monthSelect.addEventListener('change', updateDays);
+        yearSelect.addEventListener('change', updateDays);
+    });
+</script>
+
 </body>
 </html>

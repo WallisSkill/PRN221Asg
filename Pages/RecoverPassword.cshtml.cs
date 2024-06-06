@@ -13,20 +13,20 @@ namespace PRN221_Assignment.Pages
         private readonly IRecoverPasswordService _recoverPasswordService;
 
         [BindProperty]
-        public string mail { get; set; }
-        public string error;
+        public string Mail { get; set; }
+        public string Error;
         public void OnGet()
         {
         }
         public IActionResult OnPost()
         {
-            var user = _recoverPasswordService.GetUserByMail(mail);
+            var user = _recoverPasswordService.GetUserByMail(Mail);
             if (user != null)
             {
-                _mailService.SendMail(mail, "Recover Password", $"Hello {user.Email}<br>" + ConstantMail.RecoverPasswordContent.Replace("ReplacePass", user.Password));
+                _mailService.SendMail(Mail, "Recover Password", $"Hello {user.Email}<br>" + ConstantMail.RecoverPasswordContent.Replace("ReplacePass", user.Password));
                 return RedirectToPage("/Login");
             }
-            error = "Email is not exist!";
+            Error = "Email is not exist!";
             return Page();
         }
     }

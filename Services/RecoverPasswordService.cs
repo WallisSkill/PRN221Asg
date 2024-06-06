@@ -12,7 +12,7 @@ namespace PRN221_Assignment.Services
     {
         private readonly ISignUpRepository _signUpRepository;
 
-        public User GetUserByMail(string email)
+        public User? GetUserByMail(string email)
         {
             return _signUpRepository.GetUsers().FirstOrDefault(x => x.Email == email);
         }
