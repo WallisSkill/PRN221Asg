@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace PRN221_Assignment.Models
 {
@@ -18,6 +21,7 @@ namespace PRN221_Assignment.Models
         public virtual DbSet<CommentLike> CommentLikes { get; set; } = null!;
         public virtual DbSet<Emotion> Emotions { get; set; } = null!;
         public virtual DbSet<Follow> Follows { get; set; } = null!;
+        public virtual DbSet<Friend> Friends { get; set; } = null!;
         public virtual DbSet<Message> Messages { get; set; } = null!;
         public virtual DbSet<Photo> Photos { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
@@ -26,9 +30,11 @@ namespace PRN221_Assignment.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection")); }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server=VIRUS;database=social_media;user=sa;password=123456;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -177,6 +183,34 @@ namespace PRN221_Assignment.Models
                     .HasForeignKey(d => d.FollowerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__follows__followe__5812160E");
+            });
+
+            modelBuilder.Entity<Friend>(entity =>
+            {
+                entity.HasKey(e => new { e.User1Id, e.User2Id })
+                    .HasName("PK__friend__AAA434A6E9177E16");
+
+                entity.ToTable("friend");
+
+                entity.Property(e => e.User1Id).HasColumnName("user1_id");
+
+                entity.Property(e => e.User2Id).HasColumnName("user2_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.HasOne(d => d.User1)
+                    .WithMany(p => p.FriendUser1s)
+                    .HasForeignKey(d => d.User1Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__friend__user1_id__6FE99F9F");
+
+                entity.HasOne(d => d.User2)
+                    .WithMany(p => p.FriendUser2s)
+                    .HasForeignKey(d => d.User2Id)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__friend__user2_id__70DDC3D8");
             });
 
             modelBuilder.Entity<Message>(entity =>
