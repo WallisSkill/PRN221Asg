@@ -14,4 +14,9 @@ public partial class PostService : IPostService
     {
         _postRepository.CreatePost(post);
     }
+
+    public List<Post> GetPostsByUserId(int userId)
+    {
+        return _postRepository.GetPostsByUserId(userId);
+    }
 }
