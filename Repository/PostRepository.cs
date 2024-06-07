@@ -15,4 +15,13 @@ public partial class PostRepository : IPostRepository
         _context.Posts.Add(post);
         _context.SaveChanges();
     }
+
+    public List<Post> GetPostsByUserId(int userId)
+    {
+        return (from p in _context.Set<Post>()
+            join f in _context.Set<Friend>() 
+            on p.UserId equals f.User2Id
+            where f.User1Id == userId
+            select p).ToList();
+    }
 }
