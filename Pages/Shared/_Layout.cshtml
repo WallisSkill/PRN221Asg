@@ -148,7 +148,7 @@
                                 </a>
                             </li>
                             <li class=" ">
-                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false">
+                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false" onclick="toggleMessageBox();">
                                     <i class="ri-mail-line"></i><span>Email</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
                                 </a>
                                 <ul id="mailbox" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
@@ -688,76 +688,9 @@
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="mail-drop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
                                     </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary">
-                                                    <h5 class="mb-0 text-white">All Message</h5>
-                                                </div>
-                                                <small class="badge bg-light text-dark">4</small>
-                                            </div>
-                                            <div class="card-body p-0 ">
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex  align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
-                                                        </div>
-                                                        <div class=" w-100 ms-3">
-                                                            <h6 class="mb-0 ">Bni Emma Watson</h6>
-                                                            <small class="float-left font-size-12">13 Jun</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/02.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Lorem Ipsum Watson</h6>
-                                                            <small class="float-left font-size-12">20 Apr</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/03.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Why do we use it?</h6>
-                                                            <small class="float-left font-size-12">30 Jun</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/04.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Variations Passages</h6>
-                                                            <small class="float-left font-size-12">12 Sep</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/05.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Lorem Ipsum generators</h6>
-                                                            <small class="float-left font-size-12">5 Dec</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </li>
                                 @if (User.Identity.IsAuthenticated)
                                 {
@@ -912,6 +845,11 @@
             });
 
             connection.start().catch(err => console.error(err.toString()));
+            ///////////////////////////MessageBox
+            function toggleMessageBox() {
+            
+            }
+            
             ////////////////////////////DarkMode
             function toggleDarkMode() {
                 const body = document.body;
@@ -1002,29 +940,45 @@
           
             ////////////////////////////
             document.addEventListener('DOMContentLoaded', function () {
-                const dropdownArrow = document.getElementById('drop-down-arrow');
-                const dropdownMenu = document.querySelector('.caption-menu');
+                // Select all dropdown toggle elements
+                const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
-                dropdownArrow.addEventListener('click', function (event) {
-                    event.preventDefault(); // Prevent the default anchor behavior
-                    dropdownArrow.classList.toggle('show');
+                dropdownToggles.forEach((dropdownToggle) => {
+                    // Add click event listener to each dropdown toggle
+                    dropdownToggle.addEventListener('click', function (event) {
+                        event.preventDefault(); // Prevent the default anchor behavior
+
+                        // Find the closest parent `li` and toggle the `.show` class on its dropdown menu
+                        const parentLi = this.closest('li');
+                        const dropdownMenu = parentLi.querySelector('.dropdown-toggle');
+                        dropdownMenu.classList.toggle('show');
+
+                        // Close other open dropdown menus
+                        document.querySelectorAll('.dropdown-toggle.show').forEach((menu) => {
+                            if (menu !== dropdownMenu) {
+                                menu.classList.remove('show');
+                            }
+                        });
+                    });
                 });
 
+                // Close dropdowns when clicking outside of them
                 document.addEventListener('click', function (event) {
-                    if (!dropdownArrow.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                        dropdownArrow.classList.toggle('show');
-                    }
+                    document.querySelectorAll('.dropdown-menu').forEach((menu) => {
+                        if (!menu.closest('li').contains(event.target)) {
+                            menu.classList.remove('show');
+                        }
+                    });
                 });
 
                 // Prevent dropdown menu from closing when clicking inside
-                dropdownMenu.addEventListener('click', function (event) {
-                    event.stopPropagation(); // Prevent click event from bubbling up
+                document.querySelectorAll('.dropdown-menu').forEach((dropdownMenu) => {
+                    dropdownMenu.addEventListener('click', function (event) {
+                        event.stopPropagation(); // Prevent click event from bubbling up
+                    });
                 });
             });
-
-
-
-
+            
             function sendMessage(userId) {
                 const chatBox = document.getElementById(`chatBox-${userId}`);
                 const input = chatBox.querySelector('.chat-input input');
