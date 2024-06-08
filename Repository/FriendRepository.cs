@@ -13,7 +13,7 @@ namespace PRN221_Assignment.Repository
 
         public List<Friend> GetAllFriendRelatetionshipOfUser (int userId)
         {
-            var query = _context.Set<Friend>().Where(x => x.User1Id == userId || x.User2Id == userId);
+            var query = _context.Set<Friend>().Where(x => (x.User1Id == userId || x.User2Id == userId) && x.Status == true);
             return query.ToList();
         }
 

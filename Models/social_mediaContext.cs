@@ -200,6 +200,8 @@ namespace PRN221_Assignment.Models
                     .HasColumnType("datetime")
                     .HasColumnName("created_at");
 
+                entity.Property(e => e.Status).HasColumnName("status");
+
                 entity.HasOne(d => d.User1)
                     .WithMany(p => p.FriendUser1s)
                     .HasForeignKey(d => d.User1Id)
