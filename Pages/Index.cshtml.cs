@@ -17,6 +17,7 @@ public partial class IndexModel : PageModel
     public IActionResult OnGet()
     {
         ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
+        ViewData["upComingBirthdayFriend"] = _homePageService.GetUpComingBirthdayFriends();
         return Page();
     }
 }

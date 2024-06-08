@@ -6,6 +6,22 @@
 @{
     ViewData["Title"] = "Home page";
     var listFriend = (List<User>)ViewBag.listFriend;
+    var upComing = (List<User>)ViewBag.upComingBirthdayFriend;
+    string CalculateDay(DateTime? dob)
+    {
+        var birthday = (DateTime)dob;
+        var birthdayThisYear = new DateTime(DateTime.Now.Year, birthday.Month, birthday.Day);
+        var differ = (birthdayThisYear.Date - DateTime.Now.Date).Days;
+        if (differ == 0)
+        {
+            return "Today";
+        }
+        if (differ == 1)
+        {
+            return "Tomorow";
+        }
+        return differ + " days after";
+    }
 }
 
 <div class="right-sidebar-mini right-sidebar">
@@ -13,9 +29,9 @@
         <div class="card shadow-none">
             <div class="card-body p-0">
                 <div class="media-height p-3" data-scrollbar="init">
-                    @if(listFriend != null)
+                    @if (listFriend != null)
                     {
-                        foreach(var user in listFriend)
+                        foreach (var user in listFriend)
                         {
                             <div class="d-flex align-items-center mb-4" onclick="openChat('@user.Fullname')">
                                 <div class="iq-profile-avatar status-online">
@@ -1120,20 +1136,16 @@
                     </div>
                     <div class="card-body">
                         <ul class="media-story list-inline m-0 p-0">
-                            <li class="d-flex mb-4 align-items-center">
-                                <img src="~/assets/images/user/01.jpg" alt="story-img" class="rounded-circle img-fluid">
-                                <div class="stories-data ms-3">
-                                    <h5>Anna Sthesia</h5>
-                                    <p class="mb-0">Today</p>
-                                </div>
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <img src="~/assets/images/user/02.jpg" alt="story-img" class="rounded-circle img-fluid">
-                                <div class="stories-data ms-3">
-                                    <h5>Paul Molive</h5>
-                                    <p class="mb-0">Tomorrow</p>
-                                </div>
-                            </li>
+                            @foreach (var user in upComing)
+                            {
+                                <li class="d-flex mb-4 align-items-center">
+                                    <img src="@user.ProfilePhotoUrl" alt="story-img" class="rounded-circle img-fluid">
+                                    <div class="stories-data ms-3">
+                                        <h5>@user.Fullname</h5>
+                                        <p class="mb-0">@CalculateDay(user.Dob)</p>
+                                    </div>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -1235,16 +1247,16 @@
         }
 
         chatBox.innerHTML = `
-                    <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                        <span>Chat with ${userId}</span>
-                        <button class="close-button" onclick="closeChat('${userId}')">×</button>
-                    </div>
-                    <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}"></div>
-                    <div class="chat-input">
-                        <input type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
-                        <button onclick="sendMessage('${userId}')">Send</button>
-                    </div>
-                `;
+                        <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                            <span>Chat with ${userId}</span>
+                            <button class="close-button" onclick="closeChat('${userId}')">×</button>
+                        </div>
+                        <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}"></div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                            <button onclick="sendMessage('${userId}')">Send</button>
+                        </div>
+                    `;
         // Apply dark mode styles to the input element if dark mode is active
         if (body.classList.contains('bg-dark')) {
             chatBox.querySelector('input[type="text"]').classList.add('dark-mode-text-input');

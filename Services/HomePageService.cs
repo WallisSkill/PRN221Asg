@@ -38,5 +38,28 @@ namespace PRN221_Assignment.Services
             var listFriends = _friendRepository.GetFriendsOfUser(listFriendId);
             return listFriends;
         }
+
+        public List<User> GetUpComingBirthdayFriends()
+        {
+            var listFriends = GetAllFriendsOfUser();
+            listFriends = listFriends.Where(x => IsUpComingBirthday(x.Dob)).ToList();
+            return listFriends;
+        }
+
+        private bool IsUpComingBirthday(DateTime? dob)
+        {
+            var today = DateTime.Now;
+            var oneMonthFromToday = today.AddMonths(1);
+            var birthday = (DateTime)dob;
+            if(birthday.Month == today.Month && birthday.Day >= today.Day)
+            {
+                return true;
+            }
+            if (birthday.Month == oneMonthFromToday.Month && birthday.Day <= oneMonthFromToday.Day)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
