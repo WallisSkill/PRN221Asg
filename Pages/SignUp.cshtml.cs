@@ -14,7 +14,7 @@ namespace PRN221_Assignment.Pages
         private readonly ISignUpService _signupService;
         private readonly ILogger<LoginModel> _logger;
 
-        private string error;
+        public string error;
 
         public void OnGet()
         {
@@ -26,10 +26,12 @@ namespace PRN221_Assignment.Pages
             user.Dob = new DateTime(int.Parse(Request.Form["year"]), int.Parse(Request.Form["month"]), int.Parse(Request.Form["day"]));
             if (_signupService.CheckEmailExist(user.Email))
             {
+                error = "Email is exist!";
                 return Page();
             }
-            if (_signupService.CheckUsernameExist(user.Email))
+            if (_signupService.CheckUsernameExist(user.Username))
             {
+                error = "Username is exist!";
                 return Page();
             }
             try

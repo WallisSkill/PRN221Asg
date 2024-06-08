@@ -15,6 +15,7 @@ namespace PRN221_Assignment.Pages
         public User user { get; set; } = default!;
         private readonly ILoginService _loginService;
         private readonly ILogger<LoginModel> _logger;
+        public string error;
 
         public void OnGet()
         {
@@ -38,6 +39,7 @@ namespace PRN221_Assignment.Pages
                 HttpContext.SignInAsync(cp);
                 return RedirectToPage("/Index");
             }
+            error = "Username or password is incorrect!";
             return Page();
         }
         
