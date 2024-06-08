@@ -1,20 +1,22 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Lombok.NET;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PRN221_Assignment.Models;
+using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Pages;
 
 [Authorize]
-public class IndexModel : PageModel
+[RequiredArgsConstructor]
+public partial class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
+    private readonly IHomePageService _homePageService;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IActionResult OnGet()
     {
-        _logger = logger;
-    }
-
-    public void OnGet()
-    {
+        ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
+        return Page();
     }
 }

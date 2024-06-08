@@ -32,6 +32,7 @@ namespace PRN221_Assignment.Pages
                 new Claim(ClaimTypes.NameIdentifier, userLogin.Fullname),
                 new Claim(ClaimTypes.Name, userLogin.Username),
                 new Claim(ClaimTypes.Email, userLogin.Email),
+                new Claim("UserId", userLogin.UserId.ToString()),
                 new Claim("profile_picture", userLogin.ProfilePhotoUrl ?? "./assets/images/user/null.png")
             };
                 ClaimsIdentity ci = new ClaimsIdentity(listClaim, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
