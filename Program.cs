@@ -1,5 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using PRN221_Assignment.Hubs;
 using PRN221_Assignment.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,7 @@ builder.Services.AddAuthentication(
         option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         option.LogoutPath = "/Logout";
     });
-
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,5 +45,5 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+app.MapHub<ChatHub>("/chathub");
 app.Run();

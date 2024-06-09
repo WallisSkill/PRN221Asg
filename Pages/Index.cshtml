@@ -33,7 +33,7 @@
                     {
                         foreach (var user in listFriend)
                         {
-                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.Fullname')">
+                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.Username','@user.Fullname')">
                                 <div class="iq-profile-avatar status-online">
                                     <img class="rounded-circle avatar-50" src="@user.ProfilePhotoUrl" alt="">
                                 </div>
@@ -1208,7 +1208,7 @@
     let chatOffset = 250;
     const openChatBoxes = [];
 
-    function openChat(userId) {
+    function openChat(userId,name) {
         let chatBox = document.getElementById(`chatBox-${userId}`);
         const chatContainer = document.getElementById('chatContainer');
 
@@ -1217,7 +1217,7 @@
                 const oldestChatBoxId = openChatBoxes.shift();
                 closeChat(oldestChatBoxId);
             }
-            chatBox = createChatBox(userId);
+            chatBox = createChatBox(userId,name);
             const chatBoxes = chatContainer.querySelectorAll('.chat-box');
             const totalWidth = Array.from(chatBoxes).reduce((acc, box) => acc + box.offsetWidth, 0);
 
@@ -1235,7 +1235,7 @@
 
     ///////////////chatbox
 
-    function createChatBox(userId) {
+    function createChatBox(userId,name) {
         const chatBox = document.createElement('div');
         chatBox.id = `chatBox-${userId}`;
         chatBox.className = 'chat-box';
@@ -1248,7 +1248,7 @@
 
         chatBox.innerHTML = `
                         <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                            <span>Chat with ${userId}</span>
+                            <span>Chat with ${name}</span>
                             <button class="close-button" onclick="closeChat('${userId}')">×</button>
                         </div>
                         <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}"></div>
