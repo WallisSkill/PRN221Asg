@@ -25,4 +25,22 @@ public partial class ProfileRepository: IProfileRepository
             select photos).ToList();
         return result;
     }
+
+    public int GetCountNumberLikes(int userid)
+    {
+        var result = (from pl in _context.Set<PostLike>()
+            join p in _context.Set<Post>() on pl.PostId equals p.PostId
+            where p.UserId == userid
+            select pl).Count();
+        return result;
+    }
+
+    public int GetCountNumberComments(int userid)
+    {
+        var result = (from c in _context.Set<Comment>()
+            join p in _context.Set<Post>() on c.PostId equals p.PostId
+            where p.UserId == userid
+            select c).Count();
+        return result;
+    }
 }

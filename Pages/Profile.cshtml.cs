@@ -19,6 +19,8 @@ public partial class Profile : PageModel
         if (Id == 0) return RedirectToPage("/Index");
         ViewData["User"] = _profileService.GetUserInfo(Id);
         ViewData["photos"] = _profileService.GetUserPhoto(Id);
+        ViewData["likes"] = _profileService.GetCountNumberLikes(Id);
+        ViewData["comments"] = _profileService.GetCountNumberComments(Id);
         return Page();
     }
 }

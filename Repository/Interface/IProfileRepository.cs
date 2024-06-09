@@ -6,4 +6,6 @@ public interface IProfileRepository
 {
     User? GetUserInfo(int userid);
     List<Photo> GetUserPhoto(int userid);
+    int GetCountNumberLikes(int userid);
+    int GetCountNumberComments(int userid);
 }

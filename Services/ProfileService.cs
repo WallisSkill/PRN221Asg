@@ -21,4 +21,14 @@ public partial class ProfileService: IProfileService
     {
         return _profileRepository.GetUserPhoto(userid);
     }
+
+    public int GetCountNumberLikes(int userid)
+    {
+        return _profileRepository.GetCountNumberLikes(userid);
+    }
+
+    public int GetCountNumberComments(int userid)
+    {
+        return _profileRepository.GetCountNumberComments(userid);
+    }
 }
