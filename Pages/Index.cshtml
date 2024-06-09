@@ -1209,7 +1209,7 @@
     const openChatBoxes = [];
 
     function openChat(userId,name) {
-        let chatBox = document.getElementById(`chatBox-${userId}`);
+        let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
         const chatContainer = document.getElementById('chatContainer');
 
         if (!chatBox) {
@@ -1239,7 +1239,7 @@
         const chatBox = document.createElement('div');
         chatBox.id = `chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`;
         chatBox.className = 'chat-box';
-
+        const currid = '@User.FindFirstValue(ClaimTypes.Authentication)';
         // Add 'bg-dark' class if body has 'bg-dark' class
         const body = document.body;
         if (body.classList.contains('bg-dark')) {
@@ -1268,7 +1268,7 @@
 
 
     function closeChat(userId) {
-        const chatBox = document.getElementById(`chatBox-${userId}`);
+        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
         if (chatBox) {
             const offset = parseInt(chatBox.style.right, 10);
             const boxWidth = chatBox.offsetWidth;
