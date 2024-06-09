@@ -1254,6 +1254,11 @@
         const messagesList = chatBox.querySelector('.chat-messages');
         messagesList.innerHTML = ''; // Clear existing messages
 
+        const startMessage = document.createElement('div');
+        startMessage.classList.add('conversation-start');
+        startMessage.textContent = '--- This is the start of this conversation ---';
+        messagesList.appendChild(startMessage);
+        
         messages.forEach(message => {
             const messageContainer = document.createElement('div');
             messageContainer.classList.add('message-container');
@@ -1284,10 +1289,11 @@
 
         chatBox.innerHTML = `
                         <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                            <span>Chat with ${name}</span>
+                            <span>${name}</span>
                             <button class="close-button" onclick="closeChat('${userId}')">×</button>
                         </div>
-                        <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}"></div>
+                        <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">     
+                        </div>
                         <div class="chat-input">
                             <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
                             <button onclick="sendMessage('${userId}')">Send</button>
