@@ -991,6 +991,11 @@
                     element.classList.toggle('text-white');
                 });
 
+                const h3Elements = document.querySelectorAll('.profile-detail h3');
+                h3Elements.forEach(element => {
+                    element.classList.toggle('text-white');
+                });
+
                 const h6Elements = document.querySelectorAll('h6');
                 h6Elements.forEach(element => {
                     element.classList.toggle('text-white');
@@ -1037,16 +1042,13 @@
                 const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
                 dropdownToggles.forEach((dropdownToggle) => {
-                    // Add click event listener to each dropdown toggle
                     dropdownToggle.addEventListener('click', function (event) {
-                        event.preventDefault(); // Prevent the default anchor behavior
-
-                        // Find the closest parent `li` and toggle the `.show` class on its dropdown menu
+                        event.preventDefault(); 
+                        
                         const parentLi = this.closest('li');
                         const dropdownMenu = parentLi.querySelector('.dropdown-toggle');
                         dropdownMenu.classList.toggle('show');
-
-                        // Close other open dropdown menus
+                        
                         document.querySelectorAll('.dropdown-toggle.show').forEach((menu) => {
                             if (menu !== dropdownMenu) {
                                 menu.classList.remove('show');
@@ -1054,8 +1056,7 @@
                         });
                     });
                 });
-
-                // Close dropdowns when clicking outside of them
+                
                 document.addEventListener('click', function (event) {
                     document.querySelectorAll('.dropdown-menu').forEach((menu) => {
                         if (menu.closest('li')!= null && !menu.closest('li').contains(event.target)) {
@@ -1063,11 +1064,10 @@
                         }
                     });
                 });
-
-                // Prevent dropdown menu from closing when clicking inside
+                
                 document.querySelectorAll('.dropdown-menu').forEach((dropdownMenu) => {
                     dropdownMenu.addEventListener('click', function (event) {
-                        event.stopPropagation(); // Prevent click event from bubbling up
+                        event.stopPropagation(); 
                     });
                 });
             });
