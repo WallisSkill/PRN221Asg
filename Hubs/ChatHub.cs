@@ -26,7 +26,7 @@ public partial class ChatHub : Hub
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderId, message);
+            await Clients.All.SendAsync("ReceiveMessage", senderId, message);
         }
         catch (Exception ex)
         {

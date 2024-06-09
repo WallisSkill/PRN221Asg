@@ -19,6 +19,51 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            margin: auto;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 8px;
+        }
+
+        .outgoing-message {
+            background-color: #ADD8E6; /* Soft blue color for outgoing messages */
+            color: #000000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            text-align: right;
+            align-self: flex-end;
+            max-width: 70%;
+            word-wrap: break-word;
+            border: 1px solid #B0E0E6; /* Slightly darker blue border for contrast */
+            box-shadow: 0 0 5px rgba(0, 0, 255, 0.1); /* Optional: adding a subtle shadow */
+        }
+
+        .incoming-message {
+            background-color: #FFFFFF; /* Example background color for incoming messages */
+            color: #000000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            text-align: left;
+            align-self: flex-start;
+            max-width: 70%;
+            word-wrap: break-word;
+            border: 1px solid #ccc; /* Adding a border for the surround */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optional: adding a shadow for a better effect */
+        }
+
+        /* Optional: Adjust message padding and margin for smaller screens */
+
+
         .chat-box {
             position: fixed;
             bottom: 0;
@@ -834,15 +879,55 @@
                 .withAutomaticReconnect([0, 0, 10000])
                 .build();
 
-            connection.on("ReceiveMessage", (user, message) => {
-                const chatBox = document.getElementById(`chatBox-${user}`);
+            function sendMessage(receiverId) {
+                const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const messageInput = document.getElementById("chatinput-" + receiverId);
+                const message = messageInput.value;
+                console.log("ok");
+                messageInput.value = ''; // Clear the input field
+                connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
+
+                // Display the sent message in a different color
+                displayOutgoingMessage(senderId, receiverId, message);
+            }
+
+            function displayOutgoingMessage(senderId, receiverId, message) {
+                console.log(senderId + " " + receiverId);
+                const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
                 if (chatBox) {
                     const messagesList = chatBox.querySelector('.chat-messages');
-                    const msg = document.createElement('div');
-                    msg.textContent = `${user}: ${message}`;
-                    messagesList.appendChild(msg);
+                    const messageContainer = document.createElement('div'); // Create a container for the message
+                    messageContainer.classList.add('message-container'); // Add a class to the container
+                    const msg = document.createElement('div'); // Create the message element
+                    msg.textContent = `${message}`; // Set the message text
+                    msg.classList.add('outgoing-message'); // Add a class to style the message
+                    messageContainer.appendChild(msg); // Append the message to the container
+                    messagesList.appendChild(messageContainer); // Append the container to the messages list
+
+                    // Scroll to the bottom
+                    messagesList.scrollTop = messagesList.scrollHeight;
+                }
+            }
+
+            connection.on("ReceiveMessage", (user, message) => {
+                console.log("receive");
+                const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
+                if (chatBox) {
+                    const messagesList = chatBox.querySelector('.chat-messages');
+                    const messageContainer = document.createElement('div'); // Create a container for the message
+                    messageContainer.classList.add('message-container'); // Add a class to the container
+                    const msg = document.createElement('div'); // Create the message element
+                    msg.textContent = `${message}`; // Set the message text
+                    msg.classList.add('incoming-message'); // Add a class to style the message
+                    messageContainer.appendChild(msg); // Append the message to the container
+                    messagesList.appendChild(messageContainer); // Append the container to the messages list
+
+                    // Scroll to the bottom
+                    messagesList.scrollTop = messagesList.scrollHeight;
                 }
             });
+
+
 
             connection.start().catch(err => console.error(err.toString()));
             ///////////////////////////MessageBox
