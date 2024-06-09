@@ -33,7 +33,7 @@
                     {
                         foreach (var user in listFriend)
                         {
-                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.Username','@user.Fullname')">
+                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.UserId','@user.Fullname')">
                                 <div class="iq-profile-avatar status-online">
                                     <img class="rounded-circle avatar-50" src="@user.ProfilePhotoUrl" alt="">
                                 </div>
@@ -1013,7 +1013,7 @@
                             </div>
                             <div class="user-post">
                                 <div class="ratio ratio-16x9">
-                                    <iframe src="https://www.youtube.com/embed/j_GsIanLxZk?rel=0" allowfullscreen></iframe>
+                                    @* <iframe src="https://www.youtube.com/embed/j_GsIanLxZk?rel=0" allowfullscreen></iframe> *@
                                 </div>
                             </div>
                             <div class="comment-area mt-3">
@@ -1253,7 +1253,7 @@
                         </div>
                         <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}"></div>
                         <div class="chat-input">
-                            <input type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                            <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
                             <button onclick="sendMessage('${userId}')">Send</button>
                         </div>
                     `;
@@ -1287,5 +1287,14 @@
                 }
             });
         }
+    }
+
+    function sendMessage(receiverId) {
+        const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+        const messageInput = document.getElementById("chatinput-"+receiverId);
+        const message = messageInput.value;
+        console.log("ok");
+        messageInput.value = ''; // Clear the input field
+        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
     }
 </script>

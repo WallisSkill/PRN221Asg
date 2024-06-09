@@ -1,3 +1,4 @@
+using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.AspNetCore.SignalR;
 using PRN221_Assignment.Models;
@@ -5,26 +6,33 @@ using PRN221_Assignment.Models;
 namespace PRN221_Assignment.Hubs;
 
 [RequiredArgsConstructor]
+[Service]
 public partial class ChatHub : Hub
 {
     private readonly social_mediaContext _context;
-    
-    
-    public async Task SendMessage(int senderId, int receiverId, string message)
+    public async Task SendMessage(string senderId, string receiverId, string message)
     {
-        var newMessage = new Message
+        try
         {
-            SenderId = senderId,
-            ReceiverId = receiverId,
-            Content = message,
-            SendAt = DateTime.Now,
-            IsRead = false
-        };
+            var newMessage = new Message
+            {
+                SenderId = Int32.Parse(senderId),
+                ReceiverId = Int32.Parse(receiverId),
+                Content = message,
+                SendAt = DateTime.Now,
+                IsRead = false
+            };
 
-        _context.Messages.Add(newMessage);
-        await _context.SaveChangesAsync();
+            _context.Messages.Add(newMessage);
+            await _context.SaveChangesAsync();
 
-        await Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", senderId, message);
+            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderId, message);
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+            throw;
+        }
     }
   
 }

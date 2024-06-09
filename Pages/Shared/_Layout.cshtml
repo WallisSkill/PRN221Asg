@@ -827,10 +827,11 @@
             </div>
             </div> *@
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>">
         <script>
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/chathub")
+                .withAutomaticReconnect([0, 0, 10000])
                 .build();
 
             connection.on("ReceiveMessage", (user, message) => {
@@ -964,7 +965,7 @@
                 // Close dropdowns when clicking outside of them
                 document.addEventListener('click', function (event) {
                     document.querySelectorAll('.dropdown-menu').forEach((menu) => {
-                        if (!menu.closest('li').contains(event.target)) {
+                        if (menu.closest('li')!= null && !menu.closest('li').contains(event.target)) {
                             menu.classList.remove('show');
                         }
                     });
@@ -978,12 +979,7 @@
                 });
             });
 
-            document.getElementById('sendButton').addEventListener('click', () => {
-                const senderId = document.getElementById('senderId').value;
-                const receiverId = document.getElementById('receiverId').value;
-                const message = document.getElementById('messageInput').value;
-                connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
-            });
+            
         </script>
 
     </body>
