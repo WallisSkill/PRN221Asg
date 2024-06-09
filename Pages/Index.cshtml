@@ -1230,9 +1230,45 @@
 
             chatContainer.appendChild(chatBox);
             openChatBoxes.push(userId);
+            fetchMessages(userId, chatBox);
         }
     }
 
+
+    async function fetchMessages(userId, chatBox) {
+        try {
+            const response = await fetch(`?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}`);
+            if (response.ok) {
+                const messages = await response.json();
+                console.log(messages);
+                displayMessages(messages, chatBox);
+            } else {
+                console.error('Failed to fetch messages');
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }
+
+    function displayMessages(messages, chatBox) {
+        const messagesList = chatBox.querySelector('.chat-messages');
+        messagesList.innerHTML = ''; // Clear existing messages
+
+        messages.forEach(message => {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container');
+
+            const msg = document.createElement('div');
+            msg.textContent = message.content;
+            console.log(message.senderId);
+            msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
+
+            messageContainer.appendChild(msg);
+            messagesList.appendChild(messageContainer);
+        });
+
+        messagesList.scrollTop = messagesList.scrollHeight;
+    }
     ///////////////chatbox
 
     function createChatBox(userId,name) {

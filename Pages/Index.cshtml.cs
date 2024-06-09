@@ -13,11 +13,19 @@ public partial class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IHomePageService _homePageService;
-
+    private readonly IMessageService _messageService;
     public IActionResult OnGet()
     {
         ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
         ViewData["upComingBirthdayFriend"] = _homePageService.GetUpComingBirthdayFriends();
         return Page();
     }
+    public IList<Message> Messages { get; set; }
+
+    public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId)
+    {
+        Messages = await _messageService.GetMessagesForReceiverAsync(senderId,receiverId);
+        return new JsonResult(Messages);
+    }
+     
 }
