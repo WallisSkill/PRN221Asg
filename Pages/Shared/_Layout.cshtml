@@ -1,4 +1,36 @@
 ﻿@using System.Security.Claims
+@using PRN221_Assignment.Data
+@{
+    var listMess = (List<MessageData>)ViewBag.listMess;
+    string GetTimeFromMessage(DateTime time)
+    {
+        if (DateTime.Now.Hour - time.Hour < 1)
+        {
+            return DateTime.Now.Minute - time.Minute + " minutes";
+        }
+        if ((DateTime.Now.Date - time.Date).Days < 1)
+        {
+            return DateTime.Now.Hour - time.Hour + " hours";
+        }
+        if ((DateTime.Now.Date - time.Date).Days < 7)
+        {
+            return DateTime.Now.Day - time.Day + " days";
+        }
+        if ((DateTime.Now.Date - time.Date).Days < 365)
+        {
+            return (DateTime.Now.Date - time.Date) / 7 + " weeks";
+        }
+        return DateTime.Now.Year - time.Year + " years";
+    }
+    string LimitContent(string content)
+    {
+        if (content.Length > 20)
+        {
+            return content.Substring(0, 10) + "...";
+        }
+        return content;
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +57,7 @@
             font-size: 12px;
             color: #888;
         }
-        
+
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -134,6 +166,21 @@
                 border: none;
                 border-radius: 0 0 10px 0;
             }
+
+        .notification-badge {
+            position: absolute;
+            top: 23px; /* Adjust the position as needed */
+            right: 7px; /* Adjust the position as needed */
+            background-color: red;
+            color: white;
+            border-radius: 100%;
+            font-size: 15px;
+            width: 15px;
+            height: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 
 </head>
@@ -671,71 +718,49 @@
                                 <li class="nav-item dropdown">
                                     <a href="#" class="dropdown-toggle" id="mail-drop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="ri-message-line"></i>
+                                        @if(listMess.Count(x => !x.Readed) > 0)
+                                        {
+                                            <h1 class="notification-badge">@listMess.Count(x => !x.Readed)</h1>
+                                        }
                                     </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop">
+                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
                                         <div class="card shadow-none m-0">
                                             <div class="card-header d-flex justify-content-between bg-primary">
                                                 <div class="header-title bg-primary">
                                                     <h5 class="mb-0 text-white">All Message</h5>
                                                 </div>
-                                                <small class="badge bg-light text-dark">4</small>
                                             </div>
                                             <div class="card-body p-0 ">
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex  align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
-                                                        </div>
-                                                        <div class=" w-100 ms-3">
-                                                            <h6 class="mb-0 ">Bni Emma Watson</h6>
-                                                            <small class="float-left font-size-12">13 Jun</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/02.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Lorem Ipsum Watson</h6>
-                                                            <small class="float-left font-size-12">20 Apr</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/03.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Why do we use it?</h6>
-                                                            <small class="float-left font-size-12">30 Jun</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/04.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Variations Passages</h6>
-                                                            <small class="float-left font-size-12">12 Sep</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/05.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Lorem Ipsum generators</h6>
-                                                            <small class="float-left font-size-12">5 Dec</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
+                                                @if (listMess.Any())
+                                                {
+                                                    foreach (var messData in listMess)
+                                                    {
+                                                        <a href="#" class="iq-sub-card">
+                                                            <div class="d-flex  align-items-center">
+                                                                <div class="">
+                                                                    <img class="avatar-40 rounded" src="@messData.PhotoURL" alt="">
+                                                                </div>
+                                                                <div class=" w-100 ms-3">
+                                                                    <h6 class="mb-0 ">@messData.ReceiverName</h6>
+                                                                    <small class="float-left font-size-12">
+                                                                        @if (messData.IsSendedByUser)
+                                                                        {
+                                                                            <div>You: @(LimitContent(messData.Message) + " ∙ " + GetTimeFromMessage(messData.Time))</div>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div style="@(!messData.Readed?"font-weight: bold":"")">@(LimitContent(messData.Message) + " ∙ " + GetTimeFromMessage(messData.Time))</div>
+                                                                        }
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <div style="display: flex; justify-content: center">You don't have any messages!<br /> Let's chat with friend.</div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -824,7 +849,7 @@
                     </nav>
                 </div>
             </div>
-            
+
             @RenderBody()
 
 
@@ -881,7 +906,7 @@
             </div> *@
         </div>
         <script>
-            
+
             ////////////////////////////DarkMode
             function toggleDarkMode() {
                 const body = document.body;
@@ -974,7 +999,7 @@
             });
 
             ///////////////////////////
-          
+
             ////////////////////////////
             document.addEventListener('DOMContentLoaded', function () {
                 // Select all dropdown toggle elements
@@ -982,12 +1007,12 @@
 
                 dropdownToggles.forEach((dropdownToggle) => {
                     dropdownToggle.addEventListener('click', function (event) {
-                        event.preventDefault(); 
-                        
+                        event.preventDefault();
+
                         const parentLi = this.closest('li');
                         const dropdownMenu = parentLi.querySelector('.dropdown-toggle');
                         dropdownMenu.classList.toggle('show');
-                        
+
                         document.querySelectorAll('.dropdown-toggle.show').forEach((menu) => {
                             if (menu !== dropdownMenu) {
                                 menu.classList.remove('show');
@@ -995,23 +1020,23 @@
                         });
                     });
                 });
-                
+
                 document.addEventListener('click', function (event) {
                     document.querySelectorAll('.dropdown-menu').forEach((menu) => {
-                        if (menu.closest('li')!= null && !menu.closest('li').contains(event.target)) {
+                        if (menu.closest('li') != null && !menu.closest('li').contains(event.target)) {
                             menu.classList.remove('show');
                         }
                     });
                 });
-                
+
                 document.querySelectorAll('.dropdown-menu').forEach((dropdownMenu) => {
                     dropdownMenu.addEventListener('click', function (event) {
-                        event.stopPropagation(); 
+                        event.stopPropagation();
                     });
                 });
             });
 
-            
+
         </script>
 
     </div>

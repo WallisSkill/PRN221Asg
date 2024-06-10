@@ -7,4 +7,5 @@ public interface IMessageRepository
 {
     Task<IList<Message>> GetMessagesForReceiverAsync(string senderId,string receiverId);
     List<MessageData> GetAllMessage(int userId);
+    List<User> GetUsers();
 }

@@ -25,14 +25,22 @@ public partial class MessageRepository: IMessageRepository
     public List<MessageData> GetAllMessage(int userId)
     {
         var query = from T1 in _context.Set<Message>()
+                    where T1.SenderId == userId
+                       || T1.ReceiverId == userId
                     select new MessageData()
                     {
                         SenderId = T1.SenderId,
                         ReceiverId = T1.ReceiverId,
                         Time = (DateTime)T1.SendAt,
                         IsSendedByUser = (T1.SenderId == userId),
+                        Readed = T1.SenderId == userId ? true : (bool)T1.IsRead,
                         Message = T1.Content
                     };
         return query.ToList();
+    }
+
+    public List<User> GetUsers()
+    {
+        return _context.Set<User>().ToList();
     }
 }

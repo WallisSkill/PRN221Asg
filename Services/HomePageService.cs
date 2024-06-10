@@ -16,10 +16,11 @@ namespace PRN221_Assignment.Services
         private readonly IMessageRepository _messageRepository;
         private readonly int _currentUserId;
 
-        public HomePageService(IFriendRepository friendRepository, IUserResolverService userResolver)
+        public HomePageService(IFriendRepository friendRepository, IUserResolverService userResolver, IMessageRepository messageRepository)
         {
             _friendRepository = friendRepository;
             _currentUserId = userResolver.GetUser();
+            _messageRepository = messageRepository;
         }
 
         public List<User> GetAllFriendsOfUser()
@@ -72,9 +73,10 @@ namespace PRN221_Assignment.Services
             {
                 SenderId = x.Key.SenderId,
                 ReceiverId = x.Key.ReceiverId,
-                Message = x.MinBy(x => x.Time).Message,
-                Time = x.Min(x => x.Time),
-                IsSendedByUser = x.MinBy(x => x.Time).IsSendedByUser,
+                Message = x.MaxBy(x => x.Time).Message,
+                Time = x.MaxBy(x => x.Time).Time,
+                IsSendedByUser = x.MaxBy(x => x.Time).IsSendedByUser,
+                Readed = x.MaxBy(x => x.Time).Readed
             }).ToList();
             listData.AddRange(listMessageLater);
             listMessageLater.ForEach(item =>
@@ -86,6 +88,7 @@ namespace PRN221_Assignment.Services
                     Message = item.Message,
                     Time = item.Time,
                     IsSendedByUser = item.IsSendedByUser,
+                    Readed = item.Readed
                 };
                 listData.Add(message);
             });
@@ -94,10 +97,22 @@ namespace PRN221_Assignment.Services
             {
                 SenderId = x.Key.SenderId,
                 ReceiverId = x.Key.ReceiverId,
-                Message = x.MinBy(x => x.Time).Message,
-                Time = x.Min(x => x.Time),
-                IsSendedByUser = x.MinBy(x => x.Time).IsSendedByUser,
-            }).OrderBy(x => x.Time).ToList();
+                Message = x.MaxBy(x => x.Time).Message,
+                Time = x.MaxBy(x => x.Time).Time,
+                IsSendedByUser = x.MaxBy(x => x.Time).IsSendedByUser,
+                Readed = x.MaxBy(x => x.Time).Readed
+
+            }).OrderByDescending(x => x.Time).ToList();
+            if(listData.Count > 0)
+            {
+                var listUser = _messageRepository.GetUsers();
+                listData.ForEach(item =>
+                {
+                    var user = listUser.FirstOrDefault(x => x.UserId == item.ReceiverId);
+                    item.PhotoURL = user.ProfilePhotoUrl;
+                    item.ReceiverName = user.Fullname;
+                });
+            }
             return listData;
         }
     }
