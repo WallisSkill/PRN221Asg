@@ -7,6 +7,7 @@ namespace PRN221_Assignment.Services.Interface
     {
         List<User> GetAllFriendsOfUser();
         List<User> GetUpComingBirthdayFriends();
-        List<MessageData> GetUserChatWith();
+        Task<IList<MessageData>> GetUserChatWith();
+        
     }
 }

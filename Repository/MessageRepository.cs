@@ -22,9 +22,9 @@ public partial class MessageRepository: IMessageRepository
             .ToListAsync();
     }
 
-    public List<MessageData> GetAllMessage(int userId)
+    public async Task<IList<MessageData>> GetAllMessage(int userId)
     {
-        var query = from T1 in _context.Set<Message>()
+        return await (from T1 in _context.Set<Message>()
                     where T1.SenderId == userId
                        || T1.ReceiverId == userId
                     select new MessageData()
@@ -35,12 +35,11 @@ public partial class MessageRepository: IMessageRepository
                         IsSendedByUser = (T1.SenderId == userId),
                         Readed = T1.SenderId == userId ? true : (bool)T1.IsRead,
                         Message = T1.Content
-                    };
-        return query.ToList();
+                    }).ToListAsync();
     }
 
-    public List<User> GetUsers()
+    public async Task<IList<User>> GetUsers()
     {
-        return _context.Set<User>().ToList();
+        return await _context.Set<User>().ToListAsync();
     }
 }

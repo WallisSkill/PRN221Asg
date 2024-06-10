@@ -16,7 +16,8 @@ namespace PRN221_Assignment.Services
         private readonly IMessageRepository _messageRepository;
         private readonly int _currentUserId;
 
-        public HomePageService(IFriendRepository friendRepository, IUserResolverService userResolver, IMessageRepository messageRepository)
+        public HomePageService(IFriendRepository friendRepository, IUserResolverService userResolver,
+            IMessageRepository messageRepository)
         {
             _friendRepository = friendRepository;
             _currentUserId = userResolver.GetUser();
@@ -54,34 +55,46 @@ namespace PRN221_Assignment.Services
             var today = DateTime.Now;
             var oneMonthFromToday = today.AddMonths(1);
             var birthday = (DateTime)dob;
-            if(birthday.Month == today.Month && birthday.Day >= today.Day)
+            if (birthday.Month == today.Month && birthday.Day >= today.Day)
             {
                 return true;
             }
+
             if (birthday.Month == oneMonthFromToday.Month && birthday.Day <= oneMonthFromToday.Day)
             {
                 return true;
             }
+
             return false;
         }
 
-        public List<MessageData> GetUserChatWith()
+        public async Task<IList<MessageData>> GetUserChatWith()
         {
             var listData = new List<MessageData>();
-            var listMessage = _messageRepository.GetAllMessage(_currentUserId);
-            var listMessageLater = listMessage.GroupBy(x => new { x.SenderId, x.ReceiverId }).Select(x => new MessageData()
-            {
-                SenderId = x.Key.SenderId,
-                ReceiverId = x.Key.ReceiverId,
-                Message = x.MaxBy(x => x.Time).Message,
-                Time = x.MaxBy(x => x.Time).Time,
-                IsSendedByUser = x.MaxBy(x => x.Time).IsSendedByUser,
-                Readed = x.MaxBy(x => x.Time).Readed
-            }).ToList();
+
+            // Fetch all messages for the current user
+            var listMessage = await _messageRepository.GetAllMessage(_currentUserId); // Assuming async method
+
+            // Group messages by SenderId and ReceiverId, then select the most recent message in each group
+            var listMessageLater = listMessage
+                .GroupBy(x => new { x.SenderId, x.ReceiverId })
+                .Select(g => g.OrderByDescending(m => m.Time).FirstOrDefault())
+                .Select(m => new MessageData
+                {
+                    SenderId = m.SenderId,
+                    ReceiverId = m.ReceiverId,
+                    Message = m.Message,
+                    Time = m.Time,
+                    IsSendedByUser = m.IsSendedByUser,
+                    Readed = m.Readed
+                })
+                .ToList();
+
+            // Add the messages to the final listData and their reverse counterparts
             listData.AddRange(listMessageLater);
             listMessageLater.ForEach(item =>
             {
-                var message = new MessageData()
+                var message = new MessageData
                 {
                     SenderId = item.ReceiverId,
                     ReceiverId = item.SenderId,
@@ -92,28 +105,35 @@ namespace PRN221_Assignment.Services
                 };
                 listData.Add(message);
             });
-            listData.RemoveAll(x => x.SenderId != _currentUserId);
-            listData = listData.GroupBy(x => new { x.SenderId, x.ReceiverId }).Select(x => new MessageData()
-            {
-                SenderId = x.Key.SenderId,
-                ReceiverId = x.Key.ReceiverId,
-                Message = x.MaxBy(x => x.Time).Message,
-                Time = x.MaxBy(x => x.Time).Time,
-                IsSendedByUser = x.MaxBy(x => x.Time).IsSendedByUser,
-                Readed = x.MaxBy(x => x.Time).Readed
 
-            }).OrderByDescending(x => x.Time).ToList();
-            if(listData.Count > 0)
+            // Filter messages where the current user is the sender
+            listData = listData.Where(x => x.SenderId == _currentUserId).ToList();
+
+            // Group again and select the most recent message in each group
+            listData = listData
+                .GroupBy(x => new { x.SenderId, x.ReceiverId })
+                .Select(g => g.OrderByDescending(m => m.Time).FirstOrDefault())
+                .OrderByDescending(x => x.Time)
+                .ToList();
+
+            // Add user details if there are messages
+            if (listData.Count > 0)
             {
-                var listUser = _messageRepository.GetUsers();
+                var listUser = await _messageRepository.GetUsers(); // Assuming async method
                 listData.ForEach(item =>
                 {
                     var user = listUser.FirstOrDefault(x => x.UserId == item.ReceiverId);
-                    item.PhotoURL = user.ProfilePhotoUrl;
-                    item.ReceiverName = user.Fullname;
+                    if (user != null)
+                    {
+                        item.PhotoURL = user.ProfilePhotoUrl;
+                        item.ReceiverName = user.Fullname;
+                    }
                 });
             }
-            return listData;
+
+            return await Task.FromResult(listData);
         }
+
     }
 }
+

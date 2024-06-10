@@ -1,25 +1,30 @@
 ﻿@using System.Security.Claims
 @using PRN221_Assignment.Data
 @{
-    var listMess = (List<MessageData>)ViewBag.listMess;
+    var listMess = ViewData["listMess"] as List<MessageData>;
+
     string GetTimeFromMessage(DateTime time)
     {
         if (DateTime.Now.Hour - time.Hour < 1)
         {
             return DateTime.Now.Minute - time.Minute + " minutes";
         }
+
         if ((DateTime.Now.Date - time.Date).Days < 1)
         {
             return DateTime.Now.Hour - time.Hour + " hours";
         }
+
         if ((DateTime.Now.Date - time.Date).Days < 7)
         {
             return DateTime.Now.Day - time.Day + " days";
         }
+
         if ((DateTime.Now.Date - time.Date).Days < 365)
         {
             return (DateTime.Now.Date - time.Date) / 7 + " weeks";
         }
+
         return DateTime.Now.Year - time.Year + " years";
     }
     string LimitContent(string content)
@@ -248,7 +253,7 @@
                                 </a>
                             </li>
                             <li class=" ">
-                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false" onclick="toggleMessageBox();">
+                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false">
                                     <i class="ri-mail-line"></i><span>Email</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
                                 </a>
                                 <ul id="mailbox" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
@@ -716,9 +721,9 @@
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="mail-drop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="#" class="dropdown-toggle" id="mail-drop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
                                         <i class="ri-message-line"></i>
-                                        @if(listMess.Count(x => !x.Readed) > 0)
+                                        @if(listMess?.Count(x => !x.Readed) > 0)
                                         {
                                             <h1 class="notification-badge">@listMess.Count(x => !x.Readed)</h1>
                                         }
@@ -727,39 +732,39 @@
                                         <div class="card shadow-none m-0">
                                             <div class="card-header d-flex justify-content-between bg-primary">
                                                 <div class="header-title bg-primary">
-                                                    <h5 class="mb-0 text-white">All Message</h5>
+                                                    <h5 class="mb-0 text-white">All Messages</h5>
                                                 </div>
                                             </div>
-                                            <div class="card-body p-0 ">
-                                                @if (listMess.Any())
+                                            <div class="card-body p-0 chat-noti">
+                                                @if (listMess != null && listMess.Any())
                                                 {
-                                                    foreach (var messData in listMess)
-                                                    {
-                                                        <a href="#" class="iq-sub-card">
-                                                            <div class="d-flex  align-items-center">
-                                                                <div class="">
-                                                                    <img class="avatar-40 rounded" src="@messData.PhotoURL" alt="">
-                                                                </div>
-                                                                <div class=" w-100 ms-3">
-                                                                    <h6 class="mb-0 ">@messData.ReceiverName</h6>
-                                                                    <small class="float-left font-size-12">
-                                                                        @if (messData.IsSendedByUser)
-                                                                        {
-                                                                            <div>You: @(LimitContent(messData.Message) + " ∙ " + GetTimeFromMessage(messData.Time))</div>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <div style="@(!messData.Readed?"font-weight: bold":"")">@(LimitContent(messData.Message) + " ∙ " + GetTimeFromMessage(messData.Time))</div>
-                                                                        }
-                                                                    </small>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    }
+                                                foreach (var messData in listMess)
+                                                {
+                                                <a href="#" class="iq-sub-card" onclick="openChat('@messData.ReceiverId','@messData.ReceiverName')">
+                                                    <div class="d-flex align-items-center">
+                                                        <div>
+                                                            <img class="avatar-40 rounded" src="@messData.PhotoURL" alt="">
+                                                        </div>
+                                                        <div class="w-100 ms-3">
+                                                            <h6 class="mb-0">@messData.ReceiverName</h6>
+                                                            <small class="float-left font-size-12">
+                                                                @if (messData.IsSendedByUser)
+                                                                {
+                                                                <div>You: @(LimitContent(messData.Message) + " ∙ " + GetTimeFromMessage(messData.Time))</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                <div style="@(!messData.Readed ? "font-weight: bold" : "")">@LimitContent(messData.Message) ∙ @GetTimeFromMessage(messData.Time)</div>
+                                                                }
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                }
                                                 }
                                                 else
                                                 {
-                                                    <div style="display: flex; justify-content: center">You don't have any messages!<br /> Let's chat with friend.</div>
+                                                <div style="display: flex; justify-content: center">You don't have any messages!<br /> Let's chat with a friend.</div>
                                                 }
                                             </div>
                                         </div>
@@ -921,7 +926,9 @@
                     element.classList.toggle('bg-dark');
                     element.classList.toggle('text-white');
                 });
-
+                const navbarElement = document.querySelector('.navbar-collapse');
+               navbarElement.classList.toggle('bg-dark');
+                
                 // Add text-white to all span elements
                 const spanElements = document.querySelectorAll('span');
                 spanElements.forEach(span => {
