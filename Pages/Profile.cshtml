@@ -4,6 +4,7 @@
 @{
     var user = (User)ViewBag.User;
     var photos = (List<Photo>)ViewBag.photos;
+    var friends = (List<User>)ViewBag.friends;
 }
 
 <!DOCTYPE html>
@@ -11,6 +12,9 @@
 <html lang="en">
 <head>
     <title>Profile]</title>
+    <style>
+        
+    </style>
 </head>
 <body>
 <div>
@@ -211,69 +215,25 @@
         <div class="card-header d-flex justify-content-between">
             <div class="header-title">
                 <h4 class="card-title">Friends</h4>
+                <h7 class="">@friends.Count() friends</h7>
             </div>
             <div class="card-header-toolbar d-flex align-items-center">
                 <p class="m-0">
-                    <a href="javacsript:void();">Add New </a>
+                    <a href="javacsript:void();">See all friends</a>
                 </p>
             </div>
         </div>
         <div class="card-body">
             <ul class="profile-img-gallary p-0 m-0 list-unstyled">
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/05.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Anna Rexia</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/06.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Tara Zona</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/07.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Polly Tech</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/08.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Bill Emia</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/09.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Moe Fugga</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/10.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Hal Appeno </h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/07.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Zack Lee</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/06.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Terry Aki</h6>
-                </li>
-                <li class="">
-                    <a href="#">
-                        <img src="../assets/images/user/05.jpg" alt="gallary-image" class="img-fluid"/>
-                    </a>
-                    <h6 class="mt-2 text-center">Greta Life</h6>
-                </li>
+                @foreach (var friend in friends.Take(9))
+                {
+                    <li class="">
+                        <a href="#">
+                            <img src="@friend.ProfilePhotoUrl" alt="gallary-image" class="img-fluid"/>
+                        </a>
+                        <h6 class="mt-2 text-center">@friend.Fullname</h6>
+                    </li>
+                }
             </ul>
         </div>
     </div>

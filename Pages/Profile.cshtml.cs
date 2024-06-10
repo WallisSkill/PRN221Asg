@@ -11,6 +11,7 @@ namespace PRN221_Assignment.Pages;
 public partial class Profile : PageModel
 {
     private readonly IProfileService _profileService;
+    private readonly IHomePageService _homePageService;
     
     [BindProperty(SupportsGet = true)]
     public int Id { get; set; }
@@ -21,6 +22,7 @@ public partial class Profile : PageModel
         ViewData["photos"] = _profileService.GetUserPhoto(Id);
         ViewData["likes"] = _profileService.GetCountNumberLikes(Id);
         ViewData["comments"] = _profileService.GetCountNumberComments(Id);
+        ViewData["friends"] = _homePageService.GetAllFriendsOfUser();
         return Page();
     }
 }

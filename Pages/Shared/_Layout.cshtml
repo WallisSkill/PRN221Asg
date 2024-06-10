@@ -19,6 +19,10 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
+        .textfriend{
+            color:#fffc;
+        }
+        
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -954,6 +958,11 @@
                 const spanElements = document.querySelectorAll('span');
                 spanElements.forEach(span => {
                     span.classList.toggle('text-white');
+                });
+
+                const h7Elements = document.querySelectorAll('h4 h7');
+                h7Elements.forEach(span => {
+                    span.classList.toggle('textfriend');
                 });
 
                 const lasElements = document.querySelectorAll('[class*="las"]');
