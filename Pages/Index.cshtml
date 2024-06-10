@@ -1205,6 +1205,68 @@
 </div>
 
 <script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .withAutomaticReconnect([0, 0, 10000])
+        .build();
+
+    function sendMessage(receiverId) {
+        const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+        const messageInput = document.getElementById("chatinput-" + receiverId);
+        const message = messageInput.value;
+        console.log("ok");
+        messageInput.value = ''; // Clear the input field
+        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
+
+        // Display the sent message in a different color
+        displayOutgoingMessage(senderId, receiverId, message);
+    }
+
+    function displayOutgoingMessage(senderId, receiverId, message) {
+        console.log(senderId + " " + receiverId);
+        const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
+        if (chatBox) {
+            const messagesList = chatBox.querySelector('.chat-messages');
+            const messageContainer = document.createElement('div'); // Create a container for the message
+            messageContainer.classList.add('message-container'); // Add a class to the container
+            const msg = document.createElement('div'); // Create the message element
+            msg.textContent = `${message}`; // Set the message text
+            msg.classList.add('outgoing-message'); // Add a class to style the message
+            messageContainer.appendChild(msg); // Append the message to the container
+            messagesList.appendChild(messageContainer); // Append the container to the messages list
+
+            // Scroll to the bottom
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+    }
+
+    connection.on("ReceiveMessage", (user, message,name) => {
+        console.log("receive");
+        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
+        if (chatBox) {
+            const messagesList = chatBox.querySelector('.chat-messages');
+            const messageContainer = document.createElement('div'); // Create a container for the message
+            messageContainer.classList.add('message-container'); // Add a class to the container
+            const msg = document.createElement('div'); // Create the message element
+            msg.textContent = `${message}`; // Set the message text
+            msg.classList.add('incoming-message'); // Add a class to style the message
+            messageContainer.appendChild(msg); // Append the message to the container
+            messagesList.appendChild(messageContainer); // Append the container to the messages list
+
+            // Scroll to the bottom
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+        else{
+        if (@User.FindFirstValue(ClaimTypes.Authentication)!= user){
+            openChat(user,name);
+        }
+        }
+    });
+
+
+
+    connection.start().catch(err => console.error(err.toString()));
+    
     let chatOffset = 250;
     const openChatBoxes = [];
 
