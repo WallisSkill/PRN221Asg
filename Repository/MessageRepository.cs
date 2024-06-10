@@ -1,6 +1,7 @@
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.EntityFrameworkCore;
+using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
 
@@ -19,5 +20,19 @@ public partial class MessageRepository: IMessageRepository
                 (x.ReceiverId == Int32.Parse(senderId) || x.ReceiverId == Int32.Parse(receiverId))
                 )
             .ToListAsync();
+    }
+
+    public List<MessageData> GetAllMessage(int userId)
+    {
+        var query = from T1 in _context.Set<Message>()
+                    select new MessageData()
+                    {
+                        SenderId = T1.SenderId,
+                        ReceiverId = T1.ReceiverId,
+                        Time = (DateTime)T1.SendAt,
+                        IsSendedByUser = (T1.SenderId == userId),
+                        Message = T1.Content
+                    };
+        return query.ToList();
     }
 }
