@@ -728,8 +728,9 @@
                                     <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
                                         <div class="card shadow-none m-0">
                                             <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary">
+                                                <div class="header-title bg-primary d-flex justify-content-between align-items-center w-100">
                                                     <h5 class="mb-0 text-white">All Messages</h5>
+                                                    <span class="ml-auto text-white unrep"></span>
                                                 </div>
                                             </div>
                                             <div class="card-body p-0 chat-noti">
@@ -1289,8 +1290,8 @@
                         <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">     
                         </div>
                         <div class="chat-input">
-                            <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
-                            <button onclick="sendMessage('${userId}')">Send</button>
+                            <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="fetchListMess()" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                            <button onclick="sendMessage('${userId}');">Send</button>
                         </div>
                     `;
         // Apply dark mode styles to the input element if dark mode is active
@@ -1347,10 +1348,12 @@
 
         if (unreadCount > 0) {
             notificationBadge.textContent = unreadCount;
-            notificationBadge.style.display = 'block';
+            notificationBadge.style.display = '';
         } else {
             notificationBadge.style.display = 'none';
         }
+        const unrep =document.querySelector(".unrep");
+        unrep.textContent ="Unreply: " +unreadCount;
     }
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
