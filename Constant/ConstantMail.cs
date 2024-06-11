@@ -2,7 +2,7 @@
 
 namespace PRN221_Assignment.Constant
 {
-    public class ConstantMail
+    public abstract class ConstantMail
     {
         public const string SenderName = "SocialV";
         public const string Sender = "socialvcop@gmail.com";

@@ -1,4 +1,5 @@
-﻿using PRN221_Assignment.Models;
+﻿using PRN221_Assignment.Data;
+using PRN221_Assignment.Models;
 
 namespace PRN221_Assignment.Services.Interface
 {
@@ -6,5 +7,7 @@ namespace PRN221_Assignment.Services.Interface
     {
         List<User> GetAllFriendsOfUser();
         List<User> GetUpComingBirthdayFriends();
+        Task<IList<MessageData>> GetUserChatWith();
+        
     }
 }

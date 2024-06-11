@@ -2,9 +2,10 @@
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using PRN221_Assignment.Models
+@using PRN221_Assignment.Data
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home page"; 
     var listFriend = (List<User>)ViewBag.listFriend;
     var upComing = (List<User>)ViewBag.upComingBirthdayFriend;
     string CalculateDay(DateTime? dob)
@@ -22,6 +23,15 @@
         }
         return differ + " days after";
     }
+    
+    string LimitContent(string content)
+    {
+        if (content.Length > 20)
+        {
+            return content.Substring(0, 10) + "...";
+        }
+        return content;
+    }
 }
 
 <div class="right-sidebar-mini right-sidebar">
@@ -33,7 +43,7 @@
                     {
                         foreach (var user in listFriend)
                         {
-                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.Fullname')">
+                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.UserId','@user.Fullname',true);openChat('@user.UserId','@user.Fullname',true)">
                                 <div class="iq-profile-avatar status-online">
                                     <img class="rounded-circle avatar-50" src="@user.ProfilePhotoUrl" alt="">
                                 </div>
@@ -1013,7 +1023,7 @@
                             </div>
                             <div class="user-post">
                                 <div class="ratio ratio-16x9">
-                                    <iframe src="https://www.youtube.com/embed/j_GsIanLxZk?rel=0" allowfullscreen></iframe>
+                                    @* <iframe src="https://www.youtube.com/embed/j_GsIanLxZk?rel=0" allowfullscreen></iframe> *@
                                 </div>
                             </div>
                             <div class="comment-area mt-3">
@@ -1204,88 +1214,3 @@
     </div>
 </div>
 
-<script>
-    let chatOffset = 250;
-    const openChatBoxes = [];
-
-    function openChat(userId) {
-        let chatBox = document.getElementById(`chatBox-${userId}`);
-        const chatContainer = document.getElementById('chatContainer');
-
-        if (!chatBox) {
-            if (openChatBoxes.length >= 3) {
-                const oldestChatBoxId = openChatBoxes.shift();
-                closeChat(oldestChatBoxId);
-            }
-            chatBox = createChatBox(userId);
-            const chatBoxes = chatContainer.querySelectorAll('.chat-box');
-            const totalWidth = Array.from(chatBoxes).reduce((acc, box) => acc + box.offsetWidth, 0);
-
-            chatBox.style.right = `${totalWidth + chatOffset}px`;
-
-            const index = chatBoxes.length + 1;
-            const marginRight = index * 10;
-
-            chatBox.style.marginRight = `${marginRight}px`;
-
-            chatContainer.appendChild(chatBox);
-            openChatBoxes.push(userId);
-        }
-    }
-
-    ///////////////chatbox
-
-    function createChatBox(userId) {
-        const chatBox = document.createElement('div');
-        chatBox.id = `chatBox-${userId}`;
-        chatBox.className = 'chat-box';
-
-        // Add 'bg-dark' class if body has 'bg-dark' class
-        const body = document.body;
-        if (body.classList.contains('bg-dark')) {
-            chatBox.classList.add('bg-dark');
-        }
-
-        chatBox.innerHTML = `
-                        <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                            <span>Chat with ${userId}</span>
-                            <button class="close-button" onclick="closeChat('${userId}')">×</button>
-                        </div>
-                        <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}"></div>
-                        <div class="chat-input">
-                            <input type="text" placeholder="Type a message..." onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
-                            <button onclick="sendMessage('${userId}')">Send</button>
-                        </div>
-                    `;
-        // Apply dark mode styles to the input element if dark mode is active
-        if (body.classList.contains('bg-dark')) {
-            chatBox.querySelector('input[type="text"]').classList.add('dark-mode-text-input');
-        }
-        chatBox.style.borderColor = body.classList.contains('bg-dark') ? '#555' : '#ccc';
-        return chatBox;
-    }
-
-
-
-    function closeChat(userId) {
-        const chatBox = document.getElementById(`chatBox-${userId}`);
-        if (chatBox) {
-            const offset = parseInt(chatBox.style.right, 10);
-            const boxWidth = chatBox.offsetWidth;
-            const deletedMargin = parseInt(chatBox.style.marginRight, 10);
-            chatBox.remove();
-
-            // After removing the chat box, adjust the position and margin of the remaining chat boxes
-            const chatBoxes = document.querySelectorAll('.chat-box');
-            chatBoxes.forEach(box => {
-                const currentOffset = parseInt(box.style.right, 10);
-                const currentMargin = parseInt(box.style.marginRight, 10);
-                const boxWidthDiff = currentOffset > offset ? boxWidth : 0; // If the box is to the right of the removed box, subtract its width
-                if (currentMargin > deletedMargin) {
-                    box.style.right = `${currentOffset - boxWidthDiff}px`;
-                    box.style.marginRight = `${currentMargin - 10}px`; // Decrease margin-right by 10
-                }
-            });
-        }
-    }
-</script>
