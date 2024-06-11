@@ -1112,10 +1112,10 @@
     let chatOffset = 250;
     const openChatBoxes = [];
 
-    function openChat(userId, name) {
+    function openChat(userId, name,open=false) {
         let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
         const chatContainer = document.getElementById('chatContainer');
-
+        console.log(open);
         if (!chatBox) {
             if (openChatBoxes.length >= 3) {
                 const oldestChatBoxId = openChatBoxes.shift();
@@ -1131,18 +1131,24 @@
             const marginRight = index * 10;
 
             chatBox.style.marginRight = `${marginRight}px`;
-
+            fetchMessages(userId, chatBox);
             chatContainer.appendChild(chatBox);
             openChatBoxes.push(userId);
-            fetchMessages(userId, chatBox);
-            fetchListMess();
+            
         }
+        if (open){
+        console.log("open");
+            const inputField = chatBox.querySelector(`#chatinput-${userId}`);
+            inputField.focus();
+            fetchMessages(userId, chatBox,true);
+            }
+        fetchListMess();
     }
 
 
-    async function fetchMessages(userId, chatBox) {
+    async function fetchMessages(userId, chatBox,open = false) {
         try {
-            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}`);
+            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
             if (response.ok) {
                 const messages = await response.json();
                 console.log(messages);
@@ -1183,16 +1189,18 @@
 
 
     async function fetchListMess() {
+    console.log("clic");
         try {
             const response = await fetch(`/Index?handler=GetMessagesNoti`);
             if (response.ok) {
-                const listMess = await response.json();
+                const  listMess = await response.json();
                 console.log("Data:" + listMess);
                 displayListMess(listMess);
                 updateNotificationBadge(listMess);
             } else {
                 console.error('Failed to fetch listMess');
             }
+            
         } catch (error) {
             console.error('Error fetching listMess:', error);
         }
@@ -1208,7 +1216,8 @@
                 const chatItem = document.createElement('a');
                 chatItem.href = '#';
                 chatItem.className = 'iq-sub-card';
-                chatItem.onclick = () => openChat(messData.receiverId, messData.receiverName);
+                chatItem.onclick = () => {openChat(messData.receiverId, messData.receiverName,true)
+                ;openChat(messData.receiverId, messData.receiverName,true);};
 
                 const chatContent = `
                     <div class="d-flex align-items-center">
@@ -1289,7 +1298,7 @@
                             <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                             </div>
                             <div class="chat-input">
-                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="fetchListMess()" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="{openChat(userId, name,true);openChat(userId, name,true)" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
                                 <button onclick="sendMessage('${userId}');">Send</button>
                             </div>
                         `;
@@ -1352,7 +1361,7 @@
             notificationBadge.style.display = 'none';
         }
         const unrep = document.querySelector(".unrep");
-        unrep.textContent = "Unreply: " + unreadCount;
+        unrep.textContent = "Unread: " + unreadCount;
     }
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
