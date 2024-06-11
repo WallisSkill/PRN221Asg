@@ -15,13 +15,25 @@ public partial class PostRepository : IPostRepository
         _context.Posts.Add(post);
         _context.SaveChanges();
     }
-
-    public List<Post> GetPostsByUserId(int userId)
+    public List<Post> GetAllPost(List<int> listUser)
     {
-        return (from p in _context.Set<Post>()
-            join f in _context.Set<Friend>() 
-            on p.UserId equals f.User2Id
-            where f.User1Id == userId
-            select p).ToList();
+        var query = _context.Set<Post>().Where(x => listUser.Contains(x.UserId));
+        return query.ToList();
+    }
+
+    public List<int> GetAllFriendId(int currentUser)
+    {
+        var query = from T1 in _context.Set<Friend>()
+                    where T1.User1Id == currentUser || T1.User2Id == currentUser
+                    select T1.User1Id == currentUser ? T1.User2Id : T1.User2Id;
+        return query.ToList();
+    }
+
+    public List<int> GetAllFollower(int currentUser)
+    {
+        var query = from T1 in _context.Set<Follow>()
+                    where T1.FolloweeId == currentUser
+                    select T1.FollowerId;
+        return query.ToList();
     }
 }

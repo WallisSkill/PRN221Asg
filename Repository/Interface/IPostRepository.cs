@@ -5,6 +5,7 @@ namespace PRN221_Assignment.Repository.Interface;
 public interface IPostRepository
 {
     void CreatePost(Post post);
-
-    List<Post> GetPostsByUserId(int userId);
+    List<int> GetAllFollower(int currentUser);
+    List<Post> GetAllPost(List<int> listUser);
+    List<int> GetAllFriendId(int currentUser);
 }
