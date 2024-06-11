@@ -1298,7 +1298,7 @@
                             <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                             </div>
                             <div class="chat-input">
-                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="{openChat(userId, name,true);openChat(userId, name,true)" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);openChat('${userId}','${name}',true)" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
                                 <button onclick="sendMessage('${userId}');">Send</button>
                             </div>
                         `;
