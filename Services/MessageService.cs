@@ -15,4 +15,9 @@ public partial class MessageService: IMessageService
     {
         return await _messageRepository.GetMessagesForReceiverAsync(senderId, receiverId);
     }
+
+    public async Task UpdateStatusOfMessage(string  senderId,string receiverId)
+    {
+        await _messageRepository.UpdateMessage(senderId, receiverId);
+    }
 }

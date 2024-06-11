@@ -732,7 +732,7 @@
                                 <li class="nav-item dropdown">
                                     <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
                                         <i class="ri-message-line"></i>
-                                            <h1 class="notification-badge"></h1>
+                                        <h1 class="notification-badge"></h1>
                                     </a>
                                     <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
                                         <div class="card shadow-none m-0">
@@ -743,7 +743,6 @@
                                                 </div>
                                             </div>
                                             <div class="card-body p-0 chat-noti">
-                                               
                                             </div>
                                         </div>
                                     </div>
@@ -905,8 +904,8 @@
                     element.classList.toggle('text-white');
                 });
                 const navbarElement = document.querySelector('.navbar-collapse');
-               navbarElement.classList.toggle('bg-dark');
-                
+                navbarElement.classList.toggle('bg-dark');
+
                 // Add text-white to all span elements
                 const spanElements = document.querySelectorAll('span');
                 spanElements.forEach(span => {
@@ -1109,7 +1108,7 @@
         }
     }
 
-    connection.on("ReceiveMessage", (user, message,name) => {
+    connection.on("ReceiveMessage", (user, message, name) => {
         fetchListMess();
         const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
         if (chatBox) {
@@ -1125,9 +1124,9 @@
             // Scroll to the bottom
             messagesList.scrollTop = messagesList.scrollHeight;
         }
-        else{
-            if (@User.FindFirstValue(ClaimTypes.Authentication)!= user){
-                openChat(user,name);
+        else {
+            if (@User.FindFirstValue(ClaimTypes.Authentication)!= user) {
+                openChat(user, name);
             }
         }
     });
@@ -1139,16 +1138,16 @@
     let chatOffset = 250;
     const openChatBoxes = [];
 
-    function openChat(userId,name) {
+    function openChat(userId, name,open=false) {
         let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
         const chatContainer = document.getElementById('chatContainer');
-
+        console.log(open);
         if (!chatBox) {
             if (openChatBoxes.length >= 3) {
                 const oldestChatBoxId = openChatBoxes.shift();
                 closeChat(oldestChatBoxId);
             }
-            chatBox = createChatBox(userId,name);
+            chatBox = createChatBox(userId, name);
             const chatBoxes = chatContainer.querySelectorAll('.chat-box');
             const totalWidth = Array.from(chatBoxes).reduce((acc, box) => acc + box.offsetWidth, 0);
 
@@ -1158,18 +1157,24 @@
             const marginRight = index * 10;
 
             chatBox.style.marginRight = `${marginRight}px`;
-
+            fetchMessages(userId, chatBox);
             chatContainer.appendChild(chatBox);
             openChatBoxes.push(userId);
-            fetchMessages(userId, chatBox);
-            fetchListMess();
+            
         }
+        if (open){
+        console.log("open");
+            const inputField = chatBox.querySelector(`#chatinput-${userId}`);
+            inputField.focus();
+            fetchMessages(userId, chatBox,true);
+            }
+        fetchListMess();
     }
 
 
-    async function fetchMessages(userId, chatBox) {
+    async function fetchMessages(userId, chatBox,open = false) {
         try {
-            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}`);
+            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
             if (response.ok) {
                 const messages = await response.json();
                 console.log(messages);
@@ -1210,16 +1215,18 @@
 
 
     async function fetchListMess() {
+    console.log("clic");
         try {
             const response = await fetch(`/Index?handler=GetMessagesNoti`);
             if (response.ok) {
-               const listMess = await response.json();
-                console.log("Data:" +listMess);
+                const  listMess = await response.json();
+                console.log("Data:" + listMess);
                 displayListMess(listMess);
                 updateNotificationBadge(listMess);
             } else {
                 console.error('Failed to fetch listMess');
             }
+            
         } catch (error) {
             console.error('Error fetching listMess:', error);
         }
@@ -1235,24 +1242,25 @@
                 const chatItem = document.createElement('a');
                 chatItem.href = '#';
                 chatItem.className = 'iq-sub-card';
-                chatItem.onclick = () => openChat(messData.receiverId, messData.receiverName);
+                chatItem.onclick = () => {openChat(messData.receiverId, messData.receiverName,true)
+                ;openChat(messData.receiverId, messData.receiverName,true);};
 
                 const chatContent = `
-                <div class="d-flex align-items-center">
-                    <div>
-                        <img class="avatar-40 rounded" src="${messData.photoURL}" alt="">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img class="avatar-40 rounded" src="${messData.photoURL}" alt="">
+                        </div>
+                        <div class="w-100 ms-3">
+                            <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${messData.receiverName}</h6>
+                            <small class="float-left font-size-12">
+                                ${messData.isSendedByUser
+                        ? `<div>You: ${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
+                        : `<div style="${!messData.readed ? 'font-weight: bold' : ''}">${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
+                    }
+                            </small>
+                        </div>
                     </div>
-                    <div class="w-100 ms-3">
-                        <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${messData.receiverName}</h6>
-                        <small class="float-left font-size-12">
-                            ${messData.isSendedByUser
-                    ? `<div>You: ${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
-                    : `<div style="${!messData.readed ? 'font-weight: bold' : ''}">${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
-                }
-                        </small>
-                    </div>
-                </div>
-            `;
+                `;
 
                 chatItem.innerHTML = chatContent;
                 chatContainer.appendChild(chatItem);
@@ -1298,7 +1306,7 @@
 
     ///////////////chatbox
 
-    function createChatBox(userId,name) {
+    function createChatBox(userId, name) {
         const chatBox = document.createElement('div');
         chatBox.id = `chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`;
         chatBox.className = 'chat-box';
@@ -1309,17 +1317,17 @@
         }
 
         chatBox.innerHTML = `
-                        <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                            <span>${name}</span>
-                            <button class="close-button" onclick="closeChat('${userId}')">×</button>
-                        </div>
-                        <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">     
-                        </div>
-                        <div class="chat-input">
-                            <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="fetchListMess()" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
-                            <button onclick="sendMessage('${userId}');">Send</button>
-                        </div>
-                    `;
+                            <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                                <span>${name}</span>
+                                <button class="close-button" onclick="closeChat('${userId}')">×</button>
+                            </div>
+                            <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                            </div>
+                            <div class="chat-input">
+                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="{openChat(userId, name,true);openChat(userId, name,true)" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                                <button onclick="sendMessage('${userId}');">Send</button>
+                            </div>
+                        `;
         // Apply dark mode styles to the input element if dark mode is active
         if (body.classList.contains('bg-dark')) {
             chatBox.querySelector('input[type="text"]').classList.add('dark-mode-text-input');
@@ -1378,8 +1386,8 @@
         } else {
             notificationBadge.style.display = 'none';
         }
-        const unrep =document.querySelector(".unrep");
-        unrep.textContent ="Unreply: " +unreadCount;
+        const unrep = document.querySelector(".unrep");
+        unrep.textContent = "Unread: " + unreadCount;
     }
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();

@@ -24,9 +24,14 @@ public partial class IndexModel : PageModel
     public IList<Message> Messages { get; set; }
     public IList<MessageData> MessagesData { get; set; }
 
-    public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId)
+    public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId,bool open = false)
     {
+        if (open)
+        {
+            await _messageService.UpdateStatusOfMessage(senderId, receiverId);
+        }
         Messages = await _messageService.GetMessagesForReceiverAsync(senderId,receiverId);
+
         return new JsonResult(Messages);
     }
     
