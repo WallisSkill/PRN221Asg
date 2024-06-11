@@ -22,6 +22,16 @@ public partial class MessageRepository: IMessageRepository
             .ToListAsync();
     }
 
+    public async Task UpdateMessage(string senderId, string receiverId)
+    {
+        var listMessage = _context.Set<Message>().Where(x => x.SenderId.ToString() == receiverId && x.ReceiverId.ToString() == senderId).ToList();
+        listMessage.ForEach(item =>
+        {
+            item.IsRead = true;
+        });
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<IList<MessageData>> GetAllMessage(int userId)
     {
         return await (from T1 in _context.Set<Message>()

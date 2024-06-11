@@ -27,6 +27,7 @@ public partial class IndexModel : PageModel
     public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId)
     {
         Messages = await _messageService.GetMessagesForReceiverAsync(senderId,receiverId);
+        await _messageService.UpdateStatusOfMessage(senderId, receiverId);
         return new JsonResult(Messages);
     }
     
