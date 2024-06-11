@@ -1,5 +1,6 @@
 @page
 @model PRN221_Assignment.Pages.Profile
+@using System.Security.Claims
 @using PRN221_Assignment.Models
 @{
     var user = (User)ViewBag.User;
@@ -49,40 +50,6 @@
                     </div>
                 </div>
                 <div class="profile-info p-3 d-flex align-items-center justify-content-between position-relative">
-                    <div class="social-links">
-                        <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
-                            <li class="text-center pe-3">
-                                <a href="#">
-                                    <img src="../assets/images/icon/08.png" class="img-fluid rounded" alt="facebook">
-                                </a>
-                            </li>
-                            <li class="text-center pe-3">
-                                <a href="#">
-                                    <img src="../assets/images/icon/09.png" class="img-fluid rounded" alt="Twitter">
-                                </a>
-                            </li>
-                            <li class="text-center pe-3">
-                                <a href="#">
-                                    <img src="../assets/images/icon/10.png" class="img-fluid rounded" alt="Instagram">
-                                </a>
-                            </li>
-                            <li class="text-center pe-3">
-                                <a href="#">
-                                    <img src="../assets/images/icon/11.png" class="img-fluid rounded" alt="Google plus">
-                                </a>
-                            </li>
-                            <li class="text-center pe-3">
-                                <a href="#">
-                                    <img src="../assets/images/icon/12.png" class="img-fluid rounded" alt="You tube">
-                                </a>
-                            </li>
-                            <li class="text-center md-pe-3 pe-0">
-                                <a href="#">
-                                    <img src="../assets/images/icon/13.png" class="img-fluid rounded" alt="linkedin">
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                     <div class="social-info">
                         <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
                             <li class="text-center ps-3">
@@ -99,6 +66,48 @@
                             </li>
                         </ul>
                     </div>
+                    <div class="social-links">
+                        <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
+                            @if (!User.FindFirstValue(ClaimTypes.Authentication).Equals(user.UserId.ToString()))
+                            {
+                                <li class="text-center pe-3">
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggles btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                            <i class="ri-add-line me-1 text-white"></i>Add Friend
+                                        </span>
+                                        @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
+                                        @*     <a class="dropdown-item" href="#">Unfriend</a> *@
+                                        @* </div> *@
+                                    </div>
+                                </li>
+                                <li class="text-center pe-3">
+                                    <div class="dropdown">
+                                        <span class="btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                            <i class="ri-message-line me-1 text-white"></i>Message
+                                        </span>
+                                        @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
+                                        @*     <a class="dropdown-item" href="#">Unfriend</a> *@
+                                        @* </div> *@
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="text-center pe-3">
+                                    <div class="dropdown">
+                                        <span class="btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                            <i class="ri-pencil-line me-1 text-white"></i>Edit Profile
+                                        </span>
+                                        @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
+                                        @*     <a class="dropdown-item" href="#">Unfriend</a> *@
+                                        @* </div> *@
+                                    </div>
+                                </li>
+                            }
+                            
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1553,19 +1562,10 @@
 <div class="friend-list-tab mt-2">
 <ul class="nav nav-pills d-flex align-items-center justify-content-left friend-list-items p-0 mb-2">
     <li>
-        <a class="nav-link active" data-bs-toggle="pill" href="#pill-all-friends" data-bs-target="#all-feinds">All Friends</a>
+        <a class="nav-link active" data-bs-toggle="pill" href="#pill-all-friends" data-bs-target="#all-friends">All Friends</a>
     </li>
     <li>
         <a class="nav-link" data-bs-toggle="pill" href="#pill-recently-add" data-bs-target="#recently-add">Recently Added</a>
-    </li>
-    <li>
-        <a class="nav-link" data-bs-toggle="pill" href="#pill-closefriends" data-bs-target="#closefriends"> Close friends</a>
-    </li>
-    <li>
-        <a class="nav-link" data-bs-toggle="pill" href="#pill-home" data-bs-target="#home-town"> Home/Town</a>
-    </li>
-    <li>
-        <a class="nav-link" data-bs-toggle="pill" href="#pill-following" data-bs-target="#following">Following</a>
     </li>
 </ul>
 <div class="tab-content">
@@ -1586,16 +1586,12 @@
             </div>
             <div class="card-header-toolbar d-flex align-items-center">
                 <div class="dropdown">
-                    <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                        <i class="ri-check-line me-1 text-white"></i> Friend
+                    <span class="dropdown-toggle btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                        <i class="ri-add-line me-1 text-white"></i>Add Friend
                     </span>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01">
-                        <a class="dropdown-item" href="#">Get Notification</a>
-                        <a class="dropdown-item" href="#">Close Friend</a>
-                        <a class="dropdown-item" href="#">Unfollow</a>
-                        <a class="dropdown-item" href="#">Unfriend</a>
-                        <a class="dropdown-item" href="#">Block</a>
-                    </div>
+                    @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
+                    @*     <a class="dropdown-item" href="#">Unfriend</a> *@
+                    @* </div> *@
                 </div>
             </div>
         </div>
@@ -1615,15 +1611,11 @@
             </div>
             <div class="card-header-toolbar d-flex align-items-center">
                 <div class="dropdown">
-                    <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                        <i class="ri-check-line me-1 text-white"></i> Friend
+                    <span class="dropdown-toggle btn btn-warning me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                        <i class="ri-time-line me-1 text-white"></i> Pending
                     </span>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton02">
-                        <a class="dropdown-item" href="#">Get Notification</a>
-                        <a class="dropdown-item" href="#">Close Friend</a>
-                        <a class="dropdown-item" href="#">Unfollow</a>
-                        <a class="dropdown-item" href="#">Unfriend</a>
-                        <a class="dropdown-item" href="#">Block</a>
+                        <a class="dropdown-item" href="#">Cancel Pending</a>
                     </div>
                 </div>
             </div>
@@ -3577,54 +3569,58 @@
 </div>
 </div>
 <div class="tab-pane fade" id="photos" role="tabpanel">
-<div class="card">
-<div class="card-body">
-<h2>Photos</h2>
-<div class="friend-list-tab mt-2">
-<ul class="nav nav-pills d-flex align-items-center justify-content-left friend-list-items p-0 mb-2">
-    <li>
-        <a class="nav-link active" data-bs-toggle="pill" href="#pill-photosofyou" data-bs-target="#photosofyou">Photos of You</a>
-    </li>
-    @* <li> *@
-    @*     <a class="nav-link" data-bs-toggle="pill" href="#pill-your-photos" data-bs-target="#your-photos">Your Photos</a> *@
-    @* </li> *@
-</ul>
-<div class="tab-content">
-<div class="tab-pane fade active show" id="photosofyou" role="tabpanel">
-    <div class="card-body p-0">
-        <div class="d-grid gap-2 d-grid-template-1fr-13">
-            @foreach (var photo in photos)
-            {
-                <div class="">
-                    <div class="user-images position-relative overflow-hidden">
-                        <a href="#">
-                            <img src="@photo.PhotoUrl" class="img-fluid rounded" alt="Responsive image">
-                        </a>
-                        <div class="image-hover-data">
-                            <div class="product-elements-icon">
-                                <ul class="d-flex align-items-center m-0 p-0 list-inline">
-                                    <li>
-                                        <a href="#" class="pe-3 text-white"> @ViewBag.likes <i class="ri-thumb-up-line"></i> </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="pe-3 text-white"> @ViewBag.comments <i class="ri-chat-3-line"></i> </a>
-                                    </li>
-                                </ul>
+    <div class="card">
+        <div class="card-body">
+            <h2>Photos</h2>
+            <div class="friend-list-tab mt-2">
+                <ul class="nav nav-pills d-flex align-items-center justify-content-left friend-list-items p-0 mb-2">
+                    <li>
+                        <a class="nav-link active" data-bs-toggle="pill" href="#pill-photosofyou" data-bs-target="#photosofyou">Photos of You</a>
+                    </li>
+                    @* <li> *@
+                    @*     <a class="nav-link" data-bs-toggle="pill" href="#pill-your-photos" data-bs-target="#your-photos">Your Photos</a> *@
+                    @* </li> *@
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="photosofyou" role="tabpanel">
+                        <div class="card-body p-0">
+                            <div class="d-grid gap-2 d-grid-template-1fr-13">
+                                @foreach (var photo in photos)
+                                {
+                                    <div class="">
+                                        <div class="user-images position-relative overflow-hidden">
+                                            <a href="#">
+                                                <img src="@photo.PhotoUrl" class="img-fluid rounded" alt="Responsive image">
+                                            </a>
+                                            <div class="image-hover-data">
+                                                <div class="product-elements-icon">
+                                                    <ul class="d-flex align-items-center m-0 p-0 list-inline">
+                                                        <li>
+                                                            <a href="#" class="pe-3 text-white">
+                                                                @ViewBag.likes <i class="ri-thumb-up-line"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" class="pe-3 text-white">
+                                                                @ViewBag.comments <i class="ri-chat-3-line"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <a href="#" class="image-edit-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit or Remove">
+                                                <i class="ri-edit-2-fill"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
-                        <a href="#" class="image-edit-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit or Remove">
-                            <i class="ri-edit-2-fill"></i>
-                        </a>
                     </div>
                 </div>
-            }
+            </div>
         </div>
     </div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>

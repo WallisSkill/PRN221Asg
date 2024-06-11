@@ -1,4 +1,41 @@
 ﻿@using System.Security.Claims
+@using PRN221_Assignment.Data
+@{
+    var listMess = ViewData["listMess"] as List<MessageData>;
+
+    string GetTimeFromMessage(DateTime time)
+    {
+        if (DateTime.Now.Hour - time.Hour < 1)
+        {
+            return DateTime.Now.Minute - time.Minute + " minutes";
+        }
+
+        if ((DateTime.Now.Date - time.Date).Days < 1)
+        {
+            return DateTime.Now.Hour - time.Hour + " hours";
+        }
+
+        if ((DateTime.Now.Date - time.Date).Days < 7)
+        {
+            return DateTime.Now.Day - time.Day + " days";
+        }
+
+        if ((DateTime.Now.Date - time.Date).Days < 365)
+        {
+            return (DateTime.Now.Date - time.Date) / 7 + " weeks";
+        }
+
+        return DateTime.Now.Year - time.Year + " years";
+    }
+    string LimitContent(string content)
+    {
+        if (content.Length > 20)
+        {
+            return content.Substring(0, 10) + "...";
+        }
+        return content;
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,11 +53,18 @@
     <link rel="stylesheet" href="~/assets/vendor/vanillajs-datepicker/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
     <link rel="stylesheet" href="~/css/site.css" />
     <style>
         .textfriend{
             color:#fffc;
+        }
+
+        .conversation-start {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 12px;
+            color: #888;
         }
         
         .chat-container {
@@ -95,6 +139,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid #ccc; /* Add this line for a bottom border */
         }
 
         .close-button {
@@ -130,6 +175,26 @@
                 border: none;
                 border-radius: 0 0 10px 0;
             }
+
+        .notification-badge {
+            position: absolute;
+            top: 23px; /* Adjust the position as needed */
+            right: 7px; /* Adjust the position as needed */
+            background-color: red;
+            color: white;
+            border-radius: 100%;
+            font-size: 15px;
+            width: 15px;
+            height: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dropdown-item.bg-dark:hover {
+            font-weight: bold; 
+            background-color: #6c757d !important;
+        }
     </style>
 
 </head>
@@ -158,7 +223,7 @@
     </header> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    <body class="  ">
+    <div>
         <!-- loader Start -->
         <div id="loading">
             <div id="loading-center">
@@ -197,7 +262,7 @@
                                 </a>
                             </li>
                             <li class=" ">
-                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false" onclick="toggleMessageBox();">
+                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false">
                                     <i class="ri-mail-line"></i><span>Email</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
                                 </a>
                                 <ul id="mailbox" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
@@ -665,73 +730,20 @@
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="mail-drop" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
                                         <i class="ri-message-line"></i>
+                                            <h1 class="notification-badge"></h1>
                                     </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop">
+                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
                                         <div class="card shadow-none m-0">
                                             <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary">
-                                                    <h5 class="mb-0 text-white">All Message</h5>
+                                                <div class="header-title bg-primary d-flex justify-content-between align-items-center w-100">
+                                                    <h5 class="mb-0 text-white">All Messages</h5>
+                                                    <span class="ml-auto text-white unrep"></span>
                                                 </div>
-                                                <small class="badge bg-light text-dark">4</small>
                                             </div>
-                                            <div class="card-body p-0 ">
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex  align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
-                                                        </div>
-                                                        <div class=" w-100 ms-3">
-                                                            <h6 class="mb-0 ">Bni Emma Watson</h6>
-                                                            <small class="float-left font-size-12">13 Jun</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/02.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Lorem Ipsum Watson</h6>
-                                                            <small class="float-left font-size-12">20 Apr</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/03.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Why do we use it?</h6>
-                                                            <small class="float-left font-size-12">30 Jun</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/04.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Variations Passages</h6>
-                                                            <small class="float-left font-size-12">12 Sep</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/05.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <h6 class="mb-0 ">Lorem Ipsum generators</h6>
-                                                            <small class="float-left font-size-12">5 Dec</small>
-                                                        </div>
-                                                    </div>
-                                                </a>
+                                            <div class="card-body p-0 chat-noti">
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -820,7 +832,7 @@
                     </nav>
                 </div>
             </div>
-            
+
             @RenderBody()
 
 
@@ -876,69 +888,8 @@
             </div>
             </div> *@
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>">
         <script>
-            const connection = new signalR.HubConnectionBuilder()
-                .withUrl("/chathub")
-                .withAutomaticReconnect([0, 0, 10000])
-                .build();
 
-            function sendMessage(receiverId) {
-                const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
-                const messageInput = document.getElementById("chatinput-" + receiverId);
-                const message = messageInput.value;
-                console.log("ok");
-                messageInput.value = ''; // Clear the input field
-                connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
-
-                // Display the sent message in a different color
-                displayOutgoingMessage(senderId, receiverId, message);
-            }
-
-            function displayOutgoingMessage(senderId, receiverId, message) {
-                console.log(senderId + " " + receiverId);
-                const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
-                if (chatBox) {
-                    const messagesList = chatBox.querySelector('.chat-messages');
-                    const messageContainer = document.createElement('div'); // Create a container for the message
-                    messageContainer.classList.add('message-container'); // Add a class to the container
-                    const msg = document.createElement('div'); // Create the message element
-                    msg.textContent = `${message}`; // Set the message text
-                    msg.classList.add('outgoing-message'); // Add a class to style the message
-                    messageContainer.appendChild(msg); // Append the message to the container
-                    messagesList.appendChild(messageContainer); // Append the container to the messages list
-
-                    // Scroll to the bottom
-                    messagesList.scrollTop = messagesList.scrollHeight;
-                }
-            }
-
-            connection.on("ReceiveMessage", (user, message) => {
-                console.log("receive");
-                const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
-                if (chatBox) {
-                    const messagesList = chatBox.querySelector('.chat-messages');
-                    const messageContainer = document.createElement('div'); // Create a container for the message
-                    messageContainer.classList.add('message-container'); // Add a class to the container
-                    const msg = document.createElement('div'); // Create the message element
-                    msg.textContent = `${message}`; // Set the message text
-                    msg.classList.add('incoming-message'); // Add a class to style the message
-                    messageContainer.appendChild(msg); // Append the message to the container
-                    messagesList.appendChild(messageContainer); // Append the container to the messages list
-
-                    // Scroll to the bottom
-                    messagesList.scrollTop = messagesList.scrollHeight;
-                }
-            });
-
-
-
-            connection.start().catch(err => console.error(err.toString()));
-            ///////////////////////////MessageBox
-            function toggleMessageBox() {
-            
-            }
-            
             ////////////////////////////DarkMode
             function toggleDarkMode() {
                 const body = document.body;
@@ -953,17 +904,31 @@
                     element.classList.toggle('bg-dark');
                     element.classList.toggle('text-white');
                 });
-
+                const navbarElement = document.querySelector('.navbar-collapse');
+               navbarElement.classList.toggle('bg-dark');
+                
                 // Add text-white to all span elements
                 const spanElements = document.querySelectorAll('span');
                 spanElements.forEach(span => {
                     span.classList.toggle('text-white');
                 });
 
-                const h7Elements = document.querySelectorAll('h4 h7');
-                h7Elements.forEach(span => {
-                    span.classList.toggle('textfriend');
+                const dropdownElements = document.querySelectorAll('.dropdown-item');
+                dropdownElements.forEach(element => {
+                    element.classList.toggle('text-white');
+                    element.classList.toggle('bg-dark');
                 });
+
+                const h7Elements = document.querySelectorAll('h4 h7');
+                h7Elements.forEach(element => {
+                    element.classList.toggle('textfriend');
+                });
+
+                const h2Elements = document.querySelectorAll('h2');
+                h2Elements.forEach(element => {
+                    element.classList.toggle('text-white');
+                });
+                
 
                 const lasElements = document.querySelectorAll('[class*="las"]');
                 lasElements.forEach(element => {
@@ -1036,7 +1001,7 @@
             });
 
             ///////////////////////////
-          
+
             ////////////////////////////
             document.addEventListener('DOMContentLoaded', function () {
                 // Select all dropdown toggle elements
@@ -1044,12 +1009,12 @@
 
                 dropdownToggles.forEach((dropdownToggle) => {
                     dropdownToggle.addEventListener('click', function (event) {
-                        event.preventDefault(); 
-                        
-                        const parentLi = this.closest('li');
+                        event.preventDefault();
+
+                        const parentLi =  this.closest('.dropdown');
                         const dropdownMenu = parentLi.querySelector('.dropdown-toggle');
                         dropdownMenu.classList.toggle('show');
-                        
+
                         document.querySelectorAll('.dropdown-toggle.show').forEach((menu) => {
                             if (menu !== dropdownMenu) {
                                 menu.classList.remove('show');
@@ -1057,26 +1022,26 @@
                         });
                     });
                 });
-                
+
                 document.addEventListener('click', function (event) {
                     document.querySelectorAll('.dropdown-menu').forEach((menu) => {
-                        if (menu.closest('li')!= null && !menu.closest('li').contains(event.target)) {
+                        if (menu.closest('.dropdown') != null && !menu.closest('.dropdown').contains(event.target)) {
                             menu.classList.remove('show');
                         }
                     });
                 });
-                
+
                 document.querySelectorAll('.dropdown-menu').forEach((dropdownMenu) => {
                     dropdownMenu.addEventListener('click', function (event) {
-                        event.stopPropagation(); 
+                        event.stopPropagation();
                     });
                 });
             });
 
-            
+
         </script>
 
-    </body>
+    </div>
 
 
     <footer class="border-top footer text-muted">
@@ -1106,4 +1071,318 @@
     <script src="~/assets/js/lottie.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+<script>
+    const body = document.body;
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .withAutomaticReconnect([0, 0, 10000])
+        .build();
+
+    function sendMessage(receiverId) {
+        const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+        const messageInput = document.getElementById("chatinput-" + receiverId);
+        const message = messageInput.value;
+        console.log("ok");
+        messageInput.value = ''; // Clear the input field
+        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
+
+        // Display the sent message in a different color
+        displayOutgoingMessage(senderId, receiverId, message);
+    }
+
+    function displayOutgoingMessage(senderId, receiverId, message) {
+        console.log(senderId + " " + receiverId);
+        const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
+        if (chatBox) {
+            const messagesList = chatBox.querySelector('.chat-messages');
+            const messageContainer = document.createElement('div'); // Create a container for the message
+            messageContainer.classList.add('message-container'); // Add a class to the container
+            const msg = document.createElement('div'); // Create the message element
+            msg.textContent = `${message}`; // Set the message text
+            msg.classList.add('outgoing-message'); // Add a class to style the message
+            messageContainer.appendChild(msg); // Append the message to the container
+            messagesList.appendChild(messageContainer); // Append the container to the messages list
+
+            // Scroll to the bottom
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+    }
+
+    connection.on("ReceiveMessage", (user, message,name) => {
+        fetchListMess();
+        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
+        if (chatBox) {
+            const messagesList = chatBox.querySelector('.chat-messages');
+            const messageContainer = document.createElement('div'); // Create a container for the message
+            messageContainer.classList.add('message-container'); // Add a class to the container
+            const msg = document.createElement('div'); // Create the message element
+            msg.textContent = `${message}`; // Set the message text
+            msg.classList.add('incoming-message'); // Add a class to style the message
+            messageContainer.appendChild(msg); // Append the message to the container
+            messagesList.appendChild(messageContainer); // Append the container to the messages list
+
+            // Scroll to the bottom
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+        else{
+            if (@User.FindFirstValue(ClaimTypes.Authentication)!= user){
+                openChat(user,name);
+            }
+        }
+    });
+
+
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    let chatOffset = 250;
+    const openChatBoxes = [];
+
+    function openChat(userId,name) {
+        let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
+        const chatContainer = document.getElementById('chatContainer');
+
+        if (!chatBox) {
+            if (openChatBoxes.length >= 3) {
+                const oldestChatBoxId = openChatBoxes.shift();
+                closeChat(oldestChatBoxId);
+            }
+            chatBox = createChatBox(userId,name);
+            const chatBoxes = chatContainer.querySelectorAll('.chat-box');
+            const totalWidth = Array.from(chatBoxes).reduce((acc, box) => acc + box.offsetWidth, 0);
+
+            chatBox.style.right = `${totalWidth + chatOffset}px`;
+
+            const index = chatBoxes.length + 1;
+            const marginRight = index * 10;
+
+            chatBox.style.marginRight = `${marginRight}px`;
+
+            chatContainer.appendChild(chatBox);
+            openChatBoxes.push(userId);
+            fetchMessages(userId, chatBox);
+            fetchListMess();
+        }
+    }
+
+
+    async function fetchMessages(userId, chatBox) {
+        try {
+            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}`);
+            if (response.ok) {
+                const messages = await response.json();
+                console.log(messages);
+                displayMessages(messages, chatBox);
+            } else {
+                console.error('Failed to fetch messages');
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }
+
+
+    function displayMessages(messages, chatBox) {
+        const messagesList = chatBox.querySelector('.chat-messages');
+        messagesList.innerHTML = ''; // Clear existing messages
+
+        const startMessage = document.createElement('div');
+        startMessage.classList.add('conversation-start');
+        startMessage.textContent = '--- This is the start of this conversation ---';
+        messagesList.appendChild(startMessage);
+
+        messages.forEach(message => {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container');
+
+            const msg = document.createElement('div');
+            msg.textContent = message.content;
+            console.log(message.senderId);
+            msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
+
+            messageContainer.appendChild(msg);
+            messagesList.appendChild(messageContainer);
+        });
+
+        messagesList.scrollTop = messagesList.scrollHeight;
+    }
+
+
+    async function fetchListMess() {
+        try {
+            const response = await fetch(`/Index?handler=GetMessagesNoti`);
+            if (response.ok) {
+               const listMess = await response.json();
+                console.log("Data:" +listMess);
+                displayListMess(listMess);
+                updateNotificationBadge(listMess);
+            } else {
+                console.error('Failed to fetch listMess');
+            }
+        } catch (error) {
+            console.error('Error fetching listMess:', error);
+        }
+    }
+
+    function displayListMess(listMess) {
+        const chatContainer = document.querySelector('.chat-noti');
+        console.log(chatContainer);
+        chatContainer.innerHTML = '';
+
+        if (listMess && listMess.length > 0) {
+            listMess.forEach(messData => {
+                const chatItem = document.createElement('a');
+                chatItem.href = '#';
+                chatItem.className = 'iq-sub-card';
+                chatItem.onclick = () => openChat(messData.receiverId, messData.receiverName);
+
+                const chatContent = `
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img class="avatar-40 rounded" src="${messData.photoURL}" alt="">
+                    </div>
+                    <div class="w-100 ms-3">
+                        <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${messData.receiverName}</h6>
+                        <small class="float-left font-size-12">
+                            ${messData.isSendedByUser
+                    ? `<div>You: ${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
+                    : `<div style="${!messData.readed ? 'font-weight: bold' : ''}">${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
+                }
+                        </small>
+                    </div>
+                </div>
+            `;
+
+                chatItem.innerHTML = chatContent;
+                chatContainer.appendChild(chatItem);
+            });
+        } else {
+            chatContainer.innerHTML = '<div style="display: flex; justify-content: center">You don\'t have any messages!<br /> Let\'s chat with a friend.</div>';
+        }
+    }
+
+    // Automatically load listMess when the page is ready
+
+    // Function to limit the content length to 10 characters and add ellipsis
+    function limitContent(content, maxLength = 20) {
+        if (content.length > maxLength) {
+            return content.substring(0, 10) + '...';
+        }
+        return content;
+    }
+
+
+    function getTimeFromMessage(timeString) {
+        const time = new Date(timeString);
+        const now = new Date();
+
+        const diffInMinutes = Math.floor((now - time) / (1000 * 60));
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        const diffInDays = Math.floor(diffInHours / 24);
+        const diffInWeeks = Math.floor(diffInDays / 7);
+        const diffInYears = Math.floor(diffInDays / 365);
+
+        if (diffInMinutes < 60) {
+            return diffInMinutes + " minutes";
+        } else if (diffInHours < 24) {
+            return diffInHours + " hours";
+        } else if (diffInDays < 7) {
+            return diffInDays + " days";
+        } else if (diffInDays < 365) {
+            return diffInWeeks + " weeks";
+        } else {
+            return diffInYears + " years";
+        }
+    }
+
+    ///////////////chatbox
+
+    function createChatBox(userId,name) {
+        const chatBox = document.createElement('div');
+        chatBox.id = `chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`;
+        chatBox.className = 'chat-box';
+        const currid = '@User.FindFirstValue(ClaimTypes.Authentication)';
+        // Add 'bg-dark' class if body has 'bg-dark' class
+        if (body.classList.contains('bg-dark')) {
+            chatBox.classList.add('bg-dark');
+        }
+
+        chatBox.innerHTML = `
+                        <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                            <span>${name}</span>
+                            <button class="close-button" onclick="closeChat('${userId}')">×</button>
+                        </div>
+                        <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">     
+                        </div>
+                        <div class="chat-input">
+                            <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="fetchListMess()" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                            <button onclick="sendMessage('${userId}');">Send</button>
+                        </div>
+                    `;
+        // Apply dark mode styles to the input element if dark mode is active
+        if (body.classList.contains('bg-dark')) {
+            chatBox.querySelector('input[type="text"]').classList.add('dark-mode-text-input');
+        }
+        chatBox.style.borderColor = body.classList.contains('bg-dark') ? '#555' : '#ccc';
+        return chatBox;
+    }
+
+
+
+    function closeChat(userId) {
+        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
+        if (chatBox) {
+            const offset = parseInt(chatBox.style.right, 10);
+            const boxWidth = chatBox.offsetWidth;
+            const deletedMargin = parseInt(chatBox.style.marginRight, 10);
+            chatBox.remove();
+
+            // After removing the chat box, adjust the position and margin of the remaining chat boxes
+            const chatBoxes = document.querySelectorAll('.chat-box');
+            chatBoxes.forEach(box => {
+                const currentOffset = parseInt(box.style.right, 10);
+                const currentMargin = parseInt(box.style.marginRight, 10);
+                const boxWidthDiff = currentOffset > offset ? boxWidth : 0; // If the box is to the right of the removed box, subtract its width
+                if (currentMargin > deletedMargin) {
+                    box.style.right = `${currentOffset - boxWidthDiff}px`;
+                    box.style.marginRight = `${currentMargin - 10}px`; // Decrease margin-right by 10
+                }
+            });
+        }
+    }
+
+
+    function displayOutgoingMessage(senderId, receiverId, message) {
+        console.log(senderId + " " + receiverId);
+        const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
+        if (chatBox) {
+            const messagesList = chatBox.querySelector('.chat-messages');
+            const messageContainer = document.createElement('div'); // Create a container for the message
+            messageContainer.classList.add('message-container'); // Add a class to the container
+            const msg = document.createElement('div'); // Create the message element
+            msg.textContent = `${message}`; // Set the message text
+            msg.classList.add('outgoing-message'); // Add a class to style the message
+            messageContainer.appendChild(msg); // Append the message to the container
+            messagesList.appendChild(messageContainer); // Append the container to the messages list
+        }
+    }
+
+    function updateNotificationBadge(listMess) {
+        const unreadCount = listMess.filter(mess => !mess.readed).length;
+        const notificationBadge = document.querySelector('.notification-badge');
+
+        if (unreadCount > 0) {
+            notificationBadge.textContent = unreadCount;
+            notificationBadge.style.display = '';
+        } else {
+            notificationBadge.style.display = 'none';
+        }
+        const unrep =document.querySelector(".unrep");
+        unrep.textContent ="Unreply: " +unreadCount;
+    }
+    document.addEventListener('DOMContentLoaded', (event) => {
+        fetchListMess();
+    });
+</script>
 </html>
