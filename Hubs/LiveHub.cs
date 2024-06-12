@@ -2,14 +2,16 @@ using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.AspNetCore.SignalR;
 using PRN221_Assignment.Models;
+using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Hubs;
 
 [RequiredArgsConstructor]
 [Service]
-public partial class ChatHub : Hub
+public partial class LiveHub : Hub
 {
     private readonly social_mediaContext _context;
+    private readonly IFriendService _friendService;
     public async Task SendMessage(string senderId, string receiverId, string message)
     {
         try
@@ -33,6 +35,12 @@ public partial class ChatHub : Hub
             Console.Write(ex.Message);
             throw;
         }
+    }
+    
+    public async Task SendFriendRequest(string userId, string friendUserId,string name)
+    {
+        _friendService.SendFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
+        await Clients.Others.SendAsync("ReceiveFriendRequest-"+friendUserId, userId, friendUserId,name);
     }
   
 }

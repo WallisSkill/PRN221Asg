@@ -43,6 +43,30 @@ namespace PRN221_Assignment.Services
             return listFriends;
         }
 
+        public async Task<IList<User>> GetAllFriendRequestUser()
+        {
+            var requestList = await _friendRepository.GetAllFriendRequestUser(_currentUserId);
+            var listFriendId = new List<int>();
+
+            foreach (var item in requestList)
+            {
+                if (item.User1Id == _currentUserId)
+                {
+                    listFriendId.Add(item.User2Id);
+                }
+                else
+                {
+                    listFriendId.Add(item.User1Id);
+                }
+            }
+
+            var listFriends = await _friendRepository.GetFriendsOfUserAsync(listFriendId);
+            return listFriends;
+        }
+
+
+        
+
         public List<User> GetUpComingBirthdayFriends()
         {
             var listFriends = GetAllFriendsOfUser();
