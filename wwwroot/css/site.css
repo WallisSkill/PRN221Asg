@@ -20,3 +20,150 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+
+
+.clickable {
+  cursor: pointer;
+}
+
+.textfriend{
+  color:#fffc;
+}
+
+.conversation-start {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 12px;
+  color: #888;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px; /* Adjust as needed */
+  margin: auto;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.outgoing-message {
+  background-color: #ADD8E6; /* Soft blue color for outgoing messages */
+  color: #000000;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  text-align: right;
+  align-self: flex-end;
+  max-width: 70%;
+  word-wrap: break-word;
+  border: 1px solid #B0E0E6; /* Slightly darker blue border for contrast */
+  box-shadow: 0 0 5px rgba(0, 0, 255, 0.1); /* Optional: adding a subtle shadow */
+}
+
+.incoming-message {
+  background-color: #FFFFFF; /* Example background color for incoming messages */
+  color: #000000;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  text-align: left;
+  align-self: flex-start;
+  max-width: 70%;
+  word-wrap: break-word;
+  border: 1px solid #ccc; /* Adding a border for the surround */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optional: adding a shadow for a better effect */
+}
+
+/* Optional: Adjust message padding and margin for smaller screens */
+
+
+.chat-box {
+  position: fixed;
+  bottom: 0;
+  width: 300px;
+  height: 400px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.dark-mode-text-input {
+  background-color: #333;
+  color: #eee;
+}
+
+.chat-header {
+  padding: 10px;
+  background-color: #0078d7;
+  color: white;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #ccc; /* Add this line for a bottom border */
+}
+
+.close-button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 0 0 0 10px;
+}
+
+.chat-input button {
+  padding: 10px;
+  background-color: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 0 0 10px 0;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 23px; /* Adjust the position as needed */
+  right: 7px; /* Adjust the position as needed */
+  background-color: red;
+  color: white;
+  border-radius: 100%;
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdown-item.bg-dark:hover {
+  font-weight: bold;
+  background-color: #6c757d !important;
+}

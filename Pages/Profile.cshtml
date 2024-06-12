@@ -14,11 +14,6 @@
 <html lang="en">
 <head>
     <title>Profile]</title>
-    <style>
-        .clickable {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
 <div>
@@ -2653,17 +2648,4 @@
 </div>
 </div>
 </body>
-<script>
-    function redirectToProfile(userId) {
-        window.location.href = '/Profile?Id=' + userId;
-    }
-    function changePage(target) {
-        const tab = document.querySelector(`a[data-bs-target="${target}"]`);
-        if (tab) {
-            tab.click();
-        } else {
-            console.log('Tab not found for target:', target);
-        }
-    }
-</script>
 </html>

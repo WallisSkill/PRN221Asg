@@ -43,7 +43,7 @@
                     {
                         foreach (var user in listFriend)
                         {
-                            <div class="d-flex align-items-center mb-4" onclick="openChat('@user.UserId','@user.Fullname',true);openChat('@user.UserId','@user.Fullname',true)">
+                            <div class="clickable d-flex align-items-center mb-4" onclick="openChat('@user.UserId','@user.Fullname',true);openChat('@user.UserId','@user.Fullname',true)">
                                 <div class="iq-profile-avatar status-online">
                                     <img class="rounded-circle avatar-50" src="@user.ProfilePhotoUrl" alt="">
                                 </div>
