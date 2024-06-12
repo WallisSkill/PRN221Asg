@@ -12,7 +12,7 @@ public partial class Profile : PageModel
 {
     private readonly IProfileService _profileService;
     private readonly IHomePageService _homePageService;
-    
+    private readonly IUserResolverService _userResolver;
     [BindProperty(SupportsGet = true)]
     public int Id { get; set; }
     public IActionResult OnGet()
@@ -22,7 +22,9 @@ public partial class Profile : PageModel
         ViewData["photos"] = _profileService.GetUserPhoto(Id);
         ViewData["likes"] = _profileService.GetCountNumberLikes(Id);
         ViewData["comments"] = _profileService.GetCountNumberComments(Id);
-        ViewData["friends"] = _homePageService.GetAllFriendsOfUser();
+        ViewData["friends"] = _profileService.GetAllFriendOfUser(Id);
+        var a =  _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
+        ViewData["userFriends"] = a;
         return Page();
     }
 }

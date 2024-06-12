@@ -242,7 +242,7 @@
                                 </a>
                             </li>
                             <li class="">
-                                <a href="~/app/profile.html" class=" ">
+                                <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class=" ">
                                     <i class="las la-user"></i><span>Profile</span>
                                 </a>
                             </li>
@@ -770,7 +770,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body p-0 ">
-                                                    <a href="~/app/profile.html" class="iq-sub-card iq-bg-primary-hover">
+                                                    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class="iq-sub-card iq-bg-primary-hover">
                                                         <div class="d-flex align-items-center">
                                                             <div class="rounded card-icon bg-soft-primary">
                                                                 <i class="ri-file-user-line"></i>
@@ -781,41 +781,41 @@
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-warning">
-                                                                <i class="ri-profile-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Edit Profile</h6>
-                                                                <p class="mb-0 font-size-12">Modify your personal details.</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                    <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-info">
-                                                                <i class="ri-account-box-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Account settings</h6>
-                                                                <p class="mb-0 font-size-12">Manage your account parameters.</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                    <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-danger">
-                                                                <i class="ri-lock-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Privacy Settings</h6>
-                                                                <p class="mb-0 font-size-12">
-                                                                    Control your privacy parameters.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
+                                                    @* <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover"> *@
+                                                    @*     <div class="d-flex align-items-center"> *@
+                                                    @*         <div class="rounded card-icon bg-soft-warning"> *@
+                                                    @*             <i class="ri-profile-line"></i> *@
+                                                    @*         </div> *@
+                                                    @*         <div class="ms-3"> *@
+                                                    @*             <h6 class="mb-0 ">Edit Profile</h6> *@
+                                                    @*             <p class="mb-0 font-size-12">Modify your personal details.</p> *@
+                                                    @*         </div> *@
+                                                    @*     </div> *@
+                                                    @* </a> *@
+                                                    @* <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover"> *@
+                                                    @*     <div class="d-flex align-items-center"> *@
+                                                    @*         <div class="rounded card-icon bg-soft-info"> *@
+                                                    @*             <i class="ri-account-box-line"></i> *@
+                                                    @*         </div> *@
+                                                    @*         <div class="ms-3"> *@
+                                                    @*             <h6 class="mb-0 ">Account settings</h6> *@
+                                                    @*             <p class="mb-0 font-size-12">Manage your account parameters.</p> *@
+                                                    @*         </div> *@
+                                                    @*     </div> *@
+                                                    @* </a> *@
+                                                    @* <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover"> *@
+                                                    @*     <div class="d-flex align-items-center"> *@
+                                                    @*         <div class="rounded card-icon bg-soft-danger"> *@
+                                                    @*             <i class="ri-lock-line"></i> *@
+                                                    @*         </div> *@
+                                                    @*         <div class="ms-3"> *@
+                                                    @*             <h6 class="mb-0 ">Privacy Settings</h6> *@
+                                                    @*             <p class="mb-0 font-size-12"> *@
+                                                    @*                 Control your privacy parameters. *@
+                                                    @*             </p> *@
+                                                    @*         </div> *@
+                                                    @*     </div> *@
+                                                    @* </a> *@
                                                     <div class="d-inline-block w-100 text-center p-3">
                                                         <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary iq-sign-btn" role="button">
                                                             Sign out<i class="ri-login-box-line ms-2"></i>

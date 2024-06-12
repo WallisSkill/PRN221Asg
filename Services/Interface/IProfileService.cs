@@ -9,4 +9,7 @@ public interface IProfileService
     
     int GetCountNumberLikes(int userid);
     int GetCountNumberComments(int userid);
+
+    List<User> GetAllFriendOfUser(int userid);
+    List<Friend> GetAllFriendRelatetionshipOfUser(int userId);
 }

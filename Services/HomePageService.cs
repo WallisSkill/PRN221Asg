@@ -26,7 +26,7 @@ namespace PRN221_Assignment.Services
 
         public List<User> GetAllFriendsOfUser()
         {
-            var listReletionship = _friendRepository.GetAllFriendRelatetionshipOfUser(_currentUserId);
+            var listReletionship = _friendRepository.GetAllFriendRelatetionshipOfUser(_currentUserId,true);
             var listFriendId = new List<int>();
             listReletionship.ForEach(item =>
             {

@@ -11,7 +11,7 @@ namespace PRN221_Assignment.Services
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ILogger<UserResolverService> _logger;
-
+        
         public int GetUser()
         {
             try
