@@ -1,11 +1,12 @@
 @page
 @model PRN221_Assignment.Pages.Profile
 @using System.Security.Claims
+@using PRN221_Assignment.Data
 @using PRN221_Assignment.Models
 @{
     var user = (User)ViewBag.User;
     var photos = (List<Photo>)ViewBag.photos;
-    var friends = (List<User>)ViewBag.friends;
+    var friends = (List<UserProfile>)ViewBag.friends;
     var userfriends = (List<Friend>)ViewBag.userFriends;
 }
 
@@ -236,9 +237,9 @@
                 {
                     <li class="">
                         <a href="#">
-                            <img src="@friend.ProfilePhotoUrl" alt="gallary-image" class="img-fluid"/>
+                            <img src="@friend.User.ProfilePhotoUrl" alt="gallary-image" class="img-fluid"/>
                         </a>
-                        <h6 class="mt-2 text-center">@friend.Fullname</h6>
+                        <h6 class="mt-2 text-center">@friend.User.Fullname</h6>
                     </li>
                 }
             </ul>
@@ -1580,15 +1581,15 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
                                 <a href="#">
-                                    <img src="@friend.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
+                                    <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
                                 </a>
                                 <div class="friend-info ms-3">
-                                    <h5 id="@friend.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.Fullname</h5>
-                                    <p class="mb-0">15 friends</p>
+                                    <h5 id="@friend.User.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
+                                    <p class="mb-0">@friend.Count friends</p>
                                 </div>
                             </div>
                             <div class="card-header-toolbar d-flex align-items-center">
-                                @if(userfriends.FirstOrDefault(x => x.User1Id == friend.UserId || x.User2Id == friend.UserId) == null){
+                                @if(userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null){
                                     <div class="dropdown">
                                         <span class="dropdown-toggle btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                                             <i class="ri-add-line me-1 text-white"></i>Add Friend
@@ -1600,7 +1601,7 @@
                                 }
                                 else
                                 {
-                                    bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.UserId || x.User2Id == friend.UserId) != null? userfriends.FirstOrDefault(x => x.User1Id == friend.UserId || x.User2Id == friend.UserId)?.Status :  false;
+                                    bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) != null? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId)?.Status :  false;
                                     if (status is true)
                                     {
                                         <div class="dropdown">
@@ -1635,22 +1636,22 @@
 <div class="tab-pane fade" id="recently-add" role="tabpanel">
 <div class="card-body p-0">
 <div class="row">
-    @foreach (var friend in friends.OrderBy(x=> x.CreatedAt).Take(5))
+    @foreach (var friend in friends.OrderBy(x=> x.User.CreatedAt).Take(5))
     {
     <div class="col-md-6 col-lg-6 mb-3">
         <div class="iq-friendlist-block">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <a href="#">
-                        <img src="@friend.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
+                        <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
                     </a>
                     <div class="friend-info ms-3">
-                        <h5 id="@friend.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.Fullname</h5>
+                        <h5 id="@friend.User.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
                         <p class="mb-0">15 friends</p>
                     </div>
                 </div>
                 <div class="card-header-toolbar d-flex align-items-center">
-                    @if(userfriends.FirstOrDefault(x => x.User1Id == friend.UserId || x.User2Id == friend.UserId) == null){
+                    @if(userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null){
                     <div class="dropdown">
                                         <span class="dropdown-toggle btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                                             <i class="ri-add-line me-1 text-white"></i>Add Friend
@@ -1662,7 +1663,7 @@
                     }
                     else
                     {
-                    bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.UserId || x.User2Id == friend.UserId) != null? userfriends.FirstOrDefault(x => x.User1Id == friend.UserId || x.User2Id == friend.UserId)?.Status :  false;
+                    bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) != null? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId)?.Status :  false;
                     if (status is true)
                     {
                     <div class="dropdown">

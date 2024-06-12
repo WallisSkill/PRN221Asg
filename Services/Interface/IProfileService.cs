@@ -1,3 +1,4 @@
+using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 
 namespace PRN221_Assignment.Services.Interface;
@@ -10,6 +11,6 @@ public interface IProfileService
     int GetCountNumberLikes(int userid);
     int GetCountNumberComments(int userid);
 
-    List<User> GetAllFriendOfUser(int userid);
+    List<UserProfile> GetAllFriendOfUser(int userid);
     List<Friend> GetAllFriendRelatetionshipOfUser(int userId);
 }

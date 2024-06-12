@@ -1,5 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
+using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
 using PRN221_Assignment.Services.Interface;
@@ -32,7 +33,7 @@ public partial class ProfileService: IProfileService
         return _profileRepository.GetCountNumberComments(userid);
     }
 
-    public List<User> GetAllFriendOfUser(int userid)
+    public List<UserProfile> GetAllFriendOfUser(int userid)
     {
         var allFriendsRelationshipOfUser = _friendRepository.GetAllFriendRelatetionshipOfUser(userid,true);
         var listFriendId = new List<int>();
@@ -41,7 +42,16 @@ public partial class ProfileService: IProfileService
             listFriendId.Add(item.User1Id == userid ? item.User2Id : item.User1Id);
         });
         var listFriends = _friendRepository.GetFriendsOfUser(listFriendId);
-        return listFriends;
+        var listFriendsCount = new List<UserProfile>();
+        foreach (var friend in listFriends)
+        {
+            listFriendsCount.Add(new UserProfile()
+            {
+               Count = _friendRepository.GetAllFriendRelatetionshipOfUser(friend.UserId, true).Count,
+               User = friend
+            });
+        }
+        return listFriendsCount;
     }
 
     public List<Friend> GetAllFriendRelatetionshipOfUser(int userId)
