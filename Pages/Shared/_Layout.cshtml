@@ -765,6 +765,17 @@
                 const navbarElement = document.querySelector('.navbar-collapse');
                 navbarElement.classList.toggle('bg-dark');
 
+                const navlinkElements = document.querySelectorAll('.nav-link');
+                navlinkElements.forEach(navlinkElement => {
+                    if (isDarkMode) {
+                        // If dark mode is enabled, set nav-link color to light blue
+                        navlinkElement.style.color = '#50b5ff';
+                    } else {
+                        // If dark mode is disabled, reset nav-link color to default
+                        navlinkElement.style.color = '';
+                    }
+                });
+
                 // Add text-white to all span elements
                 const spanElements = document.querySelectorAll('span');
                 spanElements.forEach(span => {

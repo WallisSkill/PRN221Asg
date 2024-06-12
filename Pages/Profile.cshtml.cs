@@ -22,7 +22,8 @@ public partial class Profile : PageModel
         ViewData["photos"] = _profileService.GetUserPhoto(Id);
         ViewData["likes"] = _profileService.GetCountNumberLikes(Id);
         ViewData["comments"] = _profileService.GetCountNumberComments(Id);
-        ViewData["friends"] = _profileService.GetAllFriendOfUser(Id);
+        var b = _profileService.GetAllFriendOfUser(Id);
+        ViewData["friends"] = b;
         var a =  _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
         ViewData["userFriends"] = a;
         return Page();

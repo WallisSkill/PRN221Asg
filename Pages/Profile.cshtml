@@ -1556,7 +1556,10 @@
 <div class="tab-pane fade" id="friends" role="tabpanel">
 <div class="card">
 <div class="card-body">
+<div style="display: flex">
 <h2>Friends</h2>
+<span>@friends.Count()</span>
+</div>
 <div class="friend-list-tab mt-2">
 <ul class="nav nav-pills d-flex align-items-center justify-content-left friend-list-items p-0 mb-2">
     <li>
@@ -2648,4 +2651,57 @@
 </div>
 </div>
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const body = document.body;
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Function to update text-white class based on body class and active state
+        function updateTextWhiteClass() {
+            const isDarkMode = body.classList.contains('bg-dark');
+            navLinks.forEach(function(navLink) {
+                if (navLink.classList.contains('active') && isDarkMode) {
+                    navLink.classList.add('text-white');
+                } else {
+                    navLink.classList.remove('text-white');
+                }
+            });
+        }
+
+        // Initial setup
+        updateTextWhiteClass();
+
+        // Observer for body class changes
+        const observer = new MutationObserver(function(mutationsList) {
+            mutationsList.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    updateTextWhiteClass();
+                }
+            });
+        });
+
+        observer.observe(body, { attributes: true });
+
+        // Assuming you already have a function called toggleActiveState to toggle the active state
+        // You can integrate the updateTextWhiteClass logic within that function
+        function toggleActiveState(navLink) {
+            // Call your existing function to toggle the active state
+            // For example:
+            // toggleActiveStateFunction(navLink);
+            // Update the text-white class based on the current body class and active state
+            updateTextWhiteClass();
+        }
+
+        // Event listener for nav-link clicks
+        navLinks.forEach(function(navLink) {
+            navLink.addEventListener('click', function() {
+                // Call the toggleActiveState function passing the clicked nav-link
+                toggleActiveState(this);
+            });
+        });
+    });
+
+
+</script>
 </html>
