@@ -42,5 +42,4 @@ public partial class LiveHub : Hub
         _friendService.SendFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
         await Clients.Others.SendAsync("ReceiveFriendRequest-"+friendUserId, userId, friendUserId,name);
     }
-  
 }

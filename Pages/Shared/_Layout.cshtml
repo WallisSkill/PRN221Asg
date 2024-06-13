@@ -53,9 +53,11 @@
     <link rel="stylesheet" href="~/assets/vendor/vanillajs-datepicker/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/emojione@3.1.5/lib/js/emojione.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@3.1.5/extras/css/emojione.min.css"/>
+    <script src="./js/signalR.js"></script>
+    <script src="./js/jquery.js"></script>
+    <script src="./js/toast.js"></script>
     <link rel="stylesheet" href="~/css/site.css" />
     <script>
         const connection = new signalR.HubConnectionBuilder()
@@ -88,7 +90,6 @@
     </div>
     </nav>
     </header> *@
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <div>
         <!-- loader Start -->
@@ -690,6 +691,11 @@
                     element.classList.toggle('text-white');
                 });
 
+                const swal = document.querySelectorAll('.swal2-popup');
+                swal.forEach(element => {
+                    element.classList.toggle('bg-dark');
+                });
+                
                 const navlinkElements = document.querySelectorAll('.nav-link');
                 navlinkElements.forEach(navlinkElement => {
                     if (isDarkMode) {
@@ -1014,9 +1020,8 @@
             messageContainer.classList.add('message-container');
 
             const msg = document.createElement('div');
-            msg.textContent = message.content;
+            msg.innerHTML = emojione.toImage(message.content);
             msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
-
             messageContainer.appendChild(msg);
             messagesList.appendChild(messageContainer);
         });
@@ -1143,7 +1148,7 @@
         chatBox.style.borderColor = body.classList.contains('bg-dark') ? '#555' : '#ccc';
         return chatBox;
     }
-
+    
 
 
     function closeChat(userId) {
@@ -1176,7 +1181,7 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${message}`; // Set the message text
+            msg.textContent = `${emojione.toImage(message)}`; // Set the message text
             msg.classList.add('outgoing-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
@@ -1203,10 +1208,31 @@
     function redirectToProfile(userId) {
         window.location.href = '/Profile?Id=' + userId;
     }
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "2000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
     
-    //Friend Request
+     function showToast(message, icon = 'success',userid) {
+         toastr.options.onclick = function() { userid !=null? redirectToProfile(userid) : e.preventDefault() };
+         toastr[icon]("message");
+     }
 
     connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
+        showToast(`${name} just send you friend request.`,'info',userId);
         fetchFriendRequests();
     });
 
@@ -1249,7 +1275,7 @@
 
     // Call the fetchFriendRequests function when the page loads
     document.addEventListener('DOMContentLoaded', fetchFriendRequests);
-
+    
 </script>
 
 

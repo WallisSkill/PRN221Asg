@@ -24,7 +24,7 @@ namespace PRN221_Assignment.Models
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string Fullname { get; set; } = null!;
-        public string? ProfilePhotoUrl { get; set; }
+        public string? profilePhotoUrl;
         public string? Bio { get; set; }
         public DateTime? CreatedAt { get; set; }
         public string Email { get; set; } = null!;
@@ -42,5 +42,11 @@ namespace PRN221_Assignment.Models
         public virtual ICollection<Message> MessageSenders { get; set; }
         public virtual ICollection<PostLike> PostLikes { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
+        
+        public string? ProfilePhotoUrl
+        {
+            get => profilePhotoUrl ?? "./assets/images/user/null.png";
+            set => profilePhotoUrl = value;
+        }
     }
 }
