@@ -396,11 +396,11 @@
                             </div>
                         </div>
                         <div class="iq-search-bar device-search">
-                            <form action="#" class="searchbox">
+                            <form class="searchbox" method="post" asp-page="/Search">
                                 <a class="search-link" href="#">
                                     <i class="ri-search-line"></i>
                                 </a>
-                                <input type="text" class="text search-input" placeholder="Search here...">
+                                <input type="text" name="searchTerm" class="text search-input" placeholder="Search here...">
                             </form>
                         </div>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
