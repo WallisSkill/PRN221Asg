@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <None Include="wwwroot\Image\Emoji\angry.png" />
+    <None Include="wwwroot\Image\Emoji\haha.png" />
+    <None Include="wwwroot\Image\Emoji\heart.png" />
+    <None Include="wwwroot\Image\Emoji\like.png" />
+    <None Include="wwwroot\Image\Emoji\sad.png" />
+    <None Include="wwwroot\Image\Emoji\thuong thuong.png" />
+    <None Include="wwwroot\Image\Emoji\wow.png" />
   </ItemGroup>
 
   <ItemGroup>
