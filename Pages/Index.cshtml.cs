@@ -1,4 +1,6 @@
-﻿using Lombok.NET;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -24,6 +26,8 @@ public partial class IndexModel : PageModel
     public IList<Message> Messages { get; set; }
     public IList<MessageData> MessagesData { get; set; }
 
+    
+    //MessageChat
     public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId,bool open = false)
     {
         if (open)
@@ -41,4 +45,18 @@ public partial class IndexModel : PageModel
         return new JsonResult(MessagesData);
     }
      
+    
+    //RequestFriend
+    public async Task<IActionResult> OnGetGetRequestsAsync()
+    {
+        var friends = await _homePageService.GetAllFriendRequestUser();
+
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+
+        return new JsonResult(friends, options);
+    }
+    
 }

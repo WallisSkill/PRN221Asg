@@ -54,149 +54,16 @@
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
-    <style>
-        .textfriend{
-            color:#fffc;
-        }
-
-        .conversation-start {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 12px;
-            color: #888;
-        }
-        
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 600px; /* Adjust as needed */
-            margin: auto;
-        }
-
-        .message-container {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 8px;
-        }
-
-        .outgoing-message {
-            background-color: #ADD8E6; /* Soft blue color for outgoing messages */
-            color: #000000;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            text-align: right;
-            align-self: flex-end;
-            max-width: 70%;
-            word-wrap: break-word;
-            border: 1px solid #B0E0E6; /* Slightly darker blue border for contrast */
-            box-shadow: 0 0 5px rgba(0, 0, 255, 0.1); /* Optional: adding a subtle shadow */
-        }
-
-        .incoming-message {
-            background-color: #FFFFFF; /* Example background color for incoming messages */
-            color: #000000;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            text-align: left;
-            align-self: flex-start;
-            max-width: 70%;
-            word-wrap: break-word;
-            border: 1px solid #ccc; /* Adding a border for the surround */
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optional: adding a shadow for a better effect */
-        }
-
-        /* Optional: Adjust message padding and margin for smaller screens */
-
-
-        .chat-box {
-            position: fixed;
-            bottom: 0;
-            width: 300px;
-            height: 400px;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            margin-right: 10px;
-        }
-
-        .dark-mode-text-input {
-            background-color: #333;
-            color: #eee;
-        }
-
-        .chat-header {
-            padding: 10px;
-            background-color: #0078d7;
-            color: white;
-            border-radius: 10px 10px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #ccc; /* Add this line for a bottom border */
-        }
-
-        .close-button {
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 16px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-        }
-
-        .chat-input {
-            display: flex;
-            border-top: 1px solid #ccc;
-        }
-
-            .chat-input input {
-                flex: 1;
-                padding: 10px;
-                border: none;
-                border-radius: 0 0 0 10px;
-            }
-
-            .chat-input button {
-                padding: 10px;
-                background-color: #0078d7;
-                color: white;
-                border: none;
-                border-radius: 0 0 10px 0;
-            }
-
-        .notification-badge {
-            position: absolute;
-            top: 23px; /* Adjust the position as needed */
-            right: 7px; /* Adjust the position as needed */
-            background-color: red;
-            color: white;
-            border-radius: 100%;
-            font-size: 15px;
-            width: 15px;
-            height: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .dropdown-item.bg-dark:hover {
-            font-weight: bold; 
-            background-color: #6c757d !important;
-        }
-    </style>
-
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hub")
+            .withAutomaticReconnect([0, 0, 10000])
+            .build();
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
 </head>
 <body>
     @*     <header>
@@ -242,7 +109,7 @@
                                 </a>
                             </li>
                             <li class="">
-                                <a href="~/app/profile.html" class=" ">
+                                <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class=" ">
                                     <i class="las la-user"></i><span>Profile</span>
                                 </a>
                             </li>
@@ -547,7 +414,7 @@
                                         <i class="ri-home-line"></i>
                                     </a>
                                 </li>
-                                <li class="nav-item dropdown">
+                                <li onclick="fetchFriendRequests()" class="nav-item dropdown">
                                     <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
                                        aria-haspopup="true" aria-expanded="false">
                                         <i class="ri-group-line"></i>
@@ -558,100 +425,12 @@
                                                 <div class="header-title">
                                                     <h5 class="mb-0 text-white">Friend Request</h5>
                                                 </div>
-                                                <small class="badge  bg-light text-dark ">4</small>
+                                                <small class="badge req-count bg-light text-dark "></small>
                                             </div>
-                                            <div class="card-body p-0">
-                                                <div class="iq-friend-request">
-                                                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg"
-                                                                 alt="">
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Jaques Amole</h6>
-                                                                <p class="mb-0">40 friends</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-primary rounded">
-                                                                Confirm
-                                                            </a>
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-secondary rounded">
-                                                                Delete Request
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="iq-friend-request">
-                                                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/02.jpg"
-                                                                 alt="">
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Lucy Tania</h6>
-                                                                <p class="mb-0">12 friends</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-primary rounded">
-                                                                Confirm
-                                                            </a>
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-secondary rounded">
-                                                                Delete Request
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="iq-friend-request">
-                                                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/03.jpg"
-                                                                 alt="">
-                                                            <div class=" ms-3">
-                                                                <h6 class="mb-0 ">Manny Petty</h6>
-                                                                <p class="mb-0">3 friends</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-primary rounded">
-                                                                Confirm
-                                                            </a>
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-secondary rounded">
-                                                                Delete Request
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="iq-friend-request">
-                                                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
-                                                        <div class="d-flex align-items-center">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/04.jpg"
-                                                                 alt="">
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Marsha Mello</h6>
-                                                                <p class="mb-0">15 friends</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="d-flex align-items-center">
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-primary rounded">
-                                                                Confirm
-                                                            </a>
-                                                            <a href="javascript:void();"
-                                                               class="me-3 btn btn-secondary rounded">
-                                                                Delete Request
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="text-center">
-                                                    <a href="#" class=" btn text-primary">View More Request</a>
-                                                </div>
+                                            <div class="card-body p-0 request-list">
+                                                @* <div class="text-center"> *@
+                                                @*     <a href="#" class=" btn text-primary">View More Request</a> *@
+                                                @* </div> *@
                                             </div>
                                         </div>
                                     </div>
@@ -747,8 +526,8 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <li class="nav-item">
+                                    <a href="#">
                                         <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
                                     </a>
                                 </li>
@@ -770,7 +549,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body p-0 ">
-                                                    <a href="~/app/profile.html" class="iq-sub-card iq-bg-primary-hover">
+                                                    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class="iq-sub-card iq-bg-primary-hover">
                                                         <div class="d-flex align-items-center">
                                                             <div class="rounded card-icon bg-soft-primary">
                                                                 <i class="ri-file-user-line"></i>
@@ -781,41 +560,41 @@
                                                             </div>
                                                         </div>
                                                     </a>
-                                                    <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-warning">
-                                                                <i class="ri-profile-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Edit Profile</h6>
-                                                                <p class="mb-0 font-size-12">Modify your personal details.</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                    <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-info">
-                                                                <i class="ri-account-box-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Account settings</h6>
-                                                                <p class="mb-0 font-size-12">Manage your account parameters.</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                    <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-danger">
-                                                                <i class="ri-lock-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">Privacy Settings</h6>
-                                                                <p class="mb-0 font-size-12">
-                                                                    Control your privacy parameters.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
+                                                    @* <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover"> *@
+                                                    @*     <div class="d-flex align-items-center"> *@
+                                                    @*         <div class="rounded card-icon bg-soft-warning"> *@
+                                                    @*             <i class="ri-profile-line"></i> *@
+                                                    @*         </div> *@
+                                                    @*         <div class="ms-3"> *@
+                                                    @*             <h6 class="mb-0 ">Edit Profile</h6> *@
+                                                    @*             <p class="mb-0 font-size-12">Modify your personal details.</p> *@
+                                                    @*         </div> *@
+                                                    @*     </div> *@
+                                                    @* </a> *@
+                                                    @* <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover"> *@
+                                                    @*     <div class="d-flex align-items-center"> *@
+                                                    @*         <div class="rounded card-icon bg-soft-info"> *@
+                                                    @*             <i class="ri-account-box-line"></i> *@
+                                                    @*         </div> *@
+                                                    @*         <div class="ms-3"> *@
+                                                    @*             <h6 class="mb-0 ">Account settings</h6> *@
+                                                    @*             <p class="mb-0 font-size-12">Manage your account parameters.</p> *@
+                                                    @*         </div> *@
+                                                    @*     </div> *@
+                                                    @* </a> *@
+                                                    @* <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover"> *@
+                                                    @*     <div class="d-flex align-items-center"> *@
+                                                    @*         <div class="rounded card-icon bg-soft-danger"> *@
+                                                    @*             <i class="ri-lock-line"></i> *@
+                                                    @*         </div> *@
+                                                    @*         <div class="ms-3"> *@
+                                                    @*             <h6 class="mb-0 ">Privacy Settings</h6> *@
+                                                    @*             <p class="mb-0 font-size-12"> *@
+                                                    @*                 Control your privacy parameters. *@
+                                                    @*             </p> *@
+                                                    @*         </div> *@
+                                                    @*     </div> *@
+                                                    @* </a> *@
                                                     <div class="d-inline-block w-100 text-center p-3">
                                                         <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary iq-sign-btn" role="button">
                                                             Sign out<i class="ri-login-box-line ms-2"></i>
@@ -905,6 +684,22 @@
                 });
                 const navbarElement = document.querySelector('.navbar-collapse');
                 navbarElement.classList.toggle('bg-dark');
+                
+                const iconElement = document.querySelectorAll('.ri-time-line');
+                iconElement.forEach(element => {
+                    element.classList.toggle('text-white');
+                });
+
+                const navlinkElements = document.querySelectorAll('.nav-link');
+                navlinkElements.forEach(navlinkElement => {
+                    if (isDarkMode) {
+                        // If dark mode is enabled, set nav-link color to light blue
+                        navlinkElement.style.color = '#50b5ff';
+                    } else {
+                        // If dark mode is disabled, reset nav-link color to default
+                        navlinkElement.style.color = '';
+                    }
+                });
 
                 // Add text-white to all span elements
                 const spanElements = document.querySelectorAll('span');
@@ -1003,40 +798,66 @@
 
             ////////////////////////////
             document.addEventListener('DOMContentLoaded', function () {
-                // Select all dropdown toggle elements
-                const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+                document.body.addEventListener('click', function (event) {
+                    // Handle Add Friend button click
+                    if (event.target.classList.contains('add-friend')) {
+                        handleAddFriend(event.target);
+                    }
 
-                dropdownToggles.forEach((dropdownToggle) => {
-                    dropdownToggle.addEventListener('click', function (event) {
-                        event.preventDefault();
-
-                        const parentLi =  this.closest('.dropdown');
-                        const dropdownMenu = parentLi.querySelector('.dropdown-toggle');
-                        dropdownMenu.classList.toggle('show');
-
-                        document.querySelectorAll('.dropdown-toggle.show').forEach((menu) => {
-                            if (menu !== dropdownMenu) {
-                                menu.classList.remove('show');
-                            }
-                        });
-                    });
+                    // Handle dropdown toggle click
+                    if (event.target.closest('.dropdown-toggle')) {
+                        toggleDropdown(event.target.closest('.dropdown-toggle'));
+                    }
                 });
 
-                document.addEventListener('click', function (event) {
-                    document.querySelectorAll('.dropdown-menu').forEach((menu) => {
-                        if (menu.closest('.dropdown') != null && !menu.closest('.dropdown').contains(event.target)) {
-                            menu.classList.remove('show');
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.dropdown-menu').forEach((dropdownMenu) => {
-                    dropdownMenu.addEventListener('click', function (event) {
-                        event.stopPropagation();
-                    });
+                document.body.addEventListener('click', function (event) {
+                    // Close all dropdowns if click is outside
+                    if (!event.target.closest('.dropdown')) {
+                        closeAllDropdowns();
+                    }
                 });
             });
 
+            function handleAddFriend(button) {
+                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const friendUserId = button.getAttribute('data-user-id');
+                const fullname = button.getAttribute('data-user-name');
+                console.log(userId + "-" + friendUserId);
+
+                connection.invoke("SendFriendRequest", userId, friendUserId, fullname)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+
+                // Change the button to "Pending"
+                button.outerHTML = `
+        <div class="dropdown">
+            <span class="dropdown-toggle btn btn-warning me-2 ${body.classList.contains('bg-dark') ? 'text-white' : ''}" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                <i class="ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
+            </span>
+            <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
+                <a class="dropdown-item" href="#">Cancel Pending</a>
+            </div>
+        </div>
+    `;
+            }
+
+            function toggleDropdown(dropdownToggle) {
+                const dropdownMenu = dropdownToggle.nextElementSibling;
+                dropdownMenu.classList.toggle('show');
+
+                document.querySelectorAll('.dropdown-menu.show').forEach((menu) => {
+                    if (menu !== dropdownMenu) {
+                        menu.classList.remove('show');
+                    }
+                });
+            }
+
+            function closeAllDropdowns() {
+                document.querySelectorAll('.dropdown-menu.show').forEach((menu) => {
+                    menu.classList.remove('show');
+                });
+            }
 
         </script>
 
@@ -1073,16 +894,10 @@
 
 <script>
     const body = document.body;
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .withAutomaticReconnect([0, 0, 10000])
-        .build();
-
     function sendMessage(receiverId) {
         const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
         const messageInput = document.getElementById("chatinput-" + receiverId);
         const message = messageInput.value;
-        console.log("ok");
         messageInput.value = ''; // Clear the input field
         connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
 
@@ -1091,7 +906,6 @@
     }
 
     function displayOutgoingMessage(senderId, receiverId, message) {
-        console.log(senderId + " " + receiverId);
         const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
         if (chatBox) {
             const messagesList = chatBox.querySelector('.chat-messages');
@@ -1133,7 +947,7 @@
 
 
 
-    connection.start().catch(err => console.error(err.toString()));
+    
 
     let chatOffset = 250;
     const openChatBoxes = [];
@@ -1141,7 +955,6 @@
     function openChat(userId, name,open=false) {
         let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
         const chatContainer = document.getElementById('chatContainer');
-        console.log(open);
         if (!chatBox) {
             if (openChatBoxes.length >= 3) {
                 const oldestChatBoxId = openChatBoxes.shift();
@@ -1163,7 +976,6 @@
             
         }
         if (open){
-        console.log("open");
             const inputField = chatBox.querySelector(`#chatinput-${userId}`);
             inputField.focus();
             fetchMessages(userId, chatBox,true);
@@ -1177,7 +989,6 @@
             const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
             if (response.ok) {
                 const messages = await response.json();
-                console.log(messages);
                 displayMessages(messages, chatBox);
             } else {
                 console.error('Failed to fetch messages');
@@ -1203,7 +1014,6 @@
 
             const msg = document.createElement('div');
             msg.textContent = message.content;
-            console.log(message.senderId);
             msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
 
             messageContainer.appendChild(msg);
@@ -1215,12 +1025,10 @@
 
 
     async function fetchListMess() {
-    console.log("clic");
         try {
             const response = await fetch(`/Index?handler=GetMessagesNoti`);
             if (response.ok) {
                 const  listMess = await response.json();
-                console.log("Data:" + listMess);
                 displayListMess(listMess);
                 updateNotificationBadge(listMess);
             } else {
@@ -1234,7 +1042,6 @@
 
     function displayListMess(listMess) {
         const chatContainer = document.querySelector('.chat-noti');
-        console.log(chatContainer);
         chatContainer.innerHTML = '';
 
         if (listMess && listMess.length > 0) {
@@ -1266,7 +1073,7 @@
                 chatContainer.appendChild(chatItem);
             });
         } else {
-            chatContainer.innerHTML = '<div style="display: flex; justify-content: center">You don\'t have any messages!<br /> Let\'s chat with a friend.</div>';
+            chatContainer.innerHTML = '<div class="text-center">You don\'t have any messages!<br /> Let\'s chat with a friend.</div>';
         }
     }
 
@@ -1318,7 +1125,7 @@
 
         chatBox.innerHTML = `
                             <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                                <span>${name}</span>
+                                <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
                                 <button class="close-button" onclick="closeChat('${userId}')">×</button>
                             </div>
                             <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
@@ -1362,7 +1169,6 @@
 
 
     function displayOutgoingMessage(senderId, receiverId, message) {
-        console.log(senderId + " " + receiverId);
         const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
         if (chatBox) {
             const messagesList = chatBox.querySelector('.chat-messages');
@@ -1392,5 +1198,57 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
     });
+
+    function redirectToProfile(userId) {
+        window.location.href = '/Profile?Id=' + userId;
+    }
+    
+    //Friend Request
+
+    connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
+        fetchFriendRequests();
+    });
+
+    async function fetchFriendRequests() {
+        const response = await fetch('/Index?handler=GetRequests');
+        const friendRequests = await response.json();
+        const container = document.querySelector('.request-list');
+        container.innerHTML = ''; // Clear existing content
+        const count = friendRequests.$values.length;
+        document.querySelector(".req-count").innerHTML=count;
+     
+        friendRequests.$values.forEach(request => {
+            if (request.$id != @User.FindFirstValue(ClaimTypes.Authentication)){
+            const requestDiv = document.createElement('div');
+            requestDiv.className = 'iq-friend-request';
+            requestDiv.innerHTML = `
+                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <img class="avatar-40 rounded" src="${request.ProfilePhotoUrl}" alt="">
+                            <div class="ms-3">
+                                <h6 onclick="redirectToProfile(${request.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.Fullname}</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a href="javascript:void(0);" class="me-3 btn btn-primary rounded" onclick="confirmFriend(${request.UserId})">Confirm</a>
+                            <a href="javascript:void(0);" class="me-3 btn btn-secondary rounded" onclick="deleteRequest(${request.UserId})">Delete Request</a>
+                        </div>
+                    </div>
+                `;
+            container.appendChild(requestDiv);
+            }
+        });
+        if (count === 0 ){
+            const noRequestsMessage = document.createElement('div');
+            noRequestsMessage.textContent = 'No friend requests to display';
+            noRequestsMessage.classList.add("text-center");
+            container.appendChild(noRequestsMessage);
+        }
+    }
+
+    // Call the fetchFriendRequests function when the page loads
+    document.addEventListener('DOMContentLoaded', fetchFriendRequests);
 </script>
+
+
 </html>

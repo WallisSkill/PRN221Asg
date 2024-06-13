@@ -26,7 +26,7 @@ namespace PRN221_Assignment.Services
 
         public List<User> GetAllFriendsOfUser()
         {
-            var listReletionship = _friendRepository.GetAllFriendRelatetionshipOfUser(_currentUserId);
+            var listReletionship = _friendRepository.GetAllFriendRelatetionshipOfUser(_currentUserId,true);
             var listFriendId = new List<int>();
             listReletionship.ForEach(item =>
             {
@@ -42,6 +42,30 @@ namespace PRN221_Assignment.Services
             var listFriends = _friendRepository.GetFriendsOfUser(listFriendId);
             return listFriends;
         }
+
+        public async Task<IList<User>> GetAllFriendRequestUser()
+        {
+            var requestList = await _friendRepository.GetAllFriendRequestUser(_currentUserId);
+            var listFriendId = new List<int>();
+
+            foreach (var item in requestList)
+            {
+                if (item.User1Id == _currentUserId)
+                {
+                    listFriendId.Add(item.User2Id);
+                }
+                else
+                {
+                    listFriendId.Add(item.User1Id);
+                }
+            }
+
+            var listFriends = await _friendRepository.GetFriendsOfUserAsync(listFriendId);
+            return listFriends;
+        }
+
+
+        
 
         public List<User> GetUpComingBirthdayFriends()
         {
