@@ -50,5 +50,13 @@ namespace PRN221_Assignment.Repository
             _context.Friends.Add(newRequest);
             _context.SaveChanges();
         }
+
+        public void CancelFriendRequest(int userId, int receiverId)
+        {
+            var friend = _context.Set<Friend>().FirstOrDefault(x => x.User1Id == userId && x.User2Id == receiverId);
+            if (friend == null) return;
+            _context.Set<Friend>().Remove(friend);
+            _context.SaveChanges();
+        }
     }
 }

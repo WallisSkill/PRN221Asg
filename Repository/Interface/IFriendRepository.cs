@@ -11,5 +11,6 @@ namespace PRN221_Assignment.Repository.Interface
         Task<IList<User>> GetFriendsOfUserAsync(List<int> userIds);
         List<User> GetFriendsOfUser(List<int> userIds);
         void SendFriendRequest(int userId,int receiverId);
+        void CancelFriendRequest(int userId, int receiverId);
     }
 }

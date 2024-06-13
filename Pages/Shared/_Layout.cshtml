@@ -897,7 +897,8 @@
     function sendMessage(receiverId) {
         const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
         const messageInput = document.getElementById("chatinput-" + receiverId);
-        const message = messageInput.value;
+        const message = messageInput.value.trim();
+        if (!message)return;
         messageInput.value = ''; // Clear the input field
         connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
 
@@ -922,7 +923,7 @@
         }
     }
 
-    connection.on("ReceiveMessage", (user, message, name) => {
+    connection.on("ReceiveMessage-@User.FindFirstValue(ClaimTypes.Authentication)", (user, message, name) => {
         fetchListMess();
         const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
         if (chatBox) {
@@ -1248,6 +1249,7 @@
 
     // Call the fetchFriendRequests function when the page loads
     document.addEventListener('DOMContentLoaded', fetchFriendRequests);
+
 </script>
 
 

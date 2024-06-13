@@ -28,7 +28,7 @@ public partial class LiveHub : Hub
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            await Clients.All.SendAsync("ReceiveMessage", senderId, message, _context.Users.FirstOrDefault(x=>x.UserId== Int32.Parse(senderId))?.Fullname);
+            await Clients.All.SendAsync("ReceiveMessage-"+receiverId, senderId, message, _context.Users.FirstOrDefault(x=>x.UserId== Int32.Parse(senderId))?.Fullname);
         }
         catch (Exception ex)
         {
