@@ -53,7 +53,7 @@ namespace PRN221_Assignment.Repository
 
         public void CancelFriendRequest(int userId, int receiverId)
         {
-            var friend = _context.Set<Friend>().FirstOrDefault(x => x.User1Id == userId && x.User2Id == receiverId);
+            var friend = _context.Set<Friend>().FirstOrDefault(x => (x.User1Id == userId && x.User2Id == receiverId) || (x.User1Id == receiverId && x.User2Id == userId));
             if (friend == null) return;
             _context.Set<Friend>().Remove(friend);
             _context.SaveChanges();
