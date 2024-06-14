@@ -817,7 +817,7 @@
             document.addEventListener('DOMContentLoaded', function () {
 
                 document.body.addEventListener('click', function (event) {
-                    // Handle Add Friend button click
+////////////////////////////Handle Friend Request Action
                     if (event.target.classList.contains('add-friend')) {
                         handleAddFriend(event.target);
                     }
@@ -826,6 +826,10 @@
                         handleCancelFriend(event.target);
                     }
 
+                    if (event.target.classList.contains('accept-friend')) {
+                        handleAcceptFriend(event.target);
+                    }
+/////////////////////////////
                     // Handle dropdown toggle click
                     if (event.target.closest('.dropdown-toggle')) {
                         toggleDropdown(event.target.closest('.dropdown-toggle'));
@@ -853,14 +857,16 @@
 
                 // Change the button to "Pending"
                 button.outerHTML = `
-        <div class="dropdown">
-            <span class="dropdown-toggle btn btn-warning me-2 ${body.classList.contains('bg-dark') ? 'text-white' : ''}" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                <i class="ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
-            </span>
-            <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
-                <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend" class="dropdown-item" href="#">Cancel Pending</a>
+        <li class="text-center pe-3">
+            <div class="dropdown">
+                <span class="dropdown-toggle btn btn-warning me-2 ${body.classList.contains('bg-dark') ? 'text-white' : ''}" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                    <i class="clickable ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
+                </span>
+                <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
+                    <a data-user-id="${friendUserId}" data-user-name="${fullname}" class="dropdown-item cancel-friend clickable" class="dropdown-item" href="#">Cancel Pending</a>
+                </div>
             </div>
-        </div>
+        </li>
     `;
             }
 
@@ -872,15 +878,41 @@
                     .catch(function (err) {
                         return console.error(err.toString());
                     });
-
+                console.log("meow");
                 // Change the button to "Pending"
                 if (button.closest(".text-center")){
                 button.closest(".text-center").outerHTML = `
-        <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
-             <i class="ri-add-line me-1 text-white"></i>Add Friend
-        </span>
-    `;
-    }          
+                    <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
+                         <i class="ri-add-line me-1 text-white"></i>Add Friend
+                    </span>
+                `;
+                }          
+                fetchFriendRequests();
+                fetchFriendRequests();
+            }
+
+            function handleAcceptFriend(button) {
+                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const friendUserId = button.getAttribute('data-user-id');
+                const fullname = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+
+                connection.invoke("AcceptFriendRequest", userId, friendUserId, fullname)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+
+                // Change the button to "Pending"
+                button.closest(".text-center").outerHTML = `
+                    <div class="dropdown">
+                        <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                            <i class="ri-check-line me-1 text-white"></i> Friend
+                        </span>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend" href="#">Unfriend</a>
+                        </div>
+                    </div>
+                `;
+
                 fetchFriendRequests().then(() => updateNotificationBadgeM());
                 fetchFriendRequests();
             }
@@ -1233,7 +1265,6 @@
     }
 
     function updateNotificationBadgeM() {
-    console.log(document.querySelector(".req-count"));
         const number = document.querySelector(".req-count").textContent ?? 0;
         document.querySelector(".request-noti").innerHTML = number;
     }
@@ -1275,6 +1306,11 @@
         fetchFriendRequests().then(() => updateNotificationBadgeM());
     });
 
+    connection.on("AcceptFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
+        showToast(`${name} has accepted your friend request.`,`success`,userId);
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
+    });
+    
     async function fetchFriendRequests() {
         const response = await fetch('/Index?handler=GetRequests');
         const friendRequests = await response.json();
@@ -1308,8 +1344,8 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <a href="javascript:void(0);" class="me-3 btn btn-primary rounded" onclick="confirmFriend(${request.User.UserId})">Confirm</a>
-                            <a data-user-id="${request.User.UserId}" data-user-name="${request.User.Fullname}" class="me-3 btn btn-secondary rounded cancel-friend">Delete Request</a>
+                            <a data-user-id="${request.User.UserId}" class="me-3 btn btn-primary rounded accept-friend">Confirm</a>
+                            <a data-user-id="${request.User.UserId}" data-user-name="${request.User.Fullname}" class="me-3 btn btn-secondary rounded cancel-friend">Cancel Request</a>
                         </div>
                     </div>
                 `;
@@ -1322,6 +1358,7 @@
             noRequestsMessage.classList.add("text-center");
             container.appendChild(noRequestsMessage);
         }
+        updateNotificationBadgeM();
     }
 
     // Call the fetchFriendRequests function when the page loads

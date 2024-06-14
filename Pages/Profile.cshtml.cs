@@ -11,7 +11,6 @@ namespace PRN221_Assignment.Pages;
 public partial class Profile : PageModel
 {
     private readonly IProfileService _profileService;
-    private readonly IHomePageService _homePageService;
     private readonly IUserResolverService _userResolver;
     [BindProperty(SupportsGet = true)]
     public int Id { get; set; }
