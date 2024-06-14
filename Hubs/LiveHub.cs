@@ -1,3 +1,4 @@
+using System.Text;
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.AspNetCore.SignalR;

@@ -942,11 +942,11 @@
         const messageInput = document.getElementById("chatinput-" + receiverId);
         const message = messageInput.value.trim();
         if (!message)return;
-        messageInput.value = ''; // Clear the input field
-        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
-
-        // Display the sent message in a different color
         displayOutgoingMessage(senderId, receiverId, message);
+        messageInput.value = ''; // Clear the input field
+        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()))
+        
+        // Display the sent message in a different color
     }
 
     function displayOutgoingMessage(senderId, receiverId, message) {
@@ -956,11 +956,10 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${message}`; // Set the message text
+            msg.textContent = emojione.toImage(message); // Set the message text
             msg.classList.add('outgoing-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
-
             // Scroll to the bottom
             messagesList.scrollTop = messagesList.scrollHeight;
         }
@@ -974,7 +973,7 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${message}`; // Set the message text
+            msg.textContent = emojione.toImage(message); // Set the message text
             msg.classList.add('incoming-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
@@ -1022,18 +1021,18 @@
         if (open){
             const inputField = chatBox.querySelector(`#chatinput-${userId}`);
             inputField.focus();
-            fetchMessages(userId, chatBox,true);
+            fetchMessages(userId, chatBox,false);
             }
         fetchListMess();
     }
 
 
-    async function fetchMessages(userId, chatBox,open = false) {
+    async function fetchMessages(userId, chatBox,open = true) {
         try {
             const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
             if (response.ok) {
                 const messages = await response.json();
-                displayMessages(messages, chatBox);
+                displayMessages(messages, chatBox,open);
             } else {
                 console.error('Failed to fetch messages');
             }
@@ -1043,7 +1042,7 @@
     }
 
 
-    function displayMessages(messages, chatBox) {
+    function displayMessages(messages, chatBox,open =true) {
         const messagesList = chatBox.querySelector('.chat-messages');
         messagesList.innerHTML = ''; // Clear existing messages
 
@@ -1062,8 +1061,9 @@
             messageContainer.appendChild(msg);
             messagesList.appendChild(messageContainer);
         });
-
+        if (open){
         messagesList.scrollTop = messagesList.scrollHeight;
+        }
     }
 
 
@@ -1210,20 +1210,7 @@
         }
     }
 
-
-    function displayOutgoingMessage(senderId, receiverId, message) {
-        const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
-        if (chatBox) {
-            const messagesList = chatBox.querySelector('.chat-messages');
-            const messageContainer = document.createElement('div'); // Create a container for the message
-            messageContainer.classList.add('message-container'); // Add a class to the container
-            const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${emojione.toImage(message)}`; // Set the message text
-            msg.classList.add('outgoing-message'); // Add a class to style the message
-            messageContainer.appendChild(msg); // Append the message to the container
-            messagesList.appendChild(messageContainer); // Append the container to the messages list
-        }
-    }
+    
 
     function updateNotificationBadge(listMess) {
         const unreadCount = listMess.filter(mess => !mess.readed).length;
@@ -1301,17 +1288,32 @@
             requestDiv.innerHTML = `
                     <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <img class="avatar-40 rounded" src="${request.ProfilePhotoUrl}" alt="">
+                            <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
                             <div class="ms-3">
-                                <h6 onclick="redirectToProfile(${request.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.Fullname}</h6>
+                                <h6 onclick="redirectToProfile(${request.User.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <a href="javascript:void(0);" class="me-3 btn btn-primary rounded" onclick="confirmFriend(${request.UserId})">Confirm</a>
-                            <a data-user-id="${request.UserId}" data-user-name="${request.Fullname}" class="me-3 btn btn-secondary rounded cancel-friend">Delete Request</a>
+                           <div>You has accepted</div>
                         </div>
                     </div>
                 `;
+            if (!request.Status){
+            requestDiv.innerHTML = `
+                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
+                            <div class="ms-3">
+                                <h6 onclick="redirectToProfile(${request.User.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a href="javascript:void(0);" class="me-3 btn btn-primary rounded" onclick="confirmFriend(${request.User.UserId})">Confirm</a>
+                            <a data-user-id="${request.User.UserId}" data-user-name="${request.User.Fullname}" class="me-3 btn btn-secondary rounded cancel-friend">Delete Request</a>
+                        </div>
+                    </div>
+                `;
+                }
             container.appendChild(requestDiv);        
         });
         if (count === 0 ){

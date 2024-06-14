@@ -97,7 +97,7 @@ body {
 }
 
 .chat-noti {
-    max-height: 350px; /* Ensure the chat notifications have a maximum height */
+    max-height: 300px; /* Ensure the chat notifications have a maximum height */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 

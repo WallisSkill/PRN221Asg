@@ -1,6 +1,7 @@
 ﻿using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.EntityFrameworkCore;
+using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
 using PRN221_Assignment.Services.Interface;
@@ -21,14 +22,23 @@ namespace PRN221_Assignment.Repository
         
         public async Task<IList<Friend>> GetAllFriendRequestUser (int userId)
         {
-            var query = _context.Set<Friend>().Where(x =>  x.User2Id == userId);
-            query = query.Where(x => x.Status == false);
-            return await query.ToListAsync();
+            DateTime twoMinutesAgo = DateTime.Now.AddMinutes(-2);
+            var query = _context.Set<Friend>().Where(x =>  x.User2Id == userId&&(x.Status ==false || (x.Status == true && x.CreatedAt >= twoMinutesAgo))).ToListAsync();
+            return await query;
         }
         
-        public async Task<IList<User>> GetFriendsOfUserAsync(List<int> userIds)
+        public async Task<IList<UserFriend>> GetFriendsOfUserAsync(List<int> userIds,int currentUserId)
         {
-           var query= _context.Set<User>().Where(x => userIds.Contains(x.UserId));
+            DateTime twoMinutesAgo = DateTime.Now.AddMinutes(-2);
+            var query = from u in _context.Set<User>()
+                join f in _context.Set<Friend>() on u.UserId equals f.User1Id into ufGroup
+                from f in ufGroup.DefaultIfEmpty()
+                where userIds.Contains(f.User1Id) && f.User2Id == currentUserId && (f.Status == false || (f.Status == true && f.CreatedAt >= twoMinutesAgo))
+                select new UserFriend
+                {
+                    User = u,
+                    Status = f.Status
+                };
             return await query.ToListAsync();
         }
 

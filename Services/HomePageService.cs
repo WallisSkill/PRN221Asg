@@ -43,7 +43,7 @@ namespace PRN221_Assignment.Services
             return listFriends;
         }
 
-        public async Task<IList<User>> GetAllFriendRequestUser()
+        public async Task<IList<UserFriend>> GetAllFriendRequestUser()
         {
             var requestList = await _friendRepository.GetAllFriendRequestUser(_currentUserId);
             var listFriendId = new List<int>();
@@ -60,7 +60,7 @@ namespace PRN221_Assignment.Services
                 }
             }
 
-            var listFriends = await _friendRepository.GetFriendsOfUserAsync(listFriendId);
+            var listFriends = await _friendRepository.GetFriendsOfUserAsync(listFriendId,_currentUserId);
             return listFriends;
         }
 
