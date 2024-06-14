@@ -42,4 +42,10 @@ public partial class LiveHub : Hub
         _friendService.SendFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
         await Clients.Others.SendAsync("ReceiveFriendRequest-"+friendUserId, userId, friendUserId,name);
     }
+
+    public async Task CancelFriendRequest(string userId, string friendUserId, string name)
+    {
+        _friendService.CancelFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
+        await Clients.Others.SendAsync("CancelFriendRequest-"+friendUserId, userId, friendUserId,name);
+    }
 }

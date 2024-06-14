@@ -803,7 +803,15 @@
             ///////////////////////////
 
             ////////////////////////////
+            document.addEventListener('click', function (event) {
+                const chatNotiDropdown = event.target.closest('.chat-noti');
+                if (chatNotiDropdown) {
+                    closeAllDropdowns();
+                }
+            });
+            
             document.addEventListener('DOMContentLoaded', function () {
+
                 document.body.addEventListener('click', function (event) {
                     // Handle Add Friend button click
                     if (event.target.classList.contains('add-friend')) {
