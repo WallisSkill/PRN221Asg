@@ -1236,7 +1236,7 @@
     
      function showToast(message, icon = 'success',userid) {
          toastr.options.onclick = function() { userid !=null? redirectToProfile(userid) : e.preventDefault() };
-         toastr[icon]("message");
+         toastr[icon](message);
      }
 
     connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
@@ -1253,7 +1253,6 @@
         document.querySelector(".req-count").innerHTML=count;
      
         friendRequests.$values.forEach(request => {
-            if (request.$id != @User.FindFirstValue(ClaimTypes.Authentication)){
             const requestDiv = document.createElement('div');
             requestDiv.className = 'iq-friend-request';
             requestDiv.innerHTML = `
@@ -1270,8 +1269,7 @@
                         </div>
                     </div>
                 `;
-            container.appendChild(requestDiv);
-            }
+            container.appendChild(requestDiv);        
         });
         if (count === 0 ){
             const noRequestsMessage = document.createElement('div');
