@@ -902,7 +902,7 @@
                     });
 
                 // Change the button to "Pending"
-                button.closest(".text-center").outerHTML = `
+                if (button.closest(".text-center")) {button.closest(".text-center").innerHTML = `
                     <div class="dropdown">
                         <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                             <i class="ri-check-line me-1 text-white"></i> Friend
@@ -911,7 +911,7 @@
                             <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend" href="#">Unfriend</a>
                         </div>
                     </div>
-                `;
+                `;}
 
                 fetchFriendRequests().then(() => updateNotificationBadgeM());
                 fetchFriendRequests();
@@ -1015,7 +1015,7 @@
         }
         else {
             if (@User.FindFirstValue(ClaimTypes.Authentication)!= user) {
-                openChat(user, name);
+                openChat(user, name,false);
             }
         }
     });
@@ -1053,7 +1053,7 @@
         if (open){
             const inputField = chatBox.querySelector(`#chatinput-${userId}`);
             inputField.focus();
-            fetchMessages(userId, chatBox,false);
+            fetchMessages(userId, chatBox,true);
             }
         fetchListMess();
     }
@@ -1317,7 +1317,9 @@
         const container = document.querySelector('.request-list');
         container.innerHTML = ''; // Clear existing content
         const count = friendRequests.$values.length;
-        document.querySelector(".req-count").innerHTML=count;
+        const truecount = friendRequests.$values.filter(request => !request.Status).length;
+        document.querySelector(".req-count").innerHTML=truecount;
+        document.querySelector(".request-noti").style.display = '';
         friendRequests.$values.forEach(request => {
             const requestDiv = document.createElement('div');
             requestDiv.className = 'iq-friend-request';
@@ -1354,6 +1356,7 @@
         });
         if (count === 0 ){
             const noRequestsMessage = document.createElement('div');
+            document.querySelector(".request-noti").style.display = 'none';
             noRequestsMessage.textContent = 'No friend requests to display';
             noRequestsMessage.classList.add("text-center");
             container.appendChild(noRequestsMessage);
