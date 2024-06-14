@@ -18,4 +18,9 @@ public partial class FriendService: IFriendService
     {
         _friendRepository.CancelFriendRequest(userId,receiverId);
     }
+
+    public void AcceptFriendRequest(int userId, int receiverId)
+    {
+        _friendRepository.AcceptFriendRequest(userId,receiverId);
+    }
 }

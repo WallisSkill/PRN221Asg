@@ -12,7 +12,7 @@ namespace PRN221_Assignment.Repository
     public partial class FriendRepository : IFriendRepository
     {
         private readonly social_mediaContext _context;
-        public List<Friend> GetAllFriendRelatetionshipOfUser (int userId,bool open= true)
+        public List<Friend> GetAllFriendRelationshipsOfUser (int userId,bool open= true)
         {
             var query = _context.Set<Friend>().Where(x => (x.User1Id == userId || x.User2Id == userId));
             if (open) query = query.Where(x => x.Status == true);
@@ -56,6 +56,15 @@ namespace PRN221_Assignment.Repository
             var friend = _context.Set<Friend>().FirstOrDefault(x => (x.User1Id == userId && x.User2Id == receiverId) || (x.User1Id == receiverId && x.User2Id == userId));
             if (friend == null) return;
             _context.Set<Friend>().Remove(friend);
+            _context.SaveChanges();
+        }
+
+        public void AcceptFriendRequest(int userId, int receiverId)
+        {
+            var friend = _context.Set<Friend>().FirstOrDefault(x => (x.User1Id == userId && x.User2Id == receiverId) || (x.User1Id == receiverId && x.User2Id == userId));
+            if (friend == null) return;
+            friend.Status = true;
+            _context.Set<Friend>().Update(friend);
             _context.SaveChanges();
         }
     }

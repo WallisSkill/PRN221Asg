@@ -421,6 +421,7 @@
             <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
                 <i class="ri-group-line"></i>
+                <h1 class="notification-badge request-noti"></h1>
             </a>
             <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
                 <div class="card shadow-none m-0">
@@ -441,6 +442,7 @@
         <li class="nav-item dropdown">
             <a href="#" class="search-toggle   dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
                 <i class="ri-notification-4-line"></i>
+                <h1 class="notification-badge noti-noti"></h1>
             </a>
             <div class="sub-drop dropdown-menu" aria-labelledby="notification-drop">
                 <div class="card shadow-none m-0">
@@ -448,9 +450,9 @@
                         <div class="header-title bg-primary">
                             <h5 class="mb-0 text-white">All Notifications</h5>
                         </div>
-                        <small class="badge  bg-light text-dark">4</small>
+                        <small class="badge bg-light text-dark noti-count">4</small>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body p-0 noti-list">
                         <a href="#" class="iq-sub-card">
                             <div class="d-flex align-items-center">
                                 <div class="">
@@ -514,7 +516,7 @@
         <li class="nav-item dropdown">
             <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
                 <i class="ri-message-line"></i>
-                <h1 class="notification-badge"></h1>
+                <h1 class="notification-badge message-noti"></h1>
             </a>
             <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
                 <div class="card shadow-none m-0">
@@ -879,7 +881,7 @@
         </span>
     `;
     }          
-                fetchFriendRequests();
+                fetchFriendRequests().then(() => updateNotificationBadgeM());
                 fetchFriendRequests();
             }
 
@@ -1225,7 +1227,7 @@
 
     function updateNotificationBadge(listMess) {
         const unreadCount = listMess.filter(mess => !mess.readed).length;
-        const notificationBadge = document.querySelector('.notification-badge');
+        const notificationBadge = document.querySelector('.message-noti');
 
         if (unreadCount > 0) {
             notificationBadge.textContent = unreadCount;
@@ -1236,8 +1238,23 @@
         const unrep = document.querySelector(".unrep");
         unrep.textContent = "Unread: " + unreadCount;
     }
+
+    function updateNotificationBadgeG() {
+        const number = document.querySelectorAll(".noti-list a").length ?? 0;
+        document.querySelector(".noti-count").innerHTML = number;
+        document.querySelector(".noti-noti").innerHTML = number;
+    }
+
+    function updateNotificationBadgeM() {
+    console.log(document.querySelector(".req-count"));
+        const number = document.querySelector(".req-count").textContent ?? 0;
+        document.querySelector(".request-noti").innerHTML = number;
+    }
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
+        updateNotificationBadgeG();
+        updateNotificationBadgeM();
     });
 
     function redirectToProfile(userId) {
@@ -1268,7 +1285,7 @@
 
     connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
         showToast(`${name} just send you friend request.`,'info',userId);
-        fetchFriendRequests();
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
     });
 
     async function fetchFriendRequests() {
@@ -1278,7 +1295,6 @@
         container.innerHTML = ''; // Clear existing content
         const count = friendRequests.$values.length;
         document.querySelector(".req-count").innerHTML=count;
-     
         friendRequests.$values.forEach(request => {
             const requestDiv = document.createElement('div');
             requestDiv.className = 'iq-friend-request';

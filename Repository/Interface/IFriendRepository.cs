@@ -4,7 +4,7 @@ namespace PRN221_Assignment.Repository.Interface
 {
     public interface IFriendRepository
     {
-        List<Friend> GetAllFriendRelatetionshipOfUser(int userId,bool open);
+        List<Friend> GetAllFriendRelationshipsOfUser(int userId,bool open);
 
         Task<IList<Friend>> GetAllFriendRequestUser(int userId);
 
@@ -12,5 +12,6 @@ namespace PRN221_Assignment.Repository.Interface
         List<User> GetFriendsOfUser(List<int> userIds);
         void SendFriendRequest(int userId,int receiverId);
         void CancelFriendRequest(int userId, int receiverId);
+        void AcceptFriendRequest(int userId, int receiverId);
     }
 }

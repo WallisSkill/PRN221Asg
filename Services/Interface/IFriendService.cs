@@ -5,4 +5,6 @@ public interface IFriendService
    void SendFriendRequest(int userId,int receiverId);
 
    void CancelFriendRequest(int userId,int receiverId);
+
+   void AcceptFriendRequest(int userId, int receiverId);
 }
