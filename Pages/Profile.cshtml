@@ -69,7 +69,7 @@
                         <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
                             @if (!User.FindFirstValue(ClaimTypes.Authentication).Equals(user.UserId.ToString()))
                             {
-                                <li class="text-center pe-3">
+                                <li class="text-center">
                                     @if(userfriends.FirstOrDefault(x => x.User1Id == user.UserId || x.User2Id == user.UserId) == null){
                                         <span  data-user-id="@user.UserId" data-user-name="@user.Fullname" class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01"  role="button">
                                             <i  class="ri-add-line me-1 text-white"></i>Add Friend
@@ -112,7 +112,7 @@
                                     }
                                     }
                                 </li>
-                                <li class="text-center pe-3">
+                                <li class="text-center">
                                     <div class="">
                                         <span onclick="openChat('@user.UserId','@user.Fullname')" class="btn btn-primary me-2" role="button">
                                             <i class="ri-message-line me-1 text-white"></i>Message
@@ -125,7 +125,7 @@
                             }
                             else
                             {
-                                <li class="text-center pe-3">
+                                <li class="text-center">
                                     <div class="">
                                         <span class="btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                                             <i class="ri-pencil-line me-1 text-white"></i>Edit Profile
@@ -1614,7 +1614,7 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
                                 <a href="#">
-                                    <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
+                                    <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid profile-img2">
                                 </a>
                                 <div class="friend-info ms-3">
                                     <h5 id="@friend.User.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
@@ -1695,7 +1695,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <a href="#">
-                        <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
+                        <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid profile-img2">
                     </a>
                     <div class="friend-info ms-3">
                         <h5 id="@friend.User.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
