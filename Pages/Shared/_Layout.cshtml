@@ -382,7 +382,7 @@
             <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
                 <i class="ri-group-line"></i>
-                <h1 class="notification-badge request-noti"></h1>
+                <h1 onclick="fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());" class="notification-badge request-noti"></h1>
             </a>
             <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
                 <div class="card shadow-none m-0">
@@ -411,10 +411,10 @@
                         <div class="header-title bg-primary">
                             <h5 class="mb-0 text-white">All Notifications</h5>
                         </div>
-                        <small class="badge bg-light text-dark noti-count">4</small>
+                        <small class="badge bg-light text-dark noti-count"></small>
                     </div>
                     <div class="card-body p-0 noti-list">
-                        <a href="#" class="iq-sub-card">
+                        @*<a href="#" class="iq-sub-card">
                             <div class="d-flex align-items-center">
                                 <div class="">
                                     <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
@@ -422,7 +422,7 @@
                                 <div class="ms-3 w-100">
                                     <h6 class="mb-0 ">Emma Watson Bni</h6>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <p class="mb-0">95 MB</p>
+                                        <p class="mb-0">accepted your friend request</p>
                                         <small class="float-right font-size-12">Just Now</small>
                                     </div>
                                 </div>
@@ -469,7 +469,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </a>*@
                     </div>
                 </div>
             </div>
@@ -642,128 +642,59 @@
                 // Save the current mode to localStorage
                 localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
 
-                // Toggle bg-dark and text-white for elements containing "iq" in their class names
-                const elementsWithIq = document.querySelectorAll('[class*="iq"]');
-                elementsWithIq.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                    element.classList.toggle('text-white');
-                });
-                const navbarElement = document.querySelector('.navbar-collapse');
-                navbarElement.classList.toggle('bg-dark');
-                
-                const iconElement = document.querySelectorAll('.ri-time-line');
-                iconElement.forEach(element => {
-                    element.classList.toggle('text-white');
+                // Helper function to toggle classes on a set of elements
+                function toggleClasses(elements, ...classes) {
+                    elements.forEach(element => {
+                        classes.forEach(cls => element.classList.toggle(cls));
+                    });
+                }
+
+                // Toggle classes for different elements
+                toggleClasses(document.querySelectorAll('[class*="iq"]'), 'bg-dark', 'text-white');
+                toggleClasses(document.querySelectorAll('.ri-time-line'), 'text-white');
+                toggleClasses(document.querySelectorAll('.swal2-popup'), 'bg-dark');
+                toggleClasses(document.querySelectorAll('.nav-link'), 'text-white');
+                toggleClasses(document.querySelectorAll('span'), 'text-white');
+                toggleClasses(document.querySelectorAll('.dropdown-item'), 'text-white', 'bg-dark');
+                toggleClasses(document.querySelectorAll('h2'), 'text-white');
+                toggleClasses(document.querySelectorAll('[class*="las"]'), 'text-white');
+                toggleClasses(document.querySelectorAll('[class*="card"]'), 'bg-dark', 'text-white');
+                toggleClasses(document.querySelectorAll('[class*="modal"]'), 'bg-dark');
+                toggleClasses(document.querySelectorAll('.modal-title'), 'text-white');
+                toggleClasses(document.querySelectorAll('.card-body h5'), 'text-white');
+                toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
+                toggleClasses(document.querySelectorAll('h6'), 'text-white');
+                toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
+                toggleClasses(document.querySelectorAll('input[type="text"]'), 'dark-mode-text-input');
+                toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
+                toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
+
+                // Handle special cases separately
+                document.querySelector('.navbar-collapse').classList.toggle('bg-dark');
+
+                document.querySelectorAll('.nav-link').forEach(navlinkElement => {
+                    navlinkElement.style.color = isDarkMode ? '#50b5ff' : '';
                 });
 
-                const swal = document.querySelectorAll('.swal2-popup');
-                swal.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                });
-                
-                const navlinkElements = document.querySelectorAll('.nav-link');
-                navlinkElements.forEach(navlinkElement => {
-                    if (isDarkMode) {
-                        // If dark mode is enabled, set nav-link color to light blue
-                        navlinkElement.style.color = '#50b5ff';
-                    } else {
-                        // If dark mode is disabled, reset nav-link color to default
-                        navlinkElement.style.color = '';
-                    }
-                });
-
-                // Add text-white to all span elements
-                const spanElements = document.querySelectorAll('span');
-                spanElements.forEach(span => {
-                    span.classList.toggle('text-white');
-                });
-
-                const dropdownElements = document.querySelectorAll('.dropdown-item');
-                dropdownElements.forEach(element => {
-                    element.classList.toggle('text-white');
-                    element.classList.toggle('bg-dark');
-                });
-
-                const h7Elements = document.querySelectorAll('h4 h7');
-                h7Elements.forEach(element => {
+                document.querySelectorAll('h4 h7').forEach(element => {
                     element.classList.toggle('textfriend');
-                });
-
-                const h2Elements = document.querySelectorAll('h2');
-                h2Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-                
-
-                const lasElements = document.querySelectorAll('[class*="las"]');
-                lasElements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const cardTextWhiteElements = document.querySelectorAll('[class*="card"]');
-                cardTextWhiteElements.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                    element.classList.toggle('text-white');
-                });
-
-                const modalElements = document.querySelectorAll('[class*="modal"]');
-                modalElements.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                });
-
-                const modaltitleElements = document.querySelectorAll('.modal-title');
-                modaltitleElements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                // Add text-white to all <h5> and <h6> elements
-                const h5Elements = document.querySelectorAll('.card-body h5');
-                h5Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const h3Elements = document.querySelectorAll('.profile-detail h3');
-                h3Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const h6Elements = document.querySelectorAll('h6');
-                h6Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const sidebarPanels = document.querySelectorAll('.right-sidebar-panel');
-                sidebarPanels.forEach(panel => {
-                    panel.classList.toggle('bg-dark');
-                });
-
-                const textInputs = document.querySelectorAll('input[type="text"]');
-                textInputs.forEach(input => {
-                    input.classList.toggle('dark-mode-text-input');
-                });
-
-                const chatElements = document.querySelectorAll('[class*="chat"]');
-                chatElements.forEach(element => {
-                    element.classList.toggle('bg-dark');
                 });
 
                 // Toggle the icon class for the button
                 const button = document.getElementById("changeView");
-                if (!isDarkMode) {
-                    button.classList.remove('ri-moon-line');
-                    button.classList.add('ri-sun-line');
-                } else {
-                    button.classList.remove('ri-sun-line');
-                    button.classList.add('ri-moon-line');
-                }
+                button.classList.toggle('ri-moon-line', isDarkMode);
+                button.classList.toggle('ri-sun-line', !isDarkMode);
             }
 
+            // Call toggleDarkMode once at the beginning to apply the correct mode based on saved preference
             document.addEventListener('DOMContentLoaded', () => {
-                const darkMode = localStorage.getItem('darkMode');
-                if (darkMode === 'enabled') {
+                if (localStorage.getItem('darkMode') === 'enabled') {
                     toggleDarkMode();
                 }
             });
+
+
+
 
             ///////////////////////////
 
@@ -1220,7 +1151,8 @@
     }
 
     function updateNotificationBadgeG() {
-        const number = document.querySelectorAll(".noti-list a").length ?? 0;
+        const number = document.querySelectorAll(".noti-list .iq-sub-card").length ?? 0;
+        if (number ==0) document.querySelector(".noti-noti").style.display = 'none';
         document.querySelector(".noti-count").innerHTML = number;
         document.querySelector(".noti-noti").innerHTML = number;
     }
@@ -1232,7 +1164,7 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
         fetchFriendRequests().then(() => updateNotificationBadgeM());
-        updateNotificationBadgeG();
+        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
         updateNotificationBadgeM();
     });
 
@@ -1270,8 +1202,44 @@
     connection.on("AcceptFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
         showToast(`${name} has accepted your friend request.`,`success`,userId);
         fetchFriendRequests().then(() => updateNotificationBadgeM());
+        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
     });
-    
+    ///Other
+    async function fetchFriendRequestOtherNoti(userId){
+        const response = await fetch(`/Index?handler=GetRequestsForNotification&&userid=${userId}`);
+        const friendRequests = await response.json();
+        const container = document.querySelector('.noti-list');
+        container.innerHTML = ''; // Clear existing content
+        const count = friendRequests.$values.length;
+        document.querySelector(".noti-noti").style.display = '';
+        friendRequests.$values.forEach(request => {
+            const requestDiv =document.createElement('a');
+            requestDiv.href=`/Profile?$Id=${request.User.Fullname}`;
+            requestDiv.className="iq-sub-card";
+            requestDiv.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <div class="">
+                                    <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
+                                </div>
+                                <div class="ms-3 w-100">
+                                    <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="errortext mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">accepted your friend request</p>
+                                        <small class="float-right font-size-12">${getTimeFromMessage(request.User.CreatedAt)}</small>
+                                    </div>
+                                </div>
+                            </div>
+                `;
+            container.appendChild(requestDiv);
+        })
+        if (count === 0){
+            const noRequestsMessage = document.createElement('div');
+            noRequestsMessage.textContent = 'No notifications to display';
+            noRequestsMessage.classList.add("text-center");
+            container.appendChild(noRequestsMessage);
+        }
+    }
+    ///Current
     async function fetchFriendRequests() {
         const response = await fetch('/Index?handler=GetRequests');
         const friendRequests = await response.json();
@@ -1315,9 +1283,9 @@
                 }
             container.appendChild(requestDiv);        
         });
-        if (count === 0 ){
+        if (truecount ==0)  document.querySelector(".request-noti").style.display = 'none';
+        if (count === 0){
             const noRequestsMessage = document.createElement('div');
-            document.querySelector(".request-noti").style.display = 'none';
             noRequestsMessage.textContent = 'No friend requests to display';
             noRequestsMessage.classList.add("text-center");
             container.appendChild(noRequestsMessage);

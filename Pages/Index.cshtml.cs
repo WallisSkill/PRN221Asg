@@ -59,4 +59,16 @@ public partial class IndexModel : PageModel
         return new JsonResult(friends, options);
     }
     
+    public async Task<IActionResult> OnGetGetRequestsForNotificationAsync(int userid)
+    {
+        var friends = await _homePageService.GetAllFriendRequestUserOther(userid);
+
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+
+        return new JsonResult(friends, options);
+    }
+    
 }

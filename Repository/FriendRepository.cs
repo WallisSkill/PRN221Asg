@@ -26,7 +26,14 @@ namespace PRN221_Assignment.Repository
             var query = _context.Set<Friend>().Where(x =>  x.User2Id == userId&&(x.Status ==false || (x.Status == true && x.CreatedAt >= twoMinutesAgo))).ToListAsync();
             return await query;
         }
-        
+
+        public async Task<IList<Friend>> GetAllFriendRequestUserOther(int userId)
+        {
+            DateTime twoMinutesAgo = DateTime.Now.AddMinutes(-2);
+            var query = _context.Set<Friend>().Where(x =>  x.User1Id == userId&&((x.Status == true && x.CreatedAt >= twoMinutesAgo))).ToListAsync();
+            return await query;
+        }
+
         public async Task<IList<UserFriend>> GetFriendsOfUserAsync(List<int> userIds,int currentUserId)
         {
             DateTime twoMinutesAgo = DateTime.Now.AddMinutes(-2);
@@ -34,6 +41,21 @@ namespace PRN221_Assignment.Repository
                 join f in _context.Set<Friend>() on u.UserId equals f.User1Id into ufGroup
                 from f in ufGroup.DefaultIfEmpty()
                 where userIds.Contains(f.User1Id) && f.User2Id == currentUserId && (f.Status == false || (f.Status == true && f.CreatedAt >= twoMinutesAgo))
+                select new UserFriend
+                {
+                    User = u,
+                    Status = f.Status
+                };
+            return await query.ToListAsync();
+        }
+
+        public async Task<IList<UserFriend>> GetFriendsOfUserAsyncOther(List<int> userIds, int currentUserId)
+        {
+            DateTime twoMinutesAgo = DateTime.Now.AddMinutes(-2);
+            var query = from u in _context.Set<User>()
+                join f in _context.Set<Friend>() on u.UserId equals f.User2Id into ufGroup
+                from f in ufGroup.DefaultIfEmpty()
+                where userIds.Contains(f.User2Id) && f.User1Id == currentUserId && ((f.Status == true && f.CreatedAt >= twoMinutesAgo))
                 select new UserFriend
                 {
                     User = u,

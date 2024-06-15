@@ -43,14 +43,15 @@ namespace PRN221_Assignment.Services
             return listFriends;
         }
 
-        public async Task<IList<UserFriend>> GetAllFriendRequestUser()
+        public async Task<IList<UserFriend>> GetAllFriendRequestUser(int userid =-1)
         {
             var requestList = await _friendRepository.GetAllFriendRequestUser(_currentUserId);
+            if(userid != -1) requestList = await _friendRepository.GetAllFriendRequestUser(userid);
             var listFriendId = new List<int>();
 
             foreach (var item in requestList)
             {
-                if (item.User1Id == _currentUserId)
+                if (item.User1Id == (userid == -1?_currentUserId :userid))
                 {
                     listFriendId.Add(item.User2Id);
                 }
@@ -60,12 +61,32 @@ namespace PRN221_Assignment.Services
                 }
             }
 
-            var listFriends = await _friendRepository.GetFriendsOfUserAsync(listFriendId,_currentUserId);
+            var listFriends = await _friendRepository.GetFriendsOfUserAsync(listFriendId,userid == -1 ?_currentUserId : userid);
             return listFriends;
         }
 
+        public async Task<IList<UserFriend>> GetAllFriendRequestUserOther(int userId =-1)
+        {
+            var requestList = await _friendRepository.GetAllFriendRequestUserOther(_currentUserId);
+            if(userId != -1) requestList = await _friendRepository.GetAllFriendRequestUserOther(userId);
+            var listFriendId = new List<int>();
 
-        
+            foreach (var item in requestList)
+            {
+                if (item.User1Id == (userId == -1?_currentUserId :userId))
+                {
+                    listFriendId.Add(item.User2Id);
+                }
+                else
+                {
+                    listFriendId.Add(item.User1Id);
+                }
+            }
+
+            var listFriends = await _friendRepository.GetFriendsOfUserAsyncOther(listFriendId,userId == -1 ?_currentUserId : userId);
+            return listFriends;
+        }
+
 
         public List<User> GetUpComingBirthdayFriends()
         {
