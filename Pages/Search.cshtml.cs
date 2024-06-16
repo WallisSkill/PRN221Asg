@@ -11,13 +11,60 @@ namespace PRN221_Assignment.Pages
     {
         [BindProperty]
         public string searchTerm { get; set; }
+        [BindProperty]
+        public string SeeAll { get; set; }
         private readonly ISearchService _searchService;
-       
-        public void OnPost()
+        private readonly IUserResolverService _userResolver;
+        private readonly IProfileService _profileService;
+
+        public IActionResult OnPost()
         {
-            ViewData["searchPost"] = _searchService.SearchPost(searchTerm);
-            ViewData["searchUser"] = _searchService.SearchUser(searchTerm);
+            if (SeeAll == null) return RedirectToPage("/Index");
+            ViewData["searchPost"] = _searchService.SearchPost(searchTerm.Trim());
+            var a = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
+            ViewData["userFriends"] = a;
+            if (SeeAll == "true")
+            {
+                ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
+            }
+            else
+            {
+                ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim()).Take(3).ToList();
+            }
+            ViewData["SeeAll"] = SeeAll;
+            ViewData["searchTerm"] = searchTerm;
+            return RedirectToPage(new
+            {
+                searchTerm = searchTerm,
+                SeeAll = SeeAll
+            });
         }
 
+        public void OnGet(string searchTerm, string SeeAll)
+        {
+            this.searchTerm = searchTerm;
+            this.SeeAll = SeeAll;
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var searchTermTrimmed = searchTerm.Trim();
+                ViewData["searchPost"] = _searchService.SearchPost(searchTermTrimmed);
+
+                var userFriends = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
+                ViewData["userFriends"] = userFriends;
+
+                if (SeeAll == "true")
+                {
+                    ViewData["searchUser"] = _searchService.SearchUser(searchTermTrimmed);
+                }
+                else
+                {
+                    ViewData["searchUser"] = _searchService.SearchUser(searchTermTrimmed).Take(3).ToList();
+                }
+
+                ViewData["SeeAll"] = SeeAll;
+                ViewData["searchTerm"] = searchTerm;
+            }
+        }
     }
 }

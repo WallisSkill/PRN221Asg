@@ -59,7 +59,8 @@ namespace PRN221_Assignment.Repository
                 select new UserFriend
                 {
                     User = u,
-                    Status = f.Status
+                    Status = f.Status,
+                    CreatedTime =f.CreatedAt
                 };
             return await query.ToListAsync();
         }

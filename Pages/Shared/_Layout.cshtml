@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - PRN221_Assignment</title>
+    <title>SocialV - @ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/PRN221_Assignment.styles.css" asp-append-version="true"/>
@@ -364,6 +364,7 @@
             <i class="ri-search-line"></i>
         </a>
         <input type="text" name="searchTerm" class="text search-input" placeholder="Search here...">
+        <input type="hidden" name="SeeAll" value="false">
     </form>
 </div>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -1225,7 +1226,7 @@
                                     <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="errortext mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">accepted your friend request</p>
-                                        <small class="float-right font-size-12">${getTimeFromMessage(request.User.CreatedAt)}</small>
+                                        <small class="float-right font-size-12">${getTimeFromMessage(request.CreatedTime)}</small>
                                     </div>
                                 </div>
                             </div>

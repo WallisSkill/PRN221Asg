@@ -4,18 +4,17 @@
 @using PRN221_Assignment.Models
 @model Profile
 @{
+    
     var user = (User)ViewBag.User;
     var photos = (List<Photo>)ViewBag.photos;
     var friends = (List<UserProfile>)ViewBag.friends;
     var userfriends = (List<Friend>)ViewBag.userFriends;
+    ViewData["Title"] = $"{user.Fullname}"; 
 }
 
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-    <title>Profile]</title>
-</head>
 <body>
 <div>
 <div id="content-page" class="content-page">
