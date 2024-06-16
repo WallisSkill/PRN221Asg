@@ -175,18 +175,18 @@ body {
 .emoji-picker-container {
     display: none;
     position: absolute;
-    bottom: 50px; /* Adjust according to your layout */
-    left: 0;
+    bottom: 0; /* Adjust according to your layout */
+    left: -270px;
     background: white;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 10px;
     z-index: 1000;
-    max-height: 200px; /* Adjust according to your preference */
+    max-height: 210px; /* Adjust according to your preference */
     overflow-y: auto; /* Enable vertical scrolling */
     overflow-x: hidden;
-    width: 100%; /* Adjust according to your preference */
+    width: 90% /* Adjust according to your preference */
 }
 
 /* Styles for individual emoji items */
@@ -221,7 +221,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100px; /* Adjust height as needed */
+    height: 143px; /* Adjust height as needed */
 }
 
 .loader-emoji::after {
