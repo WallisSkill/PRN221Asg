@@ -1099,7 +1099,7 @@
                 </div>
                 <div class="chat-input ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                     <div class="input-container">
-                        <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                        <input autocomplete="false" id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
                         <button class="emoji-button ${body.classList.contains('bg-dark') ? '' :'text-dark'}" onclick="toggleEmojiPicker('${userId}')">☺️</button>
                     </div>
                     <div id="emoji-picker-${userId}" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
@@ -1122,19 +1122,6 @@
 
     function toggleEmojiPicker(userId) {
         const picker = document.getElementById(`emoji-picker-${userId}`);
-        if (picker.style.display === 'block') {
-            picker.style.display = 'none';
-            document.removeEventListener('click', handleClickOutsideEmojiPicker);
-        } else {
-            picker.style.display = 'block';
-            fetchEmojis(userId);
-            setTimeout(() => {
-                document.addEventListener('click', handleClickOutsideEmojiPicker);
-            }, 0);
-        }
-    }
-    function fetchEmojis(userId) {
-        const picker = document.getElementById(`emoji-picker-${userId}`);
         picker.innerHTML = '';
         const emojiSearchInput = document.createElement('input');
         emojiSearchInput.id = `emojiSearch-${userId}`;
@@ -1142,11 +1129,35 @@
         emojiSearchInput.type = 'text';
         emojiSearchInput.placeholder = 'Search emojis...';
         emojiSearchInput.style.width = '100%'; // Adjust width as needed
-        emojiSearchInput.addEventListener('keyup', () => handleEmojiSearch(userId, emojiSearchInput.value));
+        emojiSearchInput.addEventListener('keyup', () => fetchEmojis(userId, emojiSearchInput.value));
         picker.appendChild(emojiSearchInput);
-        fetch('https://emoji-api.com/emojis?access_key=ed5b51ac5f79b6156b30ae79891eb9bb0af2326c') // Replace with your actual API key
+        const emojiContainer = document.createElement('div');
+        emojiContainer.className = `picker-emoji-container-${userId}`;
+        picker.appendChild(emojiContainer);
+        if (picker.style.display === 'block') {
+            picker.style.display = 'none';
+            document.removeEventListener('click', handleClickOutsideEmojiPicker);
+        } else {
+            picker.style.display = 'block';
+            fetchEmojis(userId,'');
+            setTimeout(() => {
+                document.addEventListener('click', handleClickOutsideEmojiPicker);
+            }, 0);
+        }
+    }
+    function fetchEmojis(userId,search) {
+        const picker = document.querySelector(`.picker-emoji-container-${userId}`);
+        picker.innerHTML = '';
+
+        const loader = document.createElement('div');
+        loader.className = 'loader-emoji';
+        picker.appendChild(loader);
+        
+        
+        fetch(`https://emoji-api.com/emojis?search=${search}&access_key=ed5b51ac5f79b6156b30ae79891eb9bb0af2326c`) // Replace with your actual API key
             .then(response => response.json())
             .then(data => {
+                picker.removeChild(loader);
                 // Clear previous emojis
                 data.forEach(emoji => {
                     const emojiSpan = document.createElement('span');
@@ -1158,21 +1169,6 @@
                 });
             })
             .catch(error => console.error('Error fetching emojis:', error));
-    }
-
-    function handleEmojiSearch(userId, searchQuery) {
-        const emojiContainer = document.getElementById(`emoji-picker-${userId}`);
-        const emojis = emojiContainer.querySelectorAll('.emoji-item');
-
-        emojis.forEach(emoji => {
-            const emojiName = emoji.innerText.toLowerCase();
-            if(emoji.getAttribute('emoji-name').toLowerCase().includes(searchQuery)){
-                emoji.style.display = "inline-block";
-            }
-            else{
-                emoji.style.display = "none";    
-            }
-        });
     }
 
     // Function to add the selected emoji to the input field

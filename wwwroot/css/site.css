@@ -215,6 +215,29 @@ body {
     font-weight: bold;
     background-color: #6c757d !important;
 }
+/*Loader*/
+
+.loader-emoji {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* Adjust height as needed */
+}
+
+.loader-emoji::after {
+    content: '';
+    width: 20px; /* Adjust size of loader */
+    height: 20px; /* Adjust size of loader */
+    border: 2px solid #ccc; /* Loader color */
+    border-top: 2px solid #666; /* Loader color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 
 .profile-img2 {
