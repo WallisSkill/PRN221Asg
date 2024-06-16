@@ -175,8 +175,8 @@ body {
 .emoji-picker-container {
     display: none;
     position: absolute;
-    bottom: 0; /* Adjust according to your layout */
-    left: -270px;
+    bottom: 70px; /* Adjust according to your layout */
+    left: 0;
     background: white;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -186,7 +186,7 @@ body {
     max-height: 210px; /* Adjust according to your preference */
     overflow-y: auto; /* Enable vertical scrolling */
     overflow-x: hidden;
-    width: 90% /* Adjust according to your preference */
+    width: 95% /* Adjust according to your preference */
 }
 
 /* Styles for individual emoji items */
