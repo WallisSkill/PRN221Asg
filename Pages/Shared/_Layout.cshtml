@@ -915,7 +915,7 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = message; // Set the message text
+            msg.innerHTML = message.replaceAll(/\n/g,'<br>'); // Set the message text
             msg.classList.add('incoming-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
@@ -997,7 +997,7 @@
             messageContainer.classList.add('message-container');
 
             const msg = document.createElement('div');
-            msg.innerHTML = message.content;
+            msg.innerHTML = message.content.replaceAll(/\n/g,'<br>');
             msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
             messageContainer.appendChild(msg);
             messagesList.appendChild(messageContainer);
