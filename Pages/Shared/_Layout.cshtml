@@ -870,13 +870,12 @@
 
         if (!message) return;
         event.preventDefault();
-        displayOutgoingMessage(senderId, receiverId, message);
+        displayOutgoingMessage(senderId, receiverId, messageInput.value);
+        // Send the message
+        connection.invoke("SendMessage", senderId, receiverId, messageInput.value)
+            .catch(err => console.error(err.toString()));
         messageInput.value = '';
         autoResizeTextarea(textarea);
-        // Send the message
-        connection.invoke("SendMessage", senderId, receiverId, message)
-            .catch(err => console.error(err.toString()));
-        
     }
 
     // Event handler for keydown in the textarea
