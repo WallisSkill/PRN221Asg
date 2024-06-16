@@ -862,17 +862,34 @@
 
 <script>
     const body = document.body;
-    function sendMessage(receiverId) {
+    function sendMessage(receiverId,textarea) {
         const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
         const messageInput = document.getElementById("chatinput-" + receiverId);
         const message = messageInput.value.trim();
-        if (!message)return;
+
+        if (!message) return;
+        event.preventDefault();
         displayOutgoingMessage(senderId, receiverId, message);
-        messageInput.value = ''; // Clear the input field
-        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()))
+        messageInput.value = '';
+        autoResizeTextarea(textarea);
+        // Send the message
+        connection.invoke("SendMessage", senderId, receiverId, message)
+            .catch(err => console.error(err.toString()));
         
-        // Display the sent message in a different color
     }
+
+    // Event handler for keydown in the textarea
+    function handleKeyDown(event, receiverId,textarea) {
+        if (event.shiftKey) {
+            return;
+        }
+
+        // Check if Enter key is pressed
+        if (event.key === 'Enter') {
+            sendMessage(receiverId,textarea); // Call sendMessage function
+        }
+    }
+
 
     function displayOutgoingMessage(senderId, receiverId, message) {
         const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
@@ -1099,7 +1116,7 @@
                 </div>
                 <div class="chat-input ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                     <div class="input-container">
-                        <input autocomplete="false" id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                <textarea oninput="autoResizeTextarea(this);" autocomplete="false" id="chatinput-${userId}" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') handleKeyDown(event, '${userId}',this)"></textarea>
                         <button class="emoji-button ${body.classList.contains('bg-dark') ? '' :'text-dark'}" onclick="toggleEmojiPicker('${userId}')">☺️</button>
                     </div>
                     <div id="emoji-picker-${userId}" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
@@ -1110,14 +1127,28 @@
         // Apply dark mode styles to the input element if dark mode is active
         if (body.classList.contains('bg-dark')) {
             chatBox.classList.add('bg-dark');
-            chatBox.querySelector('input[type="text"]').classList.add('bg-dark');
+            chatBox.querySelector('textarea').classList.add('bg-dark');
             chatBox.style.borderColor = '#555';
             // Set cursor color to white
-            chatBox.querySelector('input[type="text"]').classList.add('text-white');
+            chatBox.querySelector('textarea').classList.add('text-white');
         } else {
             chatBox.style.borderColor = '#ccc';
         }
         return chatBox;
+    }
+
+    function autoResizeTextarea(textarea) {
+        // Set the textarea height to auto to calculate the natural height
+        textarea.style.height = '50px';
+
+        // Set the maximum height of the textarea to accommodate 5 rows
+        const maxHeight = 5 * parseFloat(getComputedStyle(textarea).lineHeight);
+
+        // Set the height to either the scroll height or the maximum height, whichever is smaller
+        textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
+
+        // Scroll to the bottom to show new content
+        textarea.scrollTop = textarea.scrollHeight;
     }
     /////////Emoji
     // Function to close all emoji pickers

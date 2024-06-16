@@ -147,11 +147,14 @@ body {
     flex: 1;
 }
 
-.chat-input input {
+.chat-input textarea {
     flex: 1;
     padding: 10px;
     border: none;
     border-radius: 0 0 0 10px;
+    overflow-y: auto;
+    resize: none;
+    height:50px;
 }
 
 .input-container .emoji-button {
@@ -161,6 +164,7 @@ body {
     padding: 10px;
     font-size: 1.2em;
     border-radius: 0 10px 10px 0;
+    align-self: flex-end;
 }
 
 .chat-input button {
