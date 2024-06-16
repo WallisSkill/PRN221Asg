@@ -898,7 +898,7 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = message; // Set the message text
+            msg.innerHTML = message.replaceAll(/\n/g,'<br>'); // Set the message text
             msg.classList.add('outgoing-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
