@@ -757,7 +757,7 @@
                     <i class="clickable ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
                 </span>
                 <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
-                    <a data-user-id="${friendUserId}" data-user-name="${fullname}" class="dropdown-item cancel-friend clickable" class="dropdown-item" href="#">Cancel Pending</a>
+                    <a data-user-id="${friendUserId}" data-user-name="${fullname}" class="dropdown-item cancel-friend clickable" class="dropdown-item">Cancel Pending</a>
                 </div>
             </div>
         </li>
@@ -777,7 +777,7 @@
                 if (button.closest(".text-center")){
                 button.closest(".text-center").outerHTML = `
                     <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
-                         <i class="ri-add-line me-1 text-white"></i>Add Friend
+                         <i class="ri-add-line me-1 text-white"></i>Add&nbspFriend
                     </span>
                 `;
                 }          
@@ -802,7 +802,7 @@
                             <i class="ri-check-line me-1 text-white"></i> Friend
                         </span>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend" href="#">Unfriend</a>
+                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend">Unfriend</a>
                         </div>
                     </div>
                 `;}

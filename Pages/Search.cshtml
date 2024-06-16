@@ -131,8 +131,8 @@
                                         <div>
                                                 @if (userfriends.FirstOrDefault(x => x.User1Id == u.UserId || x.User2Id == u.UserId) == null)
                                                 {
-                                                    <span class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01" role="button">
-                                                        <i class="ri-add-line me-1 text-white"></i>Add&nbsp;Friend
+                                                    <span  data-user-id="@u.UserId" data-user-name="@u.Fullname" class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01"  role="button">
+                                                        <i  class="ri-add-line me-1 text-white"></i>Add&nbsp;Friend
                                                     </span>
                                                 }
                                                 else
