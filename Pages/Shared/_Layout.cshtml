@@ -664,10 +664,13 @@
                 toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
                 toggleClasses(document.querySelectorAll('h6'), 'text-white');
                 toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('input[type="text"]'), 'dark-mode-text-input');
+                toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark');
                 toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
+                toggleClasses(document.querySelectorAll('.chat-input input'),'text-white');
                 toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
-
+                toggleClasses(document.querySelectorAll('.emoji-picker-container'), 'bg-dark');
+                toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
+                toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark','text-white');
                 // Handle special cases separately
                 document.querySelector('.navbar-collapse').classList.toggle('bg-dark');
 
@@ -939,7 +942,6 @@
             fetchMessages(userId, chatBox);
             chatContainer.appendChild(chatBox);
             openChatBoxes.push(userId);
-            
         }
         if (open){
             const inputField = chatBox.querySelector(`#chatinput-${userId}`);
@@ -1090,25 +1092,106 @@
         }
 
         chatBox.innerHTML = `
-                            <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                                <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
-                                <button class="close-button" onclick="closeChat('${userId}')">×</button>
-                            </div>
-                            <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                            </div>
-                            <div class="chat-input">
-                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);openChat('${userId}','${name}',true)" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
-                                <button onclick="sendMessage('${userId}');">Send</button>
-                            </div>
-                        `;
+                <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
+                    <button class="close-button" onclick="closeChat('${userId}')">×</button>
+                </div>
+                <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                </div>
+                <div class="chat-input ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    <div class="input-container">
+                        <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
+                        <button class="emoji-button ${body.classList.contains('bg-dark') ? '' :'text-dark'}" onclick="toggleEmojiPicker('${userId}')">☺️</button>
+                    </div>
+                    <div id="emoji-picker-${userId}" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    </div>
+                    <button onclick="sendMessage('${userId}');">Send</button>
+                </div>
+        `;
         // Apply dark mode styles to the input element if dark mode is active
         if (body.classList.contains('bg-dark')) {
-            chatBox.querySelector('input[type="text"]').classList.add('dark-mode-text-input');
+            chatBox.classList.add('bg-dark');
+            chatBox.querySelector('input[type="text"]').classList.add('bg-dark');
+            chatBox.style.borderColor = '#555';
+            // Set cursor color to white
+            chatBox.querySelector('input[type="text"]').classList.add('text-white');
+        } else {
+            chatBox.style.borderColor = '#ccc';
         }
-        chatBox.style.borderColor = body.classList.contains('bg-dark') ? '#555' : '#ccc';
         return chatBox;
     }
-    
+
+    function toggleEmojiPicker(userId) {
+        const picker = document.getElementById(`emoji-picker-${userId}`);
+        if (picker.style.display === 'block') {
+            picker.style.display = 'none';
+            document.removeEventListener('click', handleClickOutsideEmojiPicker);
+        } else {
+            picker.style.display = 'block';
+            fetchEmojis(userId);
+            setTimeout(() => {
+                document.addEventListener('click', handleClickOutsideEmojiPicker);
+            }, 0);
+        }
+    }
+    function fetchEmojis(userId) {
+        const picker = document.getElementById(`emoji-picker-${userId}`);
+        picker.innerHTML = '';
+        const emojiSearchInput = document.createElement('input');
+        emojiSearchInput.id = `emojiSearch-${userId}`;
+        emojiSearchInput.className = `search-emoji ${document.body.classList.contains('bg-dark') ? 'bg-dark text-white' : ''}`;
+        emojiSearchInput.type = 'text';
+        emojiSearchInput.placeholder = 'Search emojis...';
+        emojiSearchInput.style.width = '100%'; // Adjust width as needed
+        emojiSearchInput.addEventListener('keyup', () => handleEmojiSearch(userId, emojiSearchInput.value));
+        picker.appendChild(emojiSearchInput);
+        fetch('https://emoji-api.com/emojis?access_key=ed5b51ac5f79b6156b30ae79891eb9bb0af2326c') // Replace with your actual API key
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous emojis
+                data.forEach(emoji => {
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.className = 'emoji-item';
+                    emojiSpan.innerText = emoji.character;
+                    emojiSpan.setAttribute('emoji-name',emoji.slug);
+                    emojiSpan.onclick = () => addEmojiToInput(userId, emoji.character);
+                    picker.appendChild(emojiSpan);
+                });
+            })
+            .catch(error => console.error('Error fetching emojis:', error));
+    }
+
+    function handleEmojiSearch(userId, searchQuery) {
+        const emojiContainer = document.getElementById(`emoji-picker-${userId}`);
+        const emojis = emojiContainer.querySelectorAll('.emoji-item');
+
+        emojis.forEach(emoji => {
+            const emojiName = emoji.innerText.toLowerCase();
+            if(emoji.getAttribute('emoji-name').toLowerCase().includes(searchQuery)){
+                emoji.style.display = "inline-block";
+            }
+            else{
+                emoji.style.display = "none";    
+            }
+        });
+    }
+
+    // Function to add the selected emoji to the input field
+    function addEmojiToInput(userId, emoji) {
+        const input = document.getElementById(`chatinput-${userId}`);
+        input.value += emoji;
+    }
+
+    // Function to handle clicks outside the emoji picker
+    function handleClickOutsideEmojiPicker(event) {
+        const pickers = document.querySelectorAll('.emoji-picker-container');
+        pickers.forEach(picker => {
+            if (!picker.contains(event.target)) {
+                picker.style.display = 'none';
+                document.removeEventListener('click', handleClickOutsideEmojiPicker);
+            }
+        });
+    }
 
 
     function closeChat(userId) {
