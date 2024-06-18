@@ -511,6 +511,11 @@ button.toast-close-button {
         right: .2em
     }
 }
+/*Post*/
+.post-image img{
+    max-height:400px;
+    object-fit:cover
+}
 
 @media all and (min-width: 481px) and (max-width: 768px) {
     #toast-container > div {
@@ -522,3 +527,4 @@ button.toast-close-button {
         padding: 15px 50px 15px 15px
     }
 }
+

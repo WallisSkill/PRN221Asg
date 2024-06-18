@@ -16,8 +16,11 @@
     <link rel="stylesheet" href="~/assets/vendor/vanillajs-datepicker/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="./css/slick-theme.css" />
     <script src="./js/signalR.js"></script>
     <script src="./js/jquery.js"></script>
+
     <script src="./js/toast.js"></script>
     <link rel="stylesheet" href="~/css/site.css"/>
     <script src="./js/connection.js"></script>
@@ -628,44 +631,52 @@
 <script>
 
             ////////////////////////////DarkMode
-            function toggleDarkMode() {
-                const body = document.body;
-                const isDarkMode = body.classList.toggle('bg-dark');
+    function toggleDarkMode() {
+        const body = document.body;
+        const isDarkMode = body.classList.toggle('bg-dark');
 
-                // Save the current mode to localStorage
-                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        // Save the current mode to localStorage
+        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
 
-                // Helper function to toggle classes on a set of elements
-                function toggleClasses(elements, ...classes) {
-                    elements.forEach(element => {
-                        classes.forEach(cls => element.classList.toggle(cls));
-                    });
-                }
+        // Helper function to toggle classes on a set of elements
+        function toggleClasses(elements, ...classes) {
+            elements.forEach(element => {
+                classes.forEach(cls => element.classList.toggle(cls));
+            });
+        }
 
-                // Toggle classes for different elements
-                toggleClasses(document.querySelectorAll('[class*="iq"]'), 'bg-dark', 'text-white');
-                toggleClasses(document.querySelectorAll('.ri-time-line'), 'text-white');
-                toggleClasses(document.querySelectorAll('.swal2-popup'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('.nav-link'), 'text-white');
-                toggleClasses(document.querySelectorAll('span'), 'text-white');
-                toggleClasses(document.querySelectorAll('.dropdown-item'), 'text-white', 'bg-dark');
-                toggleClasses(document.querySelectorAll('h2'), 'text-white');
-                toggleClasses(document.querySelectorAll('[class*="las"]'), 'text-white');
-                toggleClasses(document.querySelectorAll('[class*="card"]'), 'bg-dark', 'text-white');
-                toggleClasses(document.querySelectorAll('[class*="modal"]'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('.modal-title'), 'text-white');
-                toggleClasses(document.querySelectorAll('.card-body h5'), 'text-white');
-                toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
-                toggleClasses(document.querySelectorAll('h6'), 'text-white');
-                toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('.chat-input textarea'),'bg-dark','text-white');
-                toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
-                toggleClasses(document.querySelectorAll('.emoji-picker-container'), 'bg-dark');
-                toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
-                toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark','text-white');
-                toggleClasses(document.querySelectorAll('.search-input'),'text-white');
+        // Toggle classes for different elements
+        toggleClasses(document.querySelectorAll('[class*="iq"]'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('.ri-time-line'), 'text-white');
+        toggleClasses(document.querySelectorAll('.swal2-popup'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.nav-link'), 'text-white');
+        toggleClasses(document.querySelectorAll('span'), 'text-white');
+        toggleClasses(document.querySelectorAll('.dropdown-item'), 'text-white', 'bg-dark');
+        toggleClasses(document.querySelectorAll('h2'), 'text-white');
+        toggleClasses(document.querySelectorAll('[class*="las"]'), 'text-white');
+        toggleClasses(document.querySelectorAll('[class*="card"]'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('[class*="modal"]'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.modal-title'), 'text-white');
+        toggleClasses(document.querySelectorAll('.card-body h5'), 'text-white');
+        toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
+        toggleClasses(document.querySelectorAll('h6'), 'text-white');
+        toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.chat-input textarea'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
+        toggleClasses(document.querySelectorAll('.emoji-picker-container'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
+        toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('.search-input'), 'text-white');
+
+                    ///postArrrow
+                    var arrowColor = isDarkMode ? "white" : "black";
+        document.querySelectorAll('.slick-prev, .slick-next').forEach(el => {
+            el.style.color = arrowColor;
+        });
+                console.log(document.querySelectorAll('.slick-prev, .slick-next'));
+
                 // Handle special cases separately
                 document.querySelector('.navbar-collapse').classList.toggle('bg-dark');
 
@@ -860,6 +871,8 @@
 <!-- Wrapper End-->
 <!-- Backend Bundle JavaScript -->
 <script src="~/assets/js/libs.min.js"></script>
+ <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
 <!-- slider JavaScript -->
 <script src="~/assets/js/slider.js"></script>
 <!-- masonry JavaScript -->

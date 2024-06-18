@@ -3,16 +3,15 @@ using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.AspNetCore.SignalR;
 using PRN221_Assignment.Models;
-using PRN221_Assignment.Services.Interface;
+using PRN221_Assignment.Repository.Interface;
 
 namespace PRN221_Assignment.Hubs;
 
 [RequiredArgsConstructor]
-[Service]
 public partial class LiveHub : Hub
 {
     private readonly social_mediaContext _context;
-    private readonly IFriendService _friendService;
+    private readonly IFriendRepository friendRepository;
     public async Task SendMessage(string senderId, string receiverId, string message)
     {
         try
@@ -40,18 +39,18 @@ public partial class LiveHub : Hub
     
     public async Task SendFriendRequest(string userId, string friendUserId,string name)
     {
-        _friendService.SendFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
+        friendRepository.SendFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
         await Clients.Others.SendAsync("ReceiveFriendRequest-"+friendUserId, userId, friendUserId,name);
     }
     public async Task AcceptFriendRequest(string userId, string friendUserId,string name)
     {
-        _friendService.AcceptFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
+        friendRepository.AcceptFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
         await Clients.Others.SendAsync("AcceptFriendRequest-"+friendUserId, userId, friendUserId,name);
     }
 
     public void CancelFriendRequest(string userId, string friendUserId)
     {
-        _friendService.CancelFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
+        friendRepository.CancelFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
     }
     
 }
