@@ -402,10 +402,17 @@
                                         <p>@post.Caption</p>
                                     </div>
                                     <div class="user-post">
-                                        <div class=" d-grid grid-rows-2 grid-flow-col gap-3">
-                                            <div class="row-span-2 row-span-md-1">
-                                                <img src="@post.PhotoURL" alt="post-image" class="img-fluid rounded w-100">
+                                        <div class="newt">
+                                            @foreach (var url in post.PhotoURL)
+                                            {
+                                                if(url != null){
+                                            <div class="post-image">
+                                               
+                                                    <img src="@url" alt="post-image" class="img-fluid rounded w-100">
+                                                
                                             </div>
+                                                }
+                                            }
                                         </div>
                                     </div>
                                     <div class="comment-area mt-3">
@@ -570,5 +577,40 @@
         var replyDiv = document.getElementById('replyDiv');
         replyDiv.classList.toggle('hidden');
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        $('.newt').slick({
+            infinite: false,
+        });
+    });
+
+    var styles = `
+                .slick-prev, .slick-next{
+                    color:black;
+                }
+        `
+    if (document.body.classList.contains("bg-dark")) {
+        styles = `
+                    .slick-prev, .slick-next{
+                        color:white;
+                    }
+            `
+    }
+    var styleSheet = document.createElement("style")
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
+
+    var comment = document.querySelectorAll(".comment-content");
+    document.addEventListener('DOMContentLoaded', (event) => {
+        do {
+            comment = document.querySelectorAll(".comment-content")
+            comment.forEach(m => {
+                if (document.body.classList.contains('bg-dark')) {
+                    m.classList.add("comment-content-dark");
+                }
+            });
+        } while (comment.length === 0);
+
+    });
 </script>
 
