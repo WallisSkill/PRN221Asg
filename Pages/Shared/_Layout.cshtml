@@ -805,18 +805,18 @@
                             <i class="ri-check-line me-1 text-white"></i> Friend
                         </span>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend">Unfriend</a>
+                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
                         </div>
                     </div>
                 `;}
                 if (document.getElementById("pendinger")) {
-                    document.getElementById("pendinger").outerHTML = `
+                    document.getElementById("pendinger").innerHTML = `
                                 <div class="dropdown">
                                     <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                                         <i class="ri-check-line me-1 text-white"></i> Friend
                                     </span>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                                        <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item cancel-friend">Unfriend</a>
+                                        <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
                                     </div>
                                 </div>
                             `;
@@ -1371,7 +1371,7 @@
         document.querySelector(".noti-noti").style.display = '';
         friendRequests.$values.forEach(request => {
             const requestDiv =document.createElement('a');
-            requestDiv.href=`/Profile?$Id=${request.User.Fullname}`;
+            requestDiv.href=`/Profile?Id=${request.User.UserId}`;
             requestDiv.className="iq-sub-card";
             requestDiv.innerHTML = `
                             <div class="d-flex align-items-center">
