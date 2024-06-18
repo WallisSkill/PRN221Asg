@@ -1105,24 +1105,28 @@
         const time = new Date(timeString);
         const now = new Date();
 
-        const diffInMinutes = Math.floor((now - time) / (1000 * 60));
+        const diffInSeconds = Math.floor((now - time) / 1000);
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
         const diffInHours = Math.floor(diffInMinutes / 60);
         const diffInDays = Math.floor(diffInHours / 24);
         const diffInWeeks = Math.floor(diffInDays / 7);
         const diffInYears = Math.floor(diffInDays / 365);
 
-        if (diffInMinutes < 60) {
-            return diffInMinutes + " minutes";
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds} second${diffInSeconds === 1 ? '' : 's'} ago`;
+        } else if (diffInMinutes < 60) {
+            return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
         } else if (diffInHours < 24) {
-            return diffInHours + " hours";
+            return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
         } else if (diffInDays < 7) {
-            return diffInDays + " days";
+            return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
         } else if (diffInDays < 365) {
-            return diffInWeeks + " weeks";
+            return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
         } else {
-            return diffInYears + " years";
+            return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`;
         }
     }
+
 
     ///////////////chatbox
 
