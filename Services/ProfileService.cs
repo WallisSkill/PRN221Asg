@@ -35,7 +35,7 @@ public partial class ProfileService: IProfileService
 
     public List<UserProfile> GetAllFriendOfUser(int userid)
     {
-        var allFriendsRelationshipOfUser = _friendRepository.GetAllFriendRelatetionshipOfUser(userid,true);
+        var allFriendsRelationshipOfUser = _friendRepository.GetAllFriendRelationshipsOfUser(userid,true);
         var listFriendId = new List<int>();
         allFriendsRelationshipOfUser.ForEach(item =>
         {
@@ -47,7 +47,7 @@ public partial class ProfileService: IProfileService
         {
             listFriendsCount.Add(new UserProfile()
             {
-               Count = _friendRepository.GetAllFriendRelatetionshipOfUser(friend.UserId, true).Count,
+               Count = _friendRepository.GetAllFriendRelationshipsOfUser(friend.UserId, true).Count,
                User = friend
             });
         }
@@ -56,6 +56,6 @@ public partial class ProfileService: IProfileService
 
     public List<Friend> GetAllFriendRelatetionshipOfUser(int userId)
     {
-        return _friendRepository.GetAllFriendRelatetionshipOfUser(userId,false);
+        return _friendRepository.GetAllFriendRelationshipsOfUser(userId,false);
     }
 }

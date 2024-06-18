@@ -4,18 +4,17 @@
 @using PRN221_Assignment.Models
 @model Profile
 @{
+    
     var user = (User)ViewBag.User;
     var photos = (List<Photo>)ViewBag.photos;
     var friends = (List<UserProfile>)ViewBag.friends;
     var userfriends = (List<Friend>)ViewBag.userFriends;
+    ViewData["Title"] = $"{user.Fullname}"; 
 }
 
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-    <title>Profile]</title>
-</head>
 <body>
 <div>
 <div id="content-page" class="content-page">
@@ -69,7 +68,7 @@
                         <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
                             @if (!User.FindFirstValue(ClaimTypes.Authentication).Equals(user.UserId.ToString()))
                             {
-                                <li class="text-center pe-3">
+                                <li class="text-center">
                                     @if(userfriends.FirstOrDefault(x => x.User1Id == user.UserId || x.User2Id == user.UserId) == null){
                                         <span  data-user-id="@user.UserId" data-user-name="@user.Fullname" class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01"  role="button">
                                             <i  class="ri-add-line me-1 text-white"></i>Add Friend
@@ -85,7 +84,7 @@
                                                 <i class="ri-check-line me-1 text-white"></i> Friend
                                             </span>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                                            <a class="dropdown-item" href="#">Unfriend</a>
+                                            <a data-user-id="@user.UserId" data-user-name="@user.Fullname" class="dropdown-item clickable cancel-friend">Unfriend</a>
                                         </div>
                                     </div>
                                     }
@@ -99,19 +98,20 @@
                                             @{bool? status2 = userfriends.FirstOrDefault(x => x.User1Id == user.UserId)!= null? userfriends.FirstOrDefault(x => x.User1Id == user.UserId).User1Id== user.UserId: false;}
                                             @if (status2 is false)
                                             {
-                                            <a class="dropdown-item" href="#">Cancel Pending</a>
+                                            <a data-user-id="@user.UserId" data-user-name="@user.Fullname" class="dropdown-item cancel-friend clickable">Cancel Pending</a>
                                             }
+                                            
                                             else
                                             {
-                                            <a class="dropdown-item" href="#">Confirm</a>
-                                            <a class="dropdown-item" href="#">Cancel</a>
+                                            <a data-user-id="@user.UserId" class="dropdown-item accept-friend clickable">Confirm</a>
+                                            <a data-user-id="@user.UserId" data-user-name="@user.Fullname" class="dropdown-item clickable cancel-friend">Cancel</a>
                                             }
                                         </div>
                                     </div>
                                     }
                                     }
                                 </li>
-                                <li class="text-center pe-3">
+                                <li class="text-center">
                                     <div class="">
                                         <span onclick="openChat('@user.UserId','@user.Fullname')" class="btn btn-primary me-2" role="button">
                                             <i class="ri-message-line me-1 text-white"></i>Message
@@ -124,7 +124,7 @@
                             }
                             else
                             {
-                                <li class="text-center pe-3">
+                                <li class="text-center">
                                     <div class="">
                                         <span class="btn btn-primary me-2" id="dropdownMenuButton01" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                                             <i class="ri-pencil-line me-1 text-white"></i>Edit Profile
@@ -1613,7 +1613,7 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
                                 <a href="#">
-                                    <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
+                                    <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid profile-img2">
                                 </a>
                                 <div class="friend-info ms-3">
                                     <h5 id="@friend.User.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
@@ -1621,51 +1621,58 @@
                                 </div>
                             </div>
                             <div class="card-header-toolbar d-flex align-items-center">
-                                @if(userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null){
+                                @if (friend.User.UserId != int.Parse(User.FindFirstValue(ClaimTypes.Authentication)))
+                                {
+                                    @if (userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null)
+                                    {
                                         <span data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="btn btn-primary me-2 add-friend" role="button">
-                                            <i  class="ri-add-line me-1 text-white"></i>Add Friend
+                                            <i class="ri-add-line me-1 text-white"></i>Add Friend
                                         </span>
                                         @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
                                         @*     <a class="dropdown-item" href="#">Unfriend</a> *@
                                         @* </div> *@
-                                }
-                                else
-                                {
-                                    bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) != null? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId)?.Status :  false;
-                                    if (status is true)
-                                    {
-                                        <div class="dropdown">
-                                            <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                                                <i class="ri-check-line me-1 text-white"></i> Friend
-                                            </span>
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                                                <a class="dropdown-item" href="#">Unfriend</a>
-                                            </div>
-                                        </div>
                                     }
                                     else
                                     {
-                                        <div id="e">
+                                        bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) != null ? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId)?.Status : false;
+                                        <div id="pendinger">
+                                        @if (status is true)
+                                        {
                                             <div class="dropdown">
-                                                <span class="dropdown-toggle btn btn-warning me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                                                    <i class="ri-time-line me-1"></i> Pending
+                                                <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                                    <i class="ri-check-line me-1 text-white"></i> Friend
                                                 </span>
-                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton02">
-                                                    @{bool? status2 = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId)!= null? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId).User1Id== friend.User.UserId: false;}
-                                                    @if (status2 is false)
-                                                    {
-                                                        <a class="dropdown-item" href="#">Cancel Pending</a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <a class="dropdown-item" href="#">Confirm</a>
-                                                        <a class="dropdown-item" href="#">Cancel</a>
-                                                    }
+                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                                                    <a data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="dropdown-item clickable cancel-friend">Unfriend</a>
                                                 </div>
                                             </div>
+                                        }
+                                        else
+                                        {
+                                           
+                                                <div class="dropdown">
+                                                    <span class="dropdown-toggle btn btn-warning me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                                        <i class="ri-time-line me-1"></i> Pending
+                                                    </span>
+                                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton02">
+                                                        @{ bool? status2 = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId) != null ? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId).User1Id == friend.User.UserId : false; }
+                                                        @if (status2 is false)
+                                                        {
+                                                            <a data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="dropdown-item cancel-friend clickable">Cancel Pending</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a data-user-id="@friend.User.UserId" class="clickable dropdown-item accept-friend">Confirm</a>
+                                                            <a data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="dropdown-item clickable cancel-friend">Cancel</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                   
+                                        }
                                         </div>
                                     }
                                 }
+  
                             </div>
                         </div>
                     </div>
@@ -1684,7 +1691,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <a href="#">
-                        <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid">
+                        <img src="@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid profile-img2">
                     </a>
                     <div class="friend-info ms-3">
                         <h5 id="@friend.User.UserId" class="clickable"  onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
@@ -1692,48 +1699,52 @@
                     </div>
                 </div>
                 <div class="card-header-toolbar d-flex align-items-center">
-                    @if(userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null){
-                                        <span data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="btn btn-primary me-2 add-friend" role="button">
-                                            <i class="ri-add-line me-1 text-white"></i>Add Friend
-                                        </span>
-                        @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
-                        @*     <a class="dropdown-item" href="#">Unfriend</a> *@
-                        @* </div> *@
-                    }
-                    else
+                    @if (friend.User.UserId != int.Parse(User.FindFirstValue(ClaimTypes.Authentication)))
                     {
-                    bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) != null? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId)?.Status :  false;
-                    if (status is true)
-                    {
-                    <div class="dropdown">
-                                            <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                                                <i class="ri-check-line me-1 text-white"></i> Friend
-                                            </span>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                            <a class="dropdown-item" href="#">Unfriend</a>
-                        </div>
-                    </div>
-                    }
-                    else
-                    {
-                    <div class="dropdown">
-                                            <span class="dropdown-toggle btn btn-warning me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                                                <i class="ri-time-line me-1"></i> Pending
-                                            </span>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton02">
-                            @{bool? status2 = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId)!= null? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId).Status: false;}
-                            @if (status2 is false)
+                        @if (userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null)
+                        {
+                            <span data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="btn btn-primary me-2 add-friend" role="button">
+                                <i class="ri-add-line me-1 text-white"></i>Add Friend
+                            </span>
+                            @* <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton01"> *@
+                            @*     <a class="dropdown-item" href="#">Unfriend</a> *@
+                            @* </div> *@
+                        }
+                        else
+                        {
+                            bool? status = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) != null ? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId)?.Status : false;
+                            if (status is true)
                             {
-                            <a class="dropdown-item" href="#">Cancel Pending</a>
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                        <i class="ri-check-line me-1 text-white"></i> Friend
+                                    </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                                        <a data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="dropdown-item cancel-friend">Unfriend</a>
+                                    </div>
+                                </div>
                             }
                             else
                             {
-                            <a class="dropdown-item" href="#">Confirm</a>
-                            <a class="dropdown-item" href="#">Cancel</a>
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle btn btn-warning me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                        <i class="ri-time-line me-1"></i> Pending
+                                    </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton02">
+                                        @{ bool? status2 = userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId) != null ? userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId).Status : false; }
+                                        @if (status2 is false)
+                                        {
+                                            <a data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="dropdown-item cancel-friend">Cancel Pending</a>
+                                        }
+                                        else
+                                        {
+                                            <a data-user-id="@friend.User.UserId" class="dropdown-item accept-friend clickable">Confirm</a>
+                                            <a data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="dropdown-item cancel-friend">Cancel</a>
+                                        }
+                                    </div>
+                                </div>
                             }
-                        </div>
-                    </div>
-                    }
+                        }
                     }
                 </div>
             </div>

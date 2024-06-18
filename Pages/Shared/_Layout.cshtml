@@ -1,18 +1,14 @@
 ﻿@using System.Security.Claims
-@using PRN221_Assignment.Data
-@{
-    var listMess = ViewData["listMess"] as List<MessageData>;
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PRN221_Assignment</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/PRN221_Assignment.styles.css" asp-append-version="true" />
-    <link rel="shortcut icon" href="~/assets/images/favicon.ico" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SocialV - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/PRN221_Assignment.styles.css" asp-append-version="true"/>
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico"/>
     <link rel="stylesheet" href="~/assets/css/libs.min.css">
     <link rel="stylesheet" href="~/assets/css/socialv.css?v=4.0.0">
     <link rel="stylesheet" href="~/assets/vendor/_fortawesome/fontawesome-free/css/all.min.css">
@@ -32,9 +28,17 @@
             .build();
         connection.start().catch(err => console.error(err.toString()));
     </script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="./css/slick-theme.css" />
+    <script src="./js/signalR.js"></script>
+    <script src="./js/jquery.js"></script>
+
+    <script src="./js/toast.js"></script>
+    <link rel="stylesheet" href="~/css/site.css"/>
+    <script src="./js/connection.js"></script>
 </head>
 <body>
-    @*     <header>
+@*     <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
     <a class="navbar-brand" asp-area="" asp-page="/Index">PRN221_Assignment</a>
@@ -56,571 +60,573 @@
     </div>
     </nav>
     </header> *@
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    <div>
-        <!-- loader Start -->
-        <div id="loading">
-            <div id="loading-center">
+<div>
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+<!-- loader END -->
+<!-- Wrapper Start -->
+<div class="wrapper">
+<div class="iq-sidebar sidebar-default ">
+<div id="sidebar-scrollbar">
+<nav class="iq-sidebar-menu">
+<ul id="iq-sidebar-toggle" class="iq-menu">
+<li class="active">
+    <a href="~/dashboard/index.html" class=" ">
+        <i class="las la-newspaper"></i><span>Newsfeed</span>
+    </a>
+</li>
+<li class="">
+    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class=" ">
+        <i class="las la-user"></i><span>Profile</span>
+    </a>
+</li>
+<li class="">
+    <a href="~/app/group.html" class=" ">
+        <i class="las la-users"></i><span>Group</span>
+    </a>
+</li>
+<li class=" ">
+    <a href="~/app/todo.html" class=" ">
+        <i class="las la-check-circle"></i><span>Todo</span>
+    </a>
+</li>
+<li class=" ">
+    <a href="~/dashboard/calendar.html" class=" ">
+        <i class="las la-calendar"></i><span>Calendar</span>
+    </a>
+</li>
+<li class=" ">
+    <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false">
+        <i class="ri-mail-line"></i><span>Email</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+    </a>
+    <ul id="mailbox" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
+        <li class="">
+            <a href="~/app/email.html"><i class="  ri-inbox-line"></i>Inbox</a>
+        </li>
+        <li class="">
+            <a href="~/app/email-compose.html"><i class="ri-edit-line"></i>Email Compose</a>
+        </li>
+    </ul>
+</li>
+
+<li class="">
+    <a href="#ui-elements" data-bs-toggle="collapse" class="  collapsed"
+       aria-expanded="false">
+        <i class="ri-focus-2-line"></i><span>Ui-Elements</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+    </a>
+    <ul id="ui-elements" class="iq-submenu collapse"
+        data-bs-parent="#iq-sidebar-toggle">
+        <li class="">
+            <a href="#ui-kit" data-bs-toggle="collapse" class="  collapsed"
+               aria-expanded="false">
+                <i class="ri-pencil-ruler-line"></i><span>UI Kit</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="ui-kit" class="iq-submenu collapse" data-bs-parent="#ui-elements">
+                <li class="">
+                    <a href="~/dashboard/ui-color.html"><i class="ri-font-color"></i>Colors</a>
+                </li>
+                <li class=" ">
+                    <a href="~/dashboard/ui-typography.html"><i class="ri-text"></i>Typography</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-alerts.html"><i class="ri-alert-line"></i>Alerts</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-badges.html"><i class="ri-building-3-line"></i>Badges</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-breadcrumb.html"><i class="ri-menu-2-line"></i>Breadcrumb</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-buttons.html"><i class="ri-checkbox-blank-line"></i>Buttons</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-cards.html"><i class="ri-bank-card-line"></i>Cards</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-carousel.html"><i class="ri-slideshow-line"></i>Carousel</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-embed-video.html"><i class="ri-slideshow-2-line"></i>Video</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-grid.html"><i class="ri-grid-line"></i>Grid</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-images.html"><i class="ri-image-line"></i>Images</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-list-group.html">
+                        <i class="ri-file-list-3-line"></i>list
+                        Group
+                    </a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-modal.html"><i class="ri-stop-mini-line"></i>Modal</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-notifications.html"><i class="ri-notification-line"></i>Notifications</a>
+                </li>
+                <li class="">
+                    <a href="ui-pagination.html"><i class="ri-pages-line"></i>Pagination</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-popovers.html"><i class="ri-folder-shield-2-line"></i>Popovers</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-progressbars.html"><i class="ri-battery-low-line"></i>Progressbars</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-tabs.html"><i class="ri-database-line"></i>Tabs</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/ui-tooltips.html"><i class="ri-record-mail-line"></i>Tooltips</a>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#forms" class="  collapsed" data-bs-toggle="collapse"
+               aria-expanded="false">
+                <i class="ri-profile-line"></i><span>Forms</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="forms" class="iq-submenu collapse" data-bs-parent="#ui-elements">
+                <li class="">
+                    <a href="~/dashboard/form-layout.html"><i class="ri-tablet-line"></i>Form Elements</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/form-validation.html">
+                        <i class="ri-device-line"></i>Form
+                        Validation
+                    </a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/form-switch.html"><i class="ri-toggle-line"></i>Form Switch</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/form-chechbox.html">
+                        <i class="ri-checkbox-line"></i>Form
+                        Checkbox
+                    </a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/form-radio.html"><i class="ri-radio-button-line"></i>Form Radio</a>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#wizard-form" class="  collapsed" data-bs-toggle="collapse"
+               aria-expanded="false">
+                <i class="ri-archive-drawer-line"></i>
+                <span>
+                    Forms
+                    Wizard
+                </span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="wizard-form" class="iq-submenu collapse" data-bs-parent="#ui-elements">
+                <li class="">
+                    <a href="~/dashboard/form-wizard.html"><i class="ri-clockwise-line"></i>Simple Wizard</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/form-wizard-validate.html"><i class="ri-clockwise-2-line"></i>Validate Wizard</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/form-wizard-vertical.html"><i class="ri-anticlockwise-line"></i>Vertical Wizard</a>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#tables" class="  collapsed" data-bs-toggle="collapse"
+               aria-expanded="false">
+                <i class="ri-table-line"></i><span>Table</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="tables" class="iq-submenu collapse" data-bs-parent="#ui-elements">
+                <li class="">
+                    <a href="~/dashboard/tables-basic.html"><i class="ri-table-line"></i>Basic Tables</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/data-table.html"><i class="ri-database-line"></i>Data Table</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/table-editable.html"><i class="ri-refund-line"></i>Editable Table</a>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#icons" class="  collapsed" data-bs-toggle="collapse"
+               aria-expanded="false">
+                <i class="ri-list-check"></i><span>Icons</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="icons" class="iq-submenu collapse" data-bs-parent="#ui-elements">
+                <li class="">
+                    <a href="~/dashboard/icon-fontawesome-5.html"><i class="ri-facebook-fill"></i>Font Awesome 5</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/icon-lineawesome.html"><i class="ri-keynote-line"></i>line Awesome</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/icon-remixicon.html"><i class="ri-remixicon-line"></i>Remixicon</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+<li class="">
+    <a href="#pages" class="  collapsed" data-bs-toggle="collapse"
+       aria-expanded="false">
+        <i class="ri-pages-line"></i><span>Pages</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+    </a>
+    <ul id="pages" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
+        <li class="">
+            <a href="#authentication" class="  collapsed" data-bs-toggle="collapse"
+               aria-expanded="false">
+                <i class="ri-pages-line"></i><span>Authentication</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="authentication" class="iq-submenu collapse" data-bs-parent="#pages">
+                <li class="">
+                    <a href="~/dashboard/sign-in.html"><i class="ri-login-box-line"></i>Login</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/sign-up.html"><i class="ri-login-circle-line"></i>Register</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-recoverpw.html"><i class="ri-record-mail-line"></i>Recover Password</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-confirm-mail.html"><i class="ri-file-code-line"></i>Confirm Mail</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-lock-screen.html"><i class="ri-lock-line"></i>Lock Screen</a>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#extra-pages" class="  collapsed" data-bs-toggle="collapse"
+               aria-expanded="false">
+                <i class="ri-pantone-line"></i><span>Extra Pages</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
+            </a>
+            <ul id="extra-pages" class="iq-submenu collapse" data-bs-parent="#pages">
+                <li class="">
+                    <a href="~/dashboard/pages-timeline.html"><i class="ri-map-pin-time-line"></i>Timeline</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-invoice.html"><i class="ri-question-answer-line"></i>Invoice</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/blank-page.html"><i class="ri-invision-line"></i>Blank Page</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-error.html"><i class="ri-error-warning-line"></i>Error 404</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-error-500.html"><i class="ri-error-warning-line"></i>Error 500</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-pricing.html"><i class="ri-price-tag-line"></i>Pricing</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-pricing-one.html"><i class="ri-price-tag-2-line"></i>Pricing 1</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-maintenance.html"><i class="ri-archive-line"></i>Maintenance</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-comingsoon.html"><i class="ri-mastercard-line"></i>Coming Soon</a>
+                </li>
+                <li class="">
+                    <a href="~/dashboard/pages-faq.html"><i class="ri-compasses-line"></i>Faq</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+</ul>
+</nav>
+<div class="p-5"></div>
+</div>
+</div>
+
+<div class="iq-top-navbar">
+<div class="iq-navbar-custom">
+<nav class="navbar navbar-expand-lg navbar-light p-0">
+<div class="iq-navbar-logo d-flex justify-content-between">
+    <a href="/Index">
+        <img src="~/assets/images/logo.png" class="img-fluid" alt="">
+        <span>SocialV</span>
+    </a>
+    <div class="iq-menu-bt align-self-center">
+        <div class="wrapper-menu">
+            <div class="main-circle">
+                <i class="ri-menu-line"></i>
             </div>
         </div>
-        <!-- loader END -->
-        <!-- Wrapper Start -->
-        <div class="wrapper">
-            <div class="iq-sidebar sidebar-default ">
-                <div id="sidebar-scrollbar">
-                    <nav class="iq-sidebar-menu">
-                        <ul id="iq-sidebar-toggle" class="iq-menu">
-                            <li class="active">
-                                <a href="~/dashboard/index.html" class=" ">
-                                    <i class="las la-newspaper"></i><span>Newsfeed</span>
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class=" ">
-                                    <i class="las la-user"></i><span>Profile</span>
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="~/app/group.html" class=" ">
-                                    <i class="las la-users"></i><span>Group</span>
-                                </a>
-                            </li>
-                            <li class=" ">
-                                <a href="~/app/todo.html" class=" ">
-                                    <i class="las la-check-circle"></i><span>Todo</span>
-                                </a>
-                            </li>
-                            <li class=" ">
-                                <a href="~/dashboard/calendar.html" class=" ">
-                                    <i class="las la-calendar"></i><span>Calendar</span>
-                                </a>
-                            </li>
-                            <li class=" ">
-                                <a href="#mailbox" data-bs-toggle="collapse" class="  collapsed" aria-expanded="false">
-                                    <i class="ri-mail-line"></i><span>Email</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                </a>
-                                <ul id="mailbox" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
-                                    <li class="">
-                                        <a href="~/app/email.html"><i class="  ri-inbox-line"></i>Inbox</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="~/app/email-compose.html"><i class="ri-edit-line"></i>Email Compose</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li class="">
-                                <a href="#ui-elements" data-bs-toggle="collapse" class="  collapsed"
-                                   aria-expanded="false">
-                                    <i class="ri-focus-2-line"></i><span>Ui-Elements</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                </a>
-                                <ul id="ui-elements" class="iq-submenu collapse"
-                                    data-bs-parent="#iq-sidebar-toggle">
-                                    <li class="">
-                                        <a href="#ui-kit" data-bs-toggle="collapse" class="  collapsed"
-                                           aria-expanded="false">
-                                            <i class="ri-pencil-ruler-line"></i><span>UI Kit</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="ui-kit" class="iq-submenu collapse" data-bs-parent="#ui-elements">
-                                            <li class="">
-                                                <a href="~/dashboard/ui-color.html"><i class="ri-font-color"></i>Colors</a>
-                                            </li>
-                                            <li class=" ">
-                                                <a href="~/dashboard/ui-typography.html"><i class="ri-text"></i>Typography</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-alerts.html"><i class="ri-alert-line"></i>Alerts</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-badges.html"><i class="ri-building-3-line"></i>Badges</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-breadcrumb.html"><i class="ri-menu-2-line"></i>Breadcrumb</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-buttons.html"><i class="ri-checkbox-blank-line"></i>Buttons</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-cards.html"><i class="ri-bank-card-line"></i>Cards</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-carousel.html"><i class="ri-slideshow-line"></i>Carousel</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-embed-video.html"><i class="ri-slideshow-2-line"></i>Video</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-grid.html"><i class="ri-grid-line"></i>Grid</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-images.html"><i class="ri-image-line"></i>Images</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-list-group.html">
-                                                    <i class="ri-file-list-3-line"></i>list
-                                                    Group
-                                                </a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-modal.html"><i class="ri-stop-mini-line"></i>Modal</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-notifications.html"><i class="ri-notification-line"></i>Notifications</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="ui-pagination.html"><i class="ri-pages-line"></i>Pagination</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-popovers.html"><i class="ri-folder-shield-2-line"></i>Popovers</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-progressbars.html"><i class="ri-battery-low-line"></i>Progressbars</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-tabs.html"><i class="ri-database-line"></i>Tabs</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/ui-tooltips.html"><i class="ri-record-mail-line"></i>Tooltips</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="">
-                                        <a href="#forms" class="  collapsed" data-bs-toggle="collapse"
-                                           aria-expanded="false">
-                                            <i class="ri-profile-line"></i><span>Forms</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="forms" class="iq-submenu collapse" data-bs-parent="#ui-elements">
-                                            <li class="">
-                                                <a href="~/dashboard/form-layout.html"><i class="ri-tablet-line"></i>Form Elements</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/form-validation.html">
-                                                    <i class="ri-device-line"></i>Form
-                                                    Validation
-                                                </a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/form-switch.html"><i class="ri-toggle-line"></i>Form Switch</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/form-chechbox.html">
-                                                    <i class="ri-checkbox-line"></i>Form
-                                                    Checkbox
-                                                </a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/form-radio.html"><i class="ri-radio-button-line"></i>Form Radio</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="">
-                                        <a href="#wizard-form" class="  collapsed" data-bs-toggle="collapse"
-                                           aria-expanded="false">
-                                            <i class="ri-archive-drawer-line"></i>
-                                            <span>
-                                                Forms
-                                                Wizard
-                                            </span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="wizard-form" class="iq-submenu collapse" data-bs-parent="#ui-elements">
-                                            <li class="">
-                                                <a href="~/dashboard/form-wizard.html"><i class="ri-clockwise-line"></i>Simple Wizard</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/form-wizard-validate.html"><i class="ri-clockwise-2-line"></i>Validate Wizard</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/form-wizard-vertical.html"><i class="ri-anticlockwise-line"></i>Vertical Wizard</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="">
-                                        <a href="#tables" class="  collapsed" data-bs-toggle="collapse"
-                                           aria-expanded="false">
-                                            <i class="ri-table-line"></i><span>Table</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="tables" class="iq-submenu collapse" data-bs-parent="#ui-elements">
-                                            <li class="">
-                                                <a href="~/dashboard/tables-basic.html"><i class="ri-table-line"></i>Basic Tables</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/data-table.html"><i class="ri-database-line"></i>Data Table</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/table-editable.html"><i class="ri-refund-line"></i>Editable Table</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="">
-                                        <a href="#icons" class="  collapsed" data-bs-toggle="collapse"
-                                           aria-expanded="false">
-                                            <i class="ri-list-check"></i><span>Icons</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="icons" class="iq-submenu collapse" data-bs-parent="#ui-elements">
-                                            <li class="">
-                                                <a href="~/dashboard/icon-fontawesome-5.html"><i class="ri-facebook-fill"></i>Font Awesome 5</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/icon-lineawesome.html"><i class="ri-keynote-line"></i>line Awesome</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/icon-remixicon.html"><i class="ri-remixicon-line"></i>Remixicon</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="">
-                                <a href="#pages" class="  collapsed" data-bs-toggle="collapse"
-                                   aria-expanded="false">
-                                    <i class="ri-pages-line"></i><span>Pages</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                </a>
-                                <ul id="pages" class="iq-submenu collapse" data-bs-parent="#iq-sidebar-toggle">
-                                    <li class="">
-                                        <a href="#authentication" class="  collapsed" data-bs-toggle="collapse"
-                                           aria-expanded="false">
-                                            <i class="ri-pages-line"></i><span>Authentication</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="authentication" class="iq-submenu collapse" data-bs-parent="#pages">
-                                            <li class="">
-                                                <a href="~/dashboard/sign-in.html"><i class="ri-login-box-line"></i>Login</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/sign-up.html"><i class="ri-login-circle-line"></i>Register</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-recoverpw.html"><i class="ri-record-mail-line"></i>Recover Password</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-confirm-mail.html"><i class="ri-file-code-line"></i>Confirm Mail</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-lock-screen.html"><i class="ri-lock-line"></i>Lock Screen</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="">
-                                        <a href="#extra-pages" class="  collapsed" data-bs-toggle="collapse"
-                                           aria-expanded="false">
-                                            <i class="ri-pantone-line"></i><span>Extra Pages</span><i class="ri-arrow-right-s-line iq-arrow-right"></i>
-                                        </a>
-                                        <ul id="extra-pages" class="iq-submenu collapse" data-bs-parent="#pages">
-                                            <li class="">
-                                                <a href="~/dashboard/pages-timeline.html"><i class="ri-map-pin-time-line"></i>Timeline</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-invoice.html"><i class="ri-question-answer-line"></i>Invoice</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/blank-page.html"><i class="ri-invision-line"></i>Blank Page</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-error.html"><i class="ri-error-warning-line"></i>Error 404</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-error-500.html"><i class="ri-error-warning-line"></i>Error 500</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-pricing.html"><i class="ri-price-tag-line"></i>Pricing</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-pricing-one.html"><i class="ri-price-tag-2-line"></i>Pricing 1</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-maintenance.html"><i class="ri-archive-line"></i>Maintenance</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-comingsoon.html"><i class="ri-mastercard-line"></i>Coming Soon</a>
-                                            </li>
-                                            <li class="">
-                                                <a href="~/dashboard/pages-faq.html"><i class="ri-compasses-line"></i>Faq</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div class="p-5"></div>
-                </div>
-            </div>
-
-            <div class="iq-top-navbar">
-                <div class="iq-navbar-custom">
-                    <nav class="navbar navbar-expand-lg navbar-light p-0">
-                        <div class="iq-navbar-logo d-flex justify-content-between">
-                            <a href="/Index">
-                                <img src="~/assets/images/logo.png" class="img-fluid" alt="">
-                                <span>SocialV</span>
-                            </a>
-                            <div class="iq-menu-bt align-self-center">
-                                <div class="wrapper-menu">
-                                    <div class="main-circle">
-                                        <i class="ri-menu-line"></i>
-                                    </div>
-                                </div>
-                            </div>
+    </div>
+</div>
+<div class="iq-search-bar device-search">
+    <form class="searchbox" method="post" asp-page="/Search">
+        <a class="search-link" href="#">
+            <i class="ri-search-line"></i>
+        </a>
+        <input type="text" name="searchTerm" class="text search-input" placeholder="Search here...">
+        <input type="hidden" name="SeeAll" value="false">
+    </form>
+</div>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+        aria-label="Toggle navigation">
+    <i class="ri-menu-3-line"></i>
+</button>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav  ms-auto navbar-list">
+        <li>
+            <a href="~/" class="  d-flex align-items-center">
+                <i class="ri-home-line"></i>
+            </a>
+        </li>
+        <li onclick="fetchFriendRequests()" class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                <i class="ri-group-line"></i>
+                <h1 onclick="fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());" class="notification-badge request-noti"></h1>
+            </a>
+            <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
+                <div class="card shadow-none m-0">
+                    <div class="card-header d-flex justify-content-between bg-primary">
+                        <div class="header-title">
+                            <h5 class="mb-0 text-white">Friend Request</h5>
                         </div>
-                        <div class="iq-search-bar device-search">
-                            <form action="#" class="searchbox">
-                                <a class="search-link" href="#">
-                                    <i class="ri-search-line"></i>
-                                </a>
-                                <input type="text" class="text search-input" placeholder="Search here...">
-                            </form>
-                        </div>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                                aria-label="Toggle navigation">
-                            <i class="ri-menu-3-line"></i>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav  ms-auto navbar-list">
-                                <li>
-                                    <a href="~/" class="  d-flex align-items-center">
-                                        <i class="ri-home-line"></i>
-                                    </a>
-                                </li>
-                                <li onclick="fetchFriendRequests()" class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false">
-                                        <i class="ri-group-line"></i>
-                                    </a>
-                                    <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title">
-                                                    <h5 class="mb-0 text-white">Friend Request</h5>
-                                                </div>
-                                                <small class="badge req-count bg-light text-dark "></small>
-                                            </div>
-                                            <div class="card-body p-0 request-list">
-                                                @* <div class="text-center"> *@
-                                                @*     <a href="#" class=" btn text-primary">View More Request</a> *@
-                                                @* </div> *@
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="search-toggle   dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
-                                        <i class="ri-notification-4-line"></i>
-                                    </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="notification-drop">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary">
-                                                    <h5 class="mb-0 text-white">All Notifications</h5>
-                                                </div>
-                                                <small class="badge  bg-light text-dark">4</small>
-                                            </div>
-                                            <div class="card-body p-0">
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3 w-100">
-                                                            <h6 class="mb-0 ">Emma Watson Bni</h6>
-                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                <p class="mb-0">95 MB</p>
-                                                                <small class="float-right font-size-12">Just Now</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/02.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3 w-100">
-                                                            <h6 class="mb-0 ">New customer is join</h6>
-                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                <p class="mb-0">Cyst Bni</p>
-                                                                <small class="float-right font-size-12">5 days ago</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/03.jpg" alt="">
-                                                        </div>
-                                                        <div class="ms-3 w-100">
-                                                            <h6 class="mb-0 ">Two customer is left</h6>
-                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                <p class="mb-0">Cyst Bni</p>
-                                                                <small class="float-right font-size-12">2 days ago</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                                <a href="#" class="iq-sub-card">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="">
-                                                            <img class="avatar-40 rounded" src="~/assets/images/user/04.jpg" alt="">
-                                                        </div>
-                                                        <div class="w-100 ms-3">
-                                                            <h6 class="mb-0 ">New Mail from Fenny</h6>
-                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                <p class="mb-0">Cyst Bni</p>
-                                                                <small class="float-right font-size-12">3 days ago</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
-                                        <i class="ri-message-line"></i>
-                                        <h1 class="notification-badge"></h1>
-                                    </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary d-flex justify-content-between align-items-center w-100">
-                                                    <h5 class="mb-0 text-white">All Messages</h5>
-                                                    <span class="ml-auto text-white unrep"></span>
-                                                </div>
-                                            </div>
-                                            <div class="card-body p-0 chat-noti">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#">
-                                        <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
-                                    </a>
-                                </li>
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                    <li class="nav-item dropdown">
-                                        <a href="#" class="  d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <img src="@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
-                                            <div class="caption">
-                                                <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.NameIdentifier)</h6>
-                                            </div>
-                                        </a>
-                                        <div class="sub-drop dropdown-menu caption-menu" aria-labelledby="drop-down-arrow">
-                                            <div class="card shadow-none m-0">
-                                                <div class="card-header  bg-primary">
-                                                    <div class="header-title">
-                                                        <h5 class="mb-0 text-white">Hello @User.FindFirstValue(ClaimTypes.NameIdentifier)</h5>
-                                                        <span class="text-white font-size-12">Available</span>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body p-0 ">
-                                                    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class="iq-sub-card iq-bg-primary-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-primary">
-                                                                <i class="ri-file-user-line"></i>
-                                                            </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">My Profile</h6>
-                                                                <p class="mb-0 font-size-12">View personal profile details.</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                    @* <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover"> *@
-                                                    @*     <div class="d-flex align-items-center"> *@
-                                                    @*         <div class="rounded card-icon bg-soft-warning"> *@
-                                                    @*             <i class="ri-profile-line"></i> *@
-                                                    @*         </div> *@
-                                                    @*         <div class="ms-3"> *@
-                                                    @*             <h6 class="mb-0 ">Edit Profile</h6> *@
-                                                    @*             <p class="mb-0 font-size-12">Modify your personal details.</p> *@
-                                                    @*         </div> *@
-                                                    @*     </div> *@
-                                                    @* </a> *@
-                                                    @* <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover"> *@
-                                                    @*     <div class="d-flex align-items-center"> *@
-                                                    @*         <div class="rounded card-icon bg-soft-info"> *@
-                                                    @*             <i class="ri-account-box-line"></i> *@
-                                                    @*         </div> *@
-                                                    @*         <div class="ms-3"> *@
-                                                    @*             <h6 class="mb-0 ">Account settings</h6> *@
-                                                    @*             <p class="mb-0 font-size-12">Manage your account parameters.</p> *@
-                                                    @*         </div> *@
-                                                    @*     </div> *@
-                                                    @* </a> *@
-                                                    @* <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover"> *@
-                                                    @*     <div class="d-flex align-items-center"> *@
-                                                    @*         <div class="rounded card-icon bg-soft-danger"> *@
-                                                    @*             <i class="ri-lock-line"></i> *@
-                                                    @*         </div> *@
-                                                    @*         <div class="ms-3"> *@
-                                                    @*             <h6 class="mb-0 ">Privacy Settings</h6> *@
-                                                    @*             <p class="mb-0 font-size-12"> *@
-                                                    @*                 Control your privacy parameters. *@
-                                                    @*             </p> *@
-                                                    @*         </div> *@
-                                                    @*     </div> *@
-                                                    @* </a> *@
-                                                    <div class="d-inline-block w-100 text-center p-3">
-                                                        <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary iq-sign-btn" role="button">
-                                                            Sign out<i class="ri-login-box-line ms-2"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-
-            @RenderBody()
-
-
-            <!-- offcanvas start -->
-
-            <div class="offcanvas offcanvas-bottom share-offcanvas" tabindex="-1" id="share-btn" aria-labelledby="shareBottomLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="shareBottomLabel">Share</h5>
-                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body small">
-                    <div class="d-flex flex-wrap align-items-center">
-                        <div class="text-center me-3 mb-3">
-                            <img src="~/assets/images/icon/08.png" class="img-fluid rounded mb-2" alt="">
-                            <h6>Facebook</h6>
-                        </div>
-                        <div class="text-center me-3 mb-3">
-                            <img src="~/assets/images/icon/09.png" class="img-fluid rounded mb-2" alt="">
-                            <h6>Twitter</h6>
-                        </div>
-                        <div class="text-center me-3 mb-3">
-                            <img src="~/assets/images/icon/10.png" class="img-fluid rounded mb-2" alt="">
-                            <h6>Instagram</h6>
-                        </div>
-                        <div class="text-center me-3 mb-3">
-                            <img src="~/assets/images/icon/11.png" class="img-fluid rounded mb-2" alt="">
-                            <h6>Google Plus</h6>
-                        </div>
-                        <div class="text-center me-3 mb-3">
-                            <img src="~/assets/images/icon/13.png" class="img-fluid rounded mb-2" alt="">
-                            <h6>In</h6>
-                        </div>
-                        <div class="text-center me-3 mb-3">
-                            <img src="~/assets/images/icon/12.png" class="img-fluid rounded mb-2" alt="">
-                            <h6>YouTube</h6>
-                        </div>
+                        <small class="badge req-count bg-light text-dark "></small>
+                    </div>
+                    <div class="card-body p-0 request-list">
+                        @* <div class="text-center"> *@
+                        @*     <a href="#" class=" btn text-primary">View More Request</a> *@
+                        @* </div> *@
                     </div>
                 </div>
             </div>
-            <div id="chatContainer" style="position: fixed; bottom: 0; right: 300px; display: flex"></div>
+        </li>
+        <li class="nav-item dropdown">
+            <a href="#" class="search-toggle   dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
+                <i class="ri-notification-4-line"></i>
+                <h1 class="notification-badge noti-noti"></h1>
+            </a>
+            <div class="sub-drop dropdown-menu" aria-labelledby="notification-drop">
+                <div class="card shadow-none m-0">
+                    <div class="card-header d-flex justify-content-between bg-primary">
+                        <div class="header-title bg-primary">
+                            <h5 class="mb-0 text-white">All Notifications</h5>
+                        </div>
+                        <small class="badge bg-light text-dark noti-count"></small>
+                    </div>
+                    <div class="card-body p-0 noti-list">
+                        @*<a href="#" class="iq-sub-card">
+                            <div class="d-flex align-items-center">
+                                <div class="">
+                                    <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
+                                </div>
+                                <div class="ms-3 w-100">
+                                    <h6 class="mb-0 ">Emma Watson Bni</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-0">accepted your friend request</p>
+                                        <small class="float-right font-size-12">Just Now</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="iq-sub-card">
+                            <div class="d-flex align-items-center">
+                                <div class="">
+                                    <img class="avatar-40 rounded" src="~/assets/images/user/02.jpg" alt="">
+                                </div>
+                                <div class="ms-3 w-100">
+                                    <h6 class="mb-0 ">New customer is join</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-0">Cyst Bni</p>
+                                        <small class="float-right font-size-12">5 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="iq-sub-card">
+                            <div class="d-flex align-items-center">
+                                <div class="">
+                                    <img class="avatar-40 rounded" src="~/assets/images/user/03.jpg" alt="">
+                                </div>
+                                <div class="ms-3 w-100">
+                                    <h6 class="mb-0 ">Two customer is left</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-0">Cyst Bni</p>
+                                        <small class="float-right font-size-12">2 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="iq-sub-card">
+                            <div class="d-flex align-items-center">
+                                <div class="">
+                                    <img class="avatar-40 rounded" src="~/assets/images/user/04.jpg" alt="">
+                                </div>
+                                <div class="w-100 ms-3">
+                                    <h6 class="mb-0 ">New Mail from Fenny</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-0">Cyst Bni</p>
+                                        <small class="float-right font-size-12">3 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>*@
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
+                <i class="ri-message-line"></i>
+                <h1 class="notification-badge message-noti"></h1>
+            </a>
+            <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
+                <div class="card shadow-none m-0">
+                    <div class="card-header d-flex justify-content-between bg-primary">
+                        <div class="header-title bg-primary d-flex justify-content-between align-items-center w-100">
+                            <h5 class="mb-0 text-white">All Messages</h5>
+                            <span class="ml-auto text-white unrep"></span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0 chat-noti">
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a href="#">
+                <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
+            </a>
+        </li>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li class="nav-item dropdown">
+                <a href="#" class="  d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
+                    <div class="caption">
+                        <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.NameIdentifier)</h6>
+                    </div>
+                </a>
+                <div class="sub-drop dropdown-menu caption-menu" aria-labelledby="drop-down-arrow">
+                    <div class="card shadow-none m-0">
+                        <div class="card-header  bg-primary">
+                            <div class="header-title">
+                                <h5 class="mb-0 text-white">Hello @User.FindFirstValue(ClaimTypes.NameIdentifier)</h5>
+                                <span class="text-white font-size-12">Available</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 ">
+                            <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class="iq-sub-card iq-bg-primary-hover">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded card-icon bg-soft-primary">
+                                        <i class="ri-file-user-line"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0 ">My Profile</h6>
+                                        <p class="mb-0 font-size-12">View personal profile details.</p>
+                                    </div>
+                                </div>
+                            </a>
+                            @* <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover"> *@
+                            @*     <div class="d-flex align-items-center"> *@
+                            @*         <div class="rounded card-icon bg-soft-warning"> *@
+                            @*             <i class="ri-profile-line"></i> *@
+                            @*         </div> *@
+                            @*         <div class="ms-3"> *@
+                            @*             <h6 class="mb-0 ">Edit Profile</h6> *@
+                            @*             <p class="mb-0 font-size-12">Modify your personal details.</p> *@
+                            @*         </div> *@
+                            @*     </div> *@
+                            @* </a> *@
+                            @* <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover"> *@
+                            @*     <div class="d-flex align-items-center"> *@
+                            @*         <div class="rounded card-icon bg-soft-info"> *@
+                            @*             <i class="ri-account-box-line"></i> *@
+                            @*         </div> *@
+                            @*         <div class="ms-3"> *@
+                            @*             <h6 class="mb-0 ">Account settings</h6> *@
+                            @*             <p class="mb-0 font-size-12">Manage your account parameters.</p> *@
+                            @*         </div> *@
+                            @*     </div> *@
+                            @* </a> *@
+                            @* <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover"> *@
+                            @*     <div class="d-flex align-items-center"> *@
+                            @*         <div class="rounded card-icon bg-soft-danger"> *@
+                            @*             <i class="ri-lock-line"></i> *@
+                            @*         </div> *@
+                            @*         <div class="ms-3"> *@
+                            @*             <h6 class="mb-0 ">Privacy Settings</h6> *@
+                            @*             <p class="mb-0 font-size-12"> *@
+                            @*                 Control your privacy parameters. *@
+                            @*             </p> *@
+                            @*         </div> *@
+                            @*     </div> *@
+                            @* </a> *@
+                            <div class="d-inline-block w-100 text-center p-3">
+                                <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary iq-sign-btn" role="button">
+                                    Sign out<i class="ri-login-box-line ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+</nav>
+</div>
+</div>
 
-            @* <div class="chat-box" id="chatBox">
+@RenderBody()
+
+
+<!-- offcanvas start -->
+
+<div class="offcanvas offcanvas-bottom share-offcanvas" tabindex="-1" id="share-btn" aria-labelledby="shareBottomLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="shareBottomLabel">Share</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <div class="d-flex flex-wrap align-items-center">
+            <div class="text-center me-3 mb-3">
+                <img src="~/assets/images/icon/08.png" class="img-fluid rounded mb-2" alt="">
+                <h6>Facebook</h6>
+            </div>
+            <div class="text-center me-3 mb-3">
+                <img src="~/assets/images/icon/09.png" class="img-fluid rounded mb-2" alt="">
+                <h6>Twitter</h6>
+            </div>
+            <div class="text-center me-3 mb-3">
+                <img src="~/assets/images/icon/10.png" class="img-fluid rounded mb-2" alt="">
+                <h6>Instagram</h6>
+            </div>
+            <div class="text-center me-3 mb-3">
+                <img src="~/assets/images/icon/11.png" class="img-fluid rounded mb-2" alt="">
+                <h6>Google Plus</h6>
+            </div>
+            <div class="text-center me-3 mb-3">
+                <img src="~/assets/images/icon/13.png" class="img-fluid rounded mb-2" alt="">
+                <h6>In</h6>
+            </div>
+            <div class="text-center me-3 mb-3">
+                <img src="~/assets/images/icon/12.png" class="img-fluid rounded mb-2" alt="">
+                <h6>YouTube</h6>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="chatContainer" style="position: fixed; bottom: 0; right: 300px; display: flex"></div>
+
+@* <div class="chat-box" id="chatBox">
             <div class="chat-header" id="chatHeader">
             <span id="chatWith">Chat with</span>
             <button class="close-button" onclick="closeChat()">×</button>
@@ -633,145 +639,109 @@
             <button onclick="sendMessage()">Send</button>
             </div>
             </div> *@
-        </div>
-        <script>
+</div>
+<script>
 
             ////////////////////////////DarkMode
-            function toggleDarkMode() {
-                const body = document.body;
-                const isDarkMode = body.classList.toggle('bg-dark');
+    function toggleDarkMode() {
+        const body = document.body;
+        const isDarkMode = body.classList.toggle('bg-dark');
 
-                // Save the current mode to localStorage
-                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        // Save the current mode to localStorage
+        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
 
-                // Toggle bg-dark and text-white for elements containing "iq" in their class names
-                const elementsWithIq = document.querySelectorAll('[class*="iq"]');
-                elementsWithIq.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                    element.classList.toggle('text-white');
+        // Helper function to toggle classes on a set of elements
+        function toggleClasses(elements, ...classes) {
+            elements.forEach(element => {
+                classes.forEach(cls => element.classList.toggle(cls));
+            });
+        }
+
+        // Toggle classes for different elements
+        toggleClasses(document.querySelectorAll('[class*="iq"]'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('.ri-time-line'), 'text-white');
+        toggleClasses(document.querySelectorAll('.swal2-popup'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.nav-link'), 'text-white');
+        toggleClasses(document.querySelectorAll('span'), 'text-white');
+        toggleClasses(document.querySelectorAll('.dropdown-item'), 'text-white', 'bg-dark');
+        toggleClasses(document.querySelectorAll('h2'), 'text-white');
+        toggleClasses(document.querySelectorAll('[class*="las"]'), 'text-white');
+        toggleClasses(document.querySelectorAll('[class*="card"]'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('[class*="modal"]'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.modal-title'), 'text-white');
+        toggleClasses(document.querySelectorAll('.card-body h5'), 'text-white');
+        toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
+        toggleClasses(document.querySelectorAll('h6'), 'text-white');
+        toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.chat-input textarea'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
+        toggleClasses(document.querySelectorAll('.emoji-picker-container'), 'bg-dark');
+        toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
+        toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
+        toggleClasses(document.querySelectorAll('.search-input'), 'text-white');
+
+                    ///postArrrow
+                    var arrowColor = isDarkMode ? "white" : "black";
+        document.querySelectorAll('.slick-prev, .slick-next').forEach(el => {
+            el.style.color = arrowColor;
+        });
+                console.log(document.querySelectorAll('.slick-prev, .slick-next'));
+
+                // Handle special cases separately
+                document.querySelector('.navbar-collapse').classList.toggle('bg-dark');
+
+                document.querySelectorAll('.nav-link').forEach(navlinkElement => {
+                    navlinkElement.style.color = isDarkMode ? '#50b5ff' : '';
                 });
-                const navbarElement = document.querySelector('.navbar-collapse');
-                navbarElement.classList.toggle('bg-dark');
-                
-                const iconElement = document.querySelectorAll('.ri-time-line');
-                iconElement.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
 
-                const navlinkElements = document.querySelectorAll('.nav-link');
-                navlinkElements.forEach(navlinkElement => {
-                    if (isDarkMode) {
-                        // If dark mode is enabled, set nav-link color to light blue
-                        navlinkElement.style.color = '#50b5ff';
-                    } else {
-                        // If dark mode is disabled, reset nav-link color to default
-                        navlinkElement.style.color = '';
-                    }
-                });
-
-                // Add text-white to all span elements
-                const spanElements = document.querySelectorAll('span');
-                spanElements.forEach(span => {
-                    span.classList.toggle('text-white');
-                });
-
-                const dropdownElements = document.querySelectorAll('.dropdown-item');
-                dropdownElements.forEach(element => {
-                    element.classList.toggle('text-white');
-                    element.classList.toggle('bg-dark');
-                });
-
-                const h7Elements = document.querySelectorAll('h4 h7');
-                h7Elements.forEach(element => {
+                document.querySelectorAll('h4 h7').forEach(element => {
                     element.classList.toggle('textfriend');
-                });
-
-                const h2Elements = document.querySelectorAll('h2');
-                h2Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-                
-
-                const lasElements = document.querySelectorAll('[class*="las"]');
-                lasElements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const cardTextWhiteElements = document.querySelectorAll('[class*="card"]');
-                cardTextWhiteElements.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                    element.classList.toggle('text-white');
-                });
-
-                const modalElements = document.querySelectorAll('[class*="modal"]');
-                modalElements.forEach(element => {
-                    element.classList.toggle('bg-dark');
-                });
-
-                const modaltitleElements = document.querySelectorAll('.modal-title');
-                modaltitleElements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                // Add text-white to all <h5> and <h6> elements
-                const h5Elements = document.querySelectorAll('.card-body h5');
-                h5Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const h3Elements = document.querySelectorAll('.profile-detail h3');
-                h3Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const h6Elements = document.querySelectorAll('h6');
-                h6Elements.forEach(element => {
-                    element.classList.toggle('text-white');
-                });
-
-                const sidebarPanels = document.querySelectorAll('.right-sidebar-panel');
-                sidebarPanels.forEach(panel => {
-                    panel.classList.toggle('bg-dark');
-                });
-
-                const textInputs = document.querySelectorAll('input[type="text"]');
-                textInputs.forEach(input => {
-                    input.classList.toggle('dark-mode-text-input');
-                });
-
-                const chatElements = document.querySelectorAll('[class*="chat"]');
-                chatElements.forEach(element => {
-                    element.classList.toggle('bg-dark');
                 });
 
                 // Toggle the icon class for the button
                 const button = document.getElementById("changeView");
-                if (!isDarkMode) {
-                    button.classList.remove('ri-moon-line');
-                    button.classList.add('ri-sun-line');
-                } else {
-                    button.classList.remove('ri-sun-line');
-                    button.classList.add('ri-moon-line');
-                }
+                button.classList.toggle('ri-moon-line', isDarkMode);
+                button.classList.toggle('ri-sun-line', !isDarkMode);
             }
 
+            // Call toggleDarkMode once at the beginning to apply the correct mode based on saved preference
             document.addEventListener('DOMContentLoaded', () => {
-                const darkMode = localStorage.getItem('darkMode');
-                if (darkMode === 'enabled') {
+                if (localStorage.getItem('darkMode') === 'enabled') {
                     toggleDarkMode();
                 }
             });
 
+
+
+
             ///////////////////////////
 
             ////////////////////////////
+            document.addEventListener('click', function (event) {
+                const chatNotiDropdown = event.target.closest('.chat-noti');
+                if (chatNotiDropdown) {
+                    closeAllDropdowns();
+                }
+            });
+            
             document.addEventListener('DOMContentLoaded', function () {
+
                 document.body.addEventListener('click', function (event) {
-                    // Handle Add Friend button click
+////////////////////////////Handle Friend Request Action
                     if (event.target.classList.contains('add-friend')) {
                         handleAddFriend(event.target);
                     }
 
+                    if (event.target.classList.contains('cancel-friend')) {
+                        handleCancelFriend(event.target);
+                    }
+
+                    if (event.target.classList.contains('accept-friend')) {
+                        handleAcceptFriend(event.target);
+                    }
+/////////////////////////////
                     // Handle dropdown toggle click
                     if (event.target.closest('.dropdown-toggle')) {
                         toggleDropdown(event.target.closest('.dropdown-toggle'));
@@ -785,7 +755,7 @@
                     }
                 });
             });
-
+            //FriendRequest-js
             function handleAddFriend(button) {
                 const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
                 const friendUserId = button.getAttribute('data-user-id');
@@ -799,15 +769,84 @@
 
                 // Change the button to "Pending"
                 button.outerHTML = `
-        <div class="dropdown">
-            <span class="dropdown-toggle btn btn-warning me-2 ${body.classList.contains('bg-dark') ? 'text-white' : ''}" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                <i class="ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
-            </span>
-            <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
-                <a class="dropdown-item" href="#">Cancel Pending</a>
+        <li class="text-center" style="list-style: none;">
+            <div class="dropdown">
+                <span class="dropdown-toggle btn btn-warning me-2 ${body.classList.contains('bg-dark') ? 'text-white' : ''}" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                    <i class="clickable ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
+                </span>
+                <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
+                    <a data-user-id="${friendUserId}" data-user-name="${fullname}" class="dropdown-item cancel-friend clickable" class="dropdown-item">Cancel Pending</a>
+                </div>
             </div>
-        </div>
+        </li>
     `;
+            }
+
+            function handleCancelFriend(button) {
+                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const friendUserId = button.getAttribute('data-user-id');
+                const fullname = button.getAttribute('data-user-name');
+                connection.invoke("CancelFriendRequest", userId, friendUserId)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+                console.log("meow");
+                // Change the button to "Pending"
+                if (button.closest(".text-center")){
+                button.closest(".text-center").outerHTML = `
+                    <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
+                         <i class="ri-add-line me-1 text-white"></i>Add&nbspFriend
+                    </span>
+                `;
+                }
+
+                if (document.getElementById("pendinger")) {
+                    document.getElementById("pendinger").outerHTML = `
+                                 <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
+                                     <i class="ri-add-line me-1 text-white"></i>Add&nbspFriend
+                                </span>
+                                        `;
+                }
+                fetchFriendRequests();
+                fetchFriendRequests();
+            }
+
+            function handleAcceptFriend(button) {
+                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const friendUserId = button.getAttribute('data-user-id');
+                const fullname = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+
+                connection.invoke("AcceptFriendRequest", userId, friendUserId, fullname)
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+
+                // Change the button to "Pending"
+                if (button.closest(".text-center")) {button.closest(".text-center").innerHTML = `
+                    <div class="dropdown">
+                        <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                            <i class="ri-check-line me-1 text-white"></i> Friend
+                        </span>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
+                        </div>
+                    </div>
+                `;}
+                if (document.getElementById("pendinger")) {
+                    document.getElementById("pendinger").innerHTML = `
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                        <i class="ri-check-line me-1 text-white"></i> Friend
+                                    </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                                        <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
+                                    </div>
+                                </div>
+                            `;
+                }
+
+                fetchFriendRequests().then(() => updateNotificationBadgeM());
+                fetchFriendRequests();
             }
 
             function toggleDropdown(dropdownToggle) {
@@ -829,49 +868,68 @@
 
         </script>
 
+</div>
+
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2024 - PRN221_Assignment - <a asp-area="" asp-page="/Privacy">Privacy</a>
     </div>
+</footer>
 
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - PRN221_Assignment - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<!-- Wrapper End-->
+<!-- Backend Bundle JavaScript -->
+<script src="~/assets/js/libs.min.js"></script>
+ <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
-
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <!-- Wrapper End-->
-    <!-- Backend Bundle JavaScript -->
-    <script src="~/assets/js/libs.min.js"></script>
-    <!-- slider JavaScript -->
-    <script src="~/assets/js/slider.js"></script>
-    <!-- masonry JavaScript -->
-    <script src="~/assets/js/masonry.pkgd.min.js"></script>
-    <!-- SweetAlert JavaScript -->
-    <script src="~/assets/js/enchanter.js"></script>
-    <!-- SweetAlert JavaScript -->
-    <script src="~/assets/js/sweetalert.js"></script>
-    <!-- app JavaScript -->
-    <script src="~/assets/js/charts/weather-chart.js"></script>
-    <script src="~/assets/js/app.js"></script>
-    <script src="~/assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
-    <script src="~/assets/js/lottie.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<!-- slider JavaScript -->
+<script src="~/assets/js/slider.js"></script>
+<!-- masonry JavaScript -->
+<script src="~/assets/js/masonry.pkgd.min.js"></script>
+<!-- SweetAlert JavaScript -->
+<script src="~/assets/js/enchanter.js"></script>
+<!-- SweetAlert JavaScript -->
+<script src="~/assets/js/sweetalert.js"></script>
+<!-- app JavaScript -->
+<script src="~/assets/js/charts/weather-chart.js"></script>
+<script src="~/assets/js/app.js"></script>
+<script src="~/assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+<script src="~/assets/js/lottie.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 
 <script>
     const body = document.body;
-    function sendMessage(receiverId) {
+    function sendMessage(receiverId,textarea) {
         const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
         const messageInput = document.getElementById("chatinput-" + receiverId);
-        const message = messageInput.value;
-        messageInput.value = ''; // Clear the input field
-        connection.invoke("SendMessage", senderId, receiverId, message).catch(err => console.error(err.toString()));
+        const message = messageInput.value.trim();
 
-        // Display the sent message in a different color
-        displayOutgoingMessage(senderId, receiverId, message);
+        if (!message) return;
+        event.preventDefault();
+        displayOutgoingMessage(senderId, receiverId, messageInput.value);
+        // Send the message
+        connection.invoke("SendMessage", senderId, receiverId, messageInput.value)
+            .catch(err => console.error(err.toString()));
+        messageInput.value = '';
+        autoResizeTextarea(textarea);
     }
+
+    // Event handler for keydown in the textarea
+    function handleKeyDown(event, receiverId,textarea) {
+        if (event.shiftKey) {
+            return;
+        }
+
+        // Check if Enter key is pressed
+        if (event.key === 'Enter') {
+            sendMessage(receiverId,textarea); // Call sendMessage function
+        }
+    }
+
 
     function displayOutgoingMessage(senderId, receiverId, message) {
         const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
@@ -880,17 +938,16 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${message}`; // Set the message text
+            msg.innerHTML = message.replaceAll(/\n/g,'<br>'); // Set the message text
             msg.classList.add('outgoing-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
-
             // Scroll to the bottom
             messagesList.scrollTop = messagesList.scrollHeight;
         }
     }
 
-    connection.on("ReceiveMessage", (user, message, name) => {
+    connection.on("ReceiveMessage-@User.FindFirstValue(ClaimTypes.Authentication)", (user, message, name) => {
         fetchListMess();
         const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
         if (chatBox) {
@@ -898,7 +955,7 @@
             const messageContainer = document.createElement('div'); // Create a container for the message
             messageContainer.classList.add('message-container'); // Add a class to the container
             const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${message}`; // Set the message text
+            msg.innerHTML = message.replaceAll(/\n/g,'<br>'); // Set the message text
             msg.classList.add('incoming-message'); // Add a class to style the message
             messageContainer.appendChild(msg); // Append the message to the container
             messagesList.appendChild(messageContainer); // Append the container to the messages list
@@ -908,7 +965,7 @@
         }
         else {
             if (@User.FindFirstValue(ClaimTypes.Authentication)!= user) {
-                openChat(user, name);
+                openChat(user, name,false);
             }
         }
     });
@@ -941,7 +998,6 @@
             fetchMessages(userId, chatBox);
             chatContainer.appendChild(chatBox);
             openChatBoxes.push(userId);
-            
         }
         if (open){
             const inputField = chatBox.querySelector(`#chatinput-${userId}`);
@@ -952,12 +1008,12 @@
     }
 
 
-    async function fetchMessages(userId, chatBox,open = false) {
+    async function fetchMessages(userId, chatBox,open = true) {
         try {
             const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
             if (response.ok) {
                 const messages = await response.json();
-                displayMessages(messages, chatBox);
+                displayMessages(messages, chatBox,open);
             } else {
                 console.error('Failed to fetch messages');
             }
@@ -967,7 +1023,7 @@
     }
 
 
-    function displayMessages(messages, chatBox) {
+    function displayMessages(messages, chatBox,open =true) {
         const messagesList = chatBox.querySelector('.chat-messages');
         messagesList.innerHTML = ''; // Clear existing messages
 
@@ -981,14 +1037,14 @@
             messageContainer.classList.add('message-container');
 
             const msg = document.createElement('div');
-            msg.textContent = message.content;
+            msg.innerHTML = message.content.replaceAll(/\n/g,'<br>');
             msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
-
             messageContainer.appendChild(msg);
             messagesList.appendChild(messageContainer);
         });
-
+        if (open){
         messagesList.scrollTop = messagesList.scrollHeight;
+        }
     }
 
 
@@ -1092,24 +1148,149 @@
         }
 
         chatBox.innerHTML = `
-                            <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                                <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
-                                <button class="close-button" onclick="closeChat('${userId}')">×</button>
-                            </div>
-                            <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                            </div>
-                            <div class="chat-input">
-                                <input id="chatinput-${userId}" type="text" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);openChat('${userId}','${name}',true)" onkeydown="if (event.key === 'Enter') sendMessage('${userId}')" />
-                                <button onclick="sendMessage('${userId}');">Send</button>
-                            </div>
-                        `;
+                <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
+                    <button class="close-button" onclick="closeChat('${userId}')">×</button>
+                </div>
+                <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                </div>
+                <div class="chat-input ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    <div class="input-container">
+                <textarea oninput="autoResizeTextarea(this);" autocomplete="false" id="chatinput-${userId}" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') handleKeyDown(event, '${userId}',this)"></textarea>
+                        <button class="emoji-button ${body.classList.contains('bg-dark') ? '' :'text-dark'}" onclick="toggleEmojiPicker('${userId}')">☺️</button>
+                    </div>
+                    <div id="emoji-picker-${userId}" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    </div>
+                    <button onclick="sendMessage('${userId}');">Send</button>
+                </div>
+        `;
         // Apply dark mode styles to the input element if dark mode is active
         if (body.classList.contains('bg-dark')) {
-            chatBox.querySelector('input[type="text"]').classList.add('dark-mode-text-input');
+            chatBox.classList.add('bg-dark');
+            chatBox.querySelector('textarea').classList.add('bg-dark');
+            chatBox.style.borderColor = '#555';
+            // Set cursor color to white
+            chatBox.querySelector('textarea').classList.add('text-white');
+        } else {
+            chatBox.style.borderColor = '#ccc';
         }
-        chatBox.style.borderColor = body.classList.contains('bg-dark') ? '#555' : '#ccc';
         return chatBox;
     }
+
+    function autoResizeTextarea(textarea) {
+        // Set the textarea height to auto to calculate the natural height
+        textarea.style.height = '50px';
+
+        // Set the maximum height of the textarea to accommodate 5 rows
+        const maxHeight = 5 * parseFloat(getComputedStyle(textarea).lineHeight);
+
+        // Set the height to either the scroll height or the maximum height, whichever is smaller
+        textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
+
+        // Scroll to the bottom to show new content
+        textarea.scrollTop = textarea.scrollHeight;
+    }
+    /////////Emoji
+    // Function to close all emoji pickers
+    function closeAllEmojiPickers() {
+        const pickers = document.querySelectorAll('.emoji-picker-container');
+        pickers.forEach(picker => {
+            picker.style.display = 'none';
+        });
+        document.removeEventListener('click', handleClickOutsideEmojiPicker);
+    }
+
+    // Function to toggle the emoji picker for a specific chat box
+    function toggleEmojiPicker(userId) {
+        const picker = document.getElementById(`emoji-picker-${userId}`);
+
+        // Close all other emoji pickers first
+        closeAllEmojiPickers();
+
+        // Clear and create the search input
+        picker.innerHTML = '';
+        const emojiSearchInput = document.createElement('input');
+        emojiSearchInput.id = `emojiSearch-${userId}`;
+        emojiSearchInput.className = `search-emoji ${document.body.classList.contains('bg-dark') ? 'bg-dark text-white' : ''}`;
+        emojiSearchInput.type = 'text';
+        emojiSearchInput.placeholder = 'Search emojis...';
+        emojiSearchInput.style.width = '100%';
+        emojiSearchInput.addEventListener('keyup', () => fetchEmojis(userId, emojiSearchInput.value));
+        picker.appendChild(emojiSearchInput);
+
+        // Create the container for emojis
+        const emojiContainer = document.createElement('div');
+        emojiContainer.className = `picker-emoji-container-${userId}`;
+        picker.appendChild(emojiContainer);
+
+        // Toggle display and event listener for click outside
+        if (picker.style.display === 'block') {
+            picker.style.display = 'none';
+            document.removeEventListener('click', handleClickOutsideEmojiPicker);
+        } else {
+            picker.style.display = 'block';
+            fetchEmojis(userId, '');
+            setTimeout(() => {
+                document.addEventListener('click', handleClickOutsideEmojiPicker);
+            }, 0);
+        }
+    }
+
+    // Function to fetch emojis and display them
+    function fetchEmojis(userId, search) {
+        const picker = document.querySelector(`.picker-emoji-container-${userId}`);
+        picker.innerHTML = '';
+
+        const loader = document.createElement('div');
+        loader.className = 'loader-emoji';
+        loader.textContent = 'Loading...';
+        picker.appendChild(loader);
+
+        fetch(`https://emoji-api.com/emojis?search=${search}&access_key=ed5b51ac5f79b6156b30ae79891eb9bb0af2326c`)
+            .then(response => response.json())
+            .then(data => {
+                picker.removeChild(loader);
+                data.forEach(emoji => {
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.className = 'emoji-item';
+                    emojiSpan.innerText = emoji.character;
+                    emojiSpan.setAttribute('emoji-name', emoji.slug);
+                    emojiSpan.onclick = () => addEmojiToInput(userId, emoji.character);
+                    picker.appendChild(emojiSpan);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching emojis:', error);
+                picker.removeChild(loader);
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.textContent = 'Failed to load emojis.';
+                picker.appendChild(errorMessage);
+            });
+    }
+
+    // Function to add the selected emoji to the input field
+    function addEmojiToInput(userId, emoji) {
+        const input = document.getElementById(`chatinput-${userId}`);
+        input.value += emoji;
+    }
+
+    // Function to handle clicks outside the emoji picker
+    function handleClickOutsideEmojiPicker(event) {
+        const pickers = document.querySelectorAll('.emoji-picker-container');
+        pickers.forEach(picker => {
+            if (!picker.contains(event.target) && !event.target.classList.contains('emoji-button')) {
+                picker.style.display = 'none';
+            }
+        });
+
+        // Remove event listener if all pickers are closed
+        const anyPickerOpen = Array.from(pickers).some(picker => picker.style.display === 'block');
+        if (!anyPickerOpen) {
+            document.removeEventListener('click', handleClickOutsideEmojiPicker);
+        }
+    }
+///Emoji
 
 
 
@@ -1135,24 +1316,11 @@
         }
     }
 
-
-    function displayOutgoingMessage(senderId, receiverId, message) {
-        const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
-        if (chatBox) {
-            const messagesList = chatBox.querySelector('.chat-messages');
-            const messageContainer = document.createElement('div'); // Create a container for the message
-            messageContainer.classList.add('message-container'); // Add a class to the container
-            const msg = document.createElement('div'); // Create the message element
-            msg.textContent = `${message}`; // Set the message text
-            msg.classList.add('outgoing-message'); // Add a class to style the message
-            messageContainer.appendChild(msg); // Append the message to the container
-            messagesList.appendChild(messageContainer); // Append the container to the messages list
-        }
-    }
+    
 
     function updateNotificationBadge(listMess) {
         const unreadCount = listMess.filter(mess => !mess.readed).length;
-        const notificationBadge = document.querySelector('.notification-badge');
+        const notificationBadge = document.querySelector('.message-noti');
 
         if (unreadCount > 0) {
             notificationBadge.textContent = unreadCount;
@@ -1163,59 +1331,153 @@
         const unrep = document.querySelector(".unrep");
         unrep.textContent = "Unread: " + unreadCount;
     }
+
+    function updateNotificationBadgeG() {
+        const number = document.querySelectorAll(".noti-list .iq-sub-card").length ?? 0;
+        if (number ==0) document.querySelector(".noti-noti").style.display = 'none';
+        document.querySelector(".noti-count").innerHTML = number;
+        document.querySelector(".noti-noti").innerHTML = number;
+    }
+
+    function updateNotificationBadgeM() {
+        const number = document.querySelector(".req-count").textContent ?? 0;
+        document.querySelector(".request-noti").innerHTML = number;
+    }
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
+        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
+        updateNotificationBadgeM();
     });
 
     function redirectToProfile(userId) {
         window.location.href = '/Profile?Id=' + userId;
     }
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "2000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
     
-    //Friend Request
+     function showToast(message, icon = 'success',userid) {
+         toastr.options.onclick = function() { userid !=null? redirectToProfile(userid) : e.preventDefault() };
+         toastr[icon](message);
+     }
 
     connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
-        fetchFriendRequests();
+        showToast(`${name} just send you friend request.`,'info',userId);
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
     });
 
+    connection.on("AcceptFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
+        showToast(`${name} has accepted your friend request.`,`success`,userId);
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
+        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
+    });
+    ///Other
+    async function fetchFriendRequestOtherNoti(userId){
+        const response = await fetch(`/Index?handler=GetRequestsForNotification&&userid=${userId}`);
+        const friendRequests = await response.json();
+        const container = document.querySelector('.noti-list');
+        container.innerHTML = ''; // Clear existing content
+        const count = friendRequests.$values.length;
+        document.querySelector(".noti-noti").style.display = '';
+        friendRequests.$values.forEach(request => {
+            const requestDiv =document.createElement('a');
+            requestDiv.href=`/Profile?Id=${request.User.UserId}`;
+            requestDiv.className="iq-sub-card";
+            requestDiv.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <div class="">
+                                    <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
+                                </div>
+                                <div class="ms-3 w-100">
+                                    <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="errortext mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">accepted your friend request</p>
+                                        <small class="float-right font-size-12">${getTimeFromMessage(request.CreatedTime)}</small>
+                                    </div>
+                                </div>
+                            </div>
+                `;
+            container.appendChild(requestDiv);
+        })
+        if (count === 0){
+            const noRequestsMessage = document.createElement('div');
+            noRequestsMessage.textContent = 'No notifications to display';
+            noRequestsMessage.classList.add("text-center");
+            container.appendChild(noRequestsMessage);
+        }
+    }
+    ///Current
     async function fetchFriendRequests() {
         const response = await fetch('/Index?handler=GetRequests');
         const friendRequests = await response.json();
         const container = document.querySelector('.request-list');
         container.innerHTML = ''; // Clear existing content
         const count = friendRequests.$values.length;
-        document.querySelector(".req-count").innerHTML=count;
-     
+        const truecount = friendRequests.$values.filter(request => !request.Status).length;
+        document.querySelector(".req-count").innerHTML=truecount;
+        document.querySelector(".request-noti").style.display = '';
         friendRequests.$values.forEach(request => {
-            if (request.$id != @User.FindFirstValue(ClaimTypes.Authentication)){
             const requestDiv = document.createElement('div');
             requestDiv.className = 'iq-friend-request';
             requestDiv.innerHTML = `
                     <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <img class="avatar-40 rounded" src="${request.ProfilePhotoUrl}" alt="">
+                            <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
                             <div class="ms-3">
-                                <h6 onclick="redirectToProfile(${request.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.Fullname}</h6>
+                                <h6 onclick="redirectToProfile(${request.User.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <a href="javascript:void(0);" class="me-3 btn btn-primary rounded" onclick="confirmFriend(${request.UserId})">Confirm</a>
-                            <a href="javascript:void(0);" class="me-3 btn btn-secondary rounded" onclick="deleteRequest(${request.UserId})">Delete Request</a>
+                           <div>You accepted</div>
                         </div>
                     </div>
                 `;
-            container.appendChild(requestDiv);
-            }
+            if (!request.Status){
+            requestDiv.innerHTML = `
+                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
+                            <div class="ms-3">
+                                <h6 onclick="redirectToProfile(${request.User.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a data-user-id="${request.User.UserId}" class="me-3 btn btn-primary rounded accept-friend">Confirm</a>
+                            <a data-user-id="${request.User.UserId}" data-user-name="${request.User.Fullname}" class="me-3 btn btn-secondary rounded cancel-friend">Cancel Request</a>
+                        </div>
+                    </div>
+                `;
+                }
+            container.appendChild(requestDiv);        
         });
-        if (count === 0 ){
+        if (truecount ==0)  document.querySelector(".request-noti").style.display = 'none';
+        if (count === 0){
             const noRequestsMessage = document.createElement('div');
             noRequestsMessage.textContent = 'No friend requests to display';
             noRequestsMessage.classList.add("text-center");
             container.appendChild(noRequestsMessage);
         }
+        updateNotificationBadgeM();
     }
 
     // Call the fetchFriendRequests function when the page loads
     document.addEventListener('DOMContentLoaded', fetchFriendRequests);
+    
 </script>
 
 
