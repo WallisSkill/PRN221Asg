@@ -517,6 +517,10 @@ button.toast-close-button {
     object-fit:cover
 }
 
+.comment-content-dark {
+    background-color: #f0f0f020 !important;
+}
+
 @media all and (min-width: 481px) and (max-width: 768px) {
     #toast-container > div {
         padding: 15px 15px 15px 50px;

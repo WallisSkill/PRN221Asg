@@ -17,10 +17,12 @@ public partial class IndexModel : PageModel
     private readonly ILogger<IndexModel> _logger;
     private readonly IHomePageService _homePageService;
     private readonly IMessageService _messageService;
+    private readonly IPostService _postService;
     public IActionResult OnGet()
     {
         ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
         ViewData["upComingBirthdayFriend"] = _homePageService.GetUpComingBirthdayFriends();
+        ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
         return Page();
     }
     public IList<Message> Messages { get; set; }
