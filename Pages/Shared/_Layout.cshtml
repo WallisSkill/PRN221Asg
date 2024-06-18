@@ -2,39 +2,6 @@
 @using PRN221_Assignment.Data
 @{
     var listMess = ViewData["listMess"] as List<MessageData>;
-
-    string GetTimeFromMessage(DateTime time)
-    {
-        if (DateTime.Now.Hour - time.Hour < 1)
-        {
-            return DateTime.Now.Minute - time.Minute + " minutes";
-        }
-
-        if ((DateTime.Now.Date - time.Date).Days < 1)
-        {
-            return DateTime.Now.Hour - time.Hour + " hours";
-        }
-
-        if ((DateTime.Now.Date - time.Date).Days < 7)
-        {
-            return DateTime.Now.Day - time.Day + " days";
-        }
-
-        if ((DateTime.Now.Date - time.Date).Days < 365)
-        {
-            return (DateTime.Now.Date - time.Date) / 7 + " weeks";
-        }
-
-        return DateTime.Now.Year - time.Year + " years";
-    }
-    string LimitContent(string content)
-    {
-        if (content.Length > 20)
-        {
-            return content.Substring(0, 10) + "...";
-        }
-        return content;
-    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -56,6 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
     <script>
         const connection = new signalR.HubConnectionBuilder()
