@@ -1,5 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
+using Microsoft.Extensions.Hosting;
 using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
@@ -22,15 +23,23 @@ public partial class PostRepository : IPostRepository
                     where listUser.Contains(T1.UserId)
                     from T2 in _context.Set<User>()
                     where T2.UserId == T1.UserId
-                    from T3 in _context.Set<Photo>()
-                    where T3.PhotoId == T1.PhotoId
+                    join T3 in _context.Set<Photo>()
+                    on T1.PostId equals T3.PostId into photos
+                    from T3 in photos.DefaultIfEmpty() // Left join
+                    group new { T1, T3 } by new { T1.PostId, T2.UserId, T2.Fullname, T2.ProfilePhotoUrl, T2.Dob, T1.Caption } into g
                     select new PostData()
                     {
-                        Id = T1.PostId,
-                        User = T2,
-                        Caption = T1.Caption,
-                        PhotoURL = T3.PhotoUrl,
-                        Time = (DateTime)T1.CreatedAt,
+                        Id = g.Key.PostId,
+                        User = new User()
+                        {
+                            UserId = g.Key.UserId,
+                            Fullname = g.Key.Fullname,
+                            ProfilePhotoUrl = g.Key.ProfilePhotoUrl,
+                            Dob = g.Key.Dob,
+                        },
+                        Caption = g.Key.Caption,
+                        PhotoURL = g.Select(x => x.T3 != null ? x.T3.PhotoUrl : null).ToList(),
+                        Time = (DateTime)g.Max(x => x.T1.CreatedAt),
                         ListComments = new List<CommentData>(),
                         ListLike = new List<LikeData>(),
                     };

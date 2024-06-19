@@ -501,7 +501,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a href="#">
+            <a style="color:#50b5FF">
                 <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
             </a>
         </li>
@@ -681,6 +681,7 @@
         toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
         toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
         toggleClasses(document.querySelectorAll('.search-input'), 'text-white');
+        toggleClasses(document.querySelectorAll('.comment-content'), 'comment-content-dark');
 
                     ///postArrrow
                     var arrowColor = isDarkMode ? "white" : "black";
@@ -1477,7 +1478,7 @@
 
     // Call the fetchFriendRequests function when the page loads
     document.addEventListener('DOMContentLoaded', fetchFriendRequests);
-    
+
 </script>
 
 
