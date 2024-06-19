@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\font-awesome.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <None Include="wwwroot\css\fonts\slick.svg" />
     <None Include="wwwroot\Image\Emoji\angry.png" />
     <None Include="wwwroot\Image\Emoji\care.png" />
     <None Include="wwwroot\Image\Emoji\haha.png" />

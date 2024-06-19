@@ -16,19 +16,9 @@
     <link rel="stylesheet" href="~/assets/vendor/vanillajs-datepicker/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
     <link rel="stylesheet" href="~/css/site.css" />
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/hub")
-            .withAutomaticReconnect([0, 0, 10000])
-            .build();
-        connection.start().catch(err => console.error(err.toString()));
-    </script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="./css/slick.css" />
     <link rel="stylesheet" type="text/css" href="./css/slick-theme.css" />
     <script src="./js/signalR.js"></script>
     <script src="./js/jquery.js"></script>
@@ -688,8 +678,6 @@
         document.querySelectorAll('.slick-prev, .slick-next').forEach(el => {
             el.style.color = arrowColor;
         });
-                console.log(document.querySelectorAll('.slick-prev, .slick-next'));
-
                 // Handle special cases separately
                 document.querySelector('.navbar-collapse').classList.toggle('bg-dark');
 
@@ -884,7 +872,7 @@
 <!-- Wrapper End-->
 <!-- Backend Bundle JavaScript -->
 <script src="~/assets/js/libs.min.js"></script>
- <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+ <script type="text/javascript" src="./js/slick.min.js"></script>
 
 <!-- slider JavaScript -->
 <script src="~/assets/js/slider.js"></script>
