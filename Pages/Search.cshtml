@@ -115,7 +115,7 @@
                             {
                                 @foreach (var u in searchUser)
                                 {
-                                    @if (User.FindFirstValue(ClaimTypes.Authentication).Equals(u.UserId.ToString()))
+                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(u.UserId.ToString()))
                                     {
                                         count++;
                                         continue;

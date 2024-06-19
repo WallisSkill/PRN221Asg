@@ -70,7 +70,7 @@
     </a>
 </li>
 <li class="">
-    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class=" ">
+    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class=" ">
         <i class="las la-user"></i><span>Profile</span>
     </a>
 </li>
@@ -380,7 +380,7 @@
             <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
                 <i class="ri-group-line"></i>
-                <h1 onclick="fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());" class="notification-badge request-noti"></h1>
+                <h1 onclick="fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.NameIdentifier)).then(() => updateNotificationBadgeG());" class="notification-badge request-noti"></h1>
             </a>
             <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
                 <div class="card shadow-none m-0">
@@ -501,19 +501,19 @@
                 <a href="#" class="  d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src="@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
                     <div class="caption">
-                        <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.NameIdentifier)</h6>
+                        <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.GivenName)</h6>
                     </div>
                 </a>
                 <div class="sub-drop dropdown-menu caption-menu" aria-labelledby="drop-down-arrow">
                     <div class="card shadow-none m-0">
                         <div class="card-header  bg-primary">
                             <div class="header-title">
-                                <h5 class="mb-0 text-white">Hello @User.FindFirstValue(ClaimTypes.NameIdentifier)</h5>
+                                <h5 class="mb-0 text-white">Hello @User.FindFirstValue(ClaimTypes.GivenName)</h5>
                                 <span class="text-white font-size-12">Available</span>
                             </div>
                         </div>
                         <div class="card-body p-0 ">
-                            <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class="iq-sub-card iq-bg-primary-hover">
+                            <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class="iq-sub-card iq-bg-primary-hover">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded card-icon bg-soft-primary">
                                         <i class="ri-file-user-line"></i>
@@ -746,7 +746,7 @@
             });
             //FriendRequest-js
             function handleAddFriend(button) {
-                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const userId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
                 const friendUserId = button.getAttribute('data-user-id');
                 const fullname = button.getAttribute('data-user-name');
                 console.log(userId + "-" + friendUserId);
@@ -772,7 +772,7 @@
             }
 
             function handleCancelFriend(button) {
-                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const userId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
                 const friendUserId = button.getAttribute('data-user-id');
                 const fullname = button.getAttribute('data-user-name');
                 connection.invoke("CancelFriendRequest", userId, friendUserId)
@@ -801,9 +801,9 @@
             }
 
             function handleAcceptFriend(button) {
-                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+                const userId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
                 const friendUserId = button.getAttribute('data-user-id');
-                const fullname = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+                const fullname = '@User.FindFirstValue(ClaimTypes.GivenName)';
 
                 connection.invoke("AcceptFriendRequest", userId, friendUserId, fullname)
                     .catch(function (err) {
@@ -893,7 +893,7 @@
 <script>
     const body = document.body;
     function sendMessage(receiverId,textarea) {
-        const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
+        const senderId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
         const messageInput = document.getElementById("chatinput-" + receiverId);
         const message = messageInput.value.trim();
 
@@ -936,9 +936,9 @@
         }
     }
 
-    connection.on("ReceiveMessage-@User.FindFirstValue(ClaimTypes.Authentication)", (user, message, name) => {
+    connection.on("ReceiveMessage", (user, message, name) => {
         fetchListMess();
-        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
+        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.NameIdentifier)-${user}`);
         if (chatBox) {
             const messagesList = chatBox.querySelector('.chat-messages');
             const messageContainer = document.createElement('div'); // Create a container for the message
@@ -953,7 +953,7 @@
             messagesList.scrollTop = messagesList.scrollHeight;
         }
         else {
-            if (@User.FindFirstValue(ClaimTypes.Authentication)!= user) {
+            if (@User.FindFirstValue(ClaimTypes.NameIdentifier)!= user) {
                 openChat(user, name,false);
             }
         }
@@ -967,7 +967,7 @@
     const openChatBoxes = [];
 
     function openChat(userId, name,open=false) {
-        let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
+        let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.NameIdentifier)-${userId}`);
         const chatContainer = document.getElementById('chatContainer');
         if (!chatBox) {
             if (openChatBoxes.length >= 3) {
@@ -999,7 +999,7 @@
 
     async function fetchMessages(userId, chatBox,open = true) {
         try {
-            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
+            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.NameIdentifier)&receiverId=${userId}&open=${open}`);
             if (response.ok) {
                 const messages = await response.json();
                 displayMessages(messages, chatBox,open);
@@ -1027,7 +1027,7 @@
 
             const msg = document.createElement('div');
             msg.innerHTML = message.content.replaceAll(/\n/g,'<br>');
-            msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
+            msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.NameIdentifier)') ? 'outgoing-message' : 'incoming-message');
             messageContainer.appendChild(msg);
             messagesList.appendChild(messageContainer);
         });
@@ -1132,9 +1132,9 @@
 
     function createChatBox(userId, name) {
         const chatBox = document.createElement('div');
-        chatBox.id = `chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`;
+        chatBox.id = `chatBox-@User.FindFirstValue(ClaimTypes.NameIdentifier)-${userId}`;
         chatBox.className = 'chat-box';
-        const currid = '@User.FindFirstValue(ClaimTypes.Authentication)';
+        const currid = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
         // Add 'bg-dark' class if body has 'bg-dark' class
         if (body.classList.contains('bg-dark')) {
             chatBox.classList.add('bg-dark');
@@ -1288,7 +1288,7 @@
 
 
     function closeChat(userId) {
-        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
+        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.NameIdentifier)-${userId}`);
         if (chatBox) {
             const offset = parseInt(chatBox.style.right, 10);
             const boxWidth = chatBox.offsetWidth;
@@ -1339,7 +1339,7 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
         fetchFriendRequests().then(() => updateNotificationBadgeM());
-        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
+        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.NameIdentifier)).then(() => updateNotificationBadgeG());
         updateNotificationBadgeM();
     });
 
@@ -1369,15 +1369,15 @@
          toastr[icon](message);
      }
 
-    connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
+    connection.on("ReceiveFriendRequest", function(userId, friendUserId,name) {
         showToast(`${name} just send you friend request.`,'info',userId);
         fetchFriendRequests().then(() => updateNotificationBadgeM());
     });
 
-    connection.on("AcceptFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
+    connection.on("AcceptFriendRequest", function(userId, friendUserId,name) {
         showToast(`${name} has accepted your friend request.`,`success`,userId);
         fetchFriendRequests().then(() => updateNotificationBadgeM());
-        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
+        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.NameIdentifier)).then(() => updateNotificationBadgeG());
     });
     ///Other
     async function fetchFriendRequestOtherNoti(userId){

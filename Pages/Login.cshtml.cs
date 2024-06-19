@@ -29,9 +29,9 @@ namespace PRN221_Assignment.Pages
             {
                 List<Claim> listClaim = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, userLogin.Fullname),
+                new Claim(ClaimTypes.GivenName, userLogin.Fullname),
                 new Claim(ClaimTypes.Name, userLogin.Username),
-                new Claim(ClaimTypes.Authentication, userLogin.UserId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userLogin.UserId.ToString()),
                 new Claim(ClaimTypes.Email, userLogin.Email),
                 new Claim("UserId", userLogin.UserId.ToString()),
                 new Claim("profile_picture", userLogin.ProfilePhotoUrl ?? "./assets/images/user/null.png")
