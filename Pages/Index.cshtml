@@ -81,7 +81,7 @@
             html.Append("<div>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
             html.AppendFormat("<span class='comment-actions'>Like ({0})</span>", comment.CmtLikes.Count);
-            html.AppendFormat("<span class='comment-actions' onclick='ReplyTo({0})'>Reply</span>", comment.User.UserId);
+            html.AppendFormat("<span class='comment-actions' onclick='ReplyTo('{0}')'>Reply</span>", comment.User.UserId);
             html.Append("</div></div></div>");
 
             if (comment.ListComment != null && comment.ListComment.Any())

@@ -6,5 +6,5 @@ namespace PRN221_Assignment.Services.Interface;
 public interface IPostService
 {
     void CreatePost(Post post);
-    List<PostData> GetAllPostOfFriendAndFollower();
+    List<PostData> GetAllPostOfFriendAndFollower(bool onnlyCurrentUser = false);
 }

@@ -22,12 +22,26 @@ public partial class PostService : IPostService
         _postRepository.CreatePost(post);
     }
 
-    public List<PostData> GetAllPostOfFriendAndFollower()
+    private List<int> GetAllFriendAndFollowerId()
     {
         var listFriendId = _postRepository.GetAllFriendId(_currentUser);
         var listFollowerId = _postRepository.GetAllFollower(_currentUser);
         listFollowerId.AddRange(listFriendId);
-        var listPost = _postRepository.GetAllPost(listFollowerId.Distinct().ToList());
+        return listFollowerId.Distinct().ToList();
+    }
+
+    public List<PostData> GetAllPostOfFriendAndFollower(bool onlyCurrentUser = false)
+    {
+        var listUsers = new List<int>();
+        if(onlyCurrentUser)
+        {
+            listUsers.Add(_currentUser);
+        }
+        else
+        {
+            listUsers = GetAllFriendAndFollowerId();
+        }
+        var listPost = _postRepository.GetAllPost(listUsers.ToList());
 
         var listPostId = listPost.Select(x => x.Id).Distinct().ToList();
         var listComment = _postRepository.GetAllComments(listPostId);
