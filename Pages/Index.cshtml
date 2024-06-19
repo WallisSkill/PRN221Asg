@@ -27,28 +27,42 @@
     }
     string GetTimeToNow(DateTime time)
     {
-        if (DateTime.Now.Hour - time.Hour < 1)
+        var now = DateTime.Now;
+        var timespan = now - time;
+
+        if (timespan.TotalMinutes < 1)
         {
-            return DateTime.Now.Minute - time.Minute + " minutes";
+            return "just now";
         }
 
-        if ((DateTime.Now.Date - time.Date).Days < 1)
+        if (timespan.TotalHours < 1)
         {
-            return DateTime.Now.Hour - time.Hour + " hours";
+            int minutes = (int)timespan.TotalMinutes;
+            return minutes == 1 ? "1 minute" : $"{minutes} minutes";
         }
 
-        if ((DateTime.Now.Date - time.Date).Days < 7)
+        if (timespan.TotalDays < 1)
         {
-            return DateTime.Now.Day - time.Day + " days";
+            int hours = (int)timespan.TotalHours;
+            return hours == 1 ? "1 hour" : $"{hours} hours";
         }
 
-        if ((DateTime.Now.Date - time.Date).Days < 365)
+        if (timespan.TotalDays < 7)
         {
-            return (DateTime.Now.Date - time.Date).Days / 7 + " weeks";
+            int days = (int)timespan.TotalDays;
+            return days == 1 ? "1 day" : $"{days} days";
         }
 
-        return DateTime.Now.Year - time.Year + " years";
+        if (timespan.TotalDays < 365)
+        {
+            int weeks = (int)(timespan.TotalDays / 7);
+            return weeks == 1 ? "1 week" : $"{weeks} weeks";
+        }
+
+        int years = now.Year - time.Year;
+        return years == 1 ? "1 year" : $"{years} years";
     }
+
 }
 
 @functions {
@@ -439,7 +453,10 @@
                                                     {
                                                         <div class="total-like-block ms-2 me-3">
                                                             <div class="dropdown">
-                                                                <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                @{
+                                                                    bool isLiked = post.ListLike.Any(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.Authentication)));
+                                                                }
+                                                                <span @(isLiked ? "style=color:#50B5FF!important" : "") class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                                     @post.ListLike.Count Likes
                                                                 </span>
                                                                 <div class="dropdown-menu">
