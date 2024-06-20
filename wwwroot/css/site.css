@@ -521,6 +521,11 @@ button.toast-close-button {
     background-color: #f0f0f020 !important;
 }
 
+.comments-section {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 @media all and (min-width: 481px) and (max-width: 768px) {
     #toast-container > div {
         padding: 15px 15px 15px 50px;

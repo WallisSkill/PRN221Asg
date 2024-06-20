@@ -684,13 +684,13 @@
                         <li>
                             <div class="comment">
                                     <img src="@User.FindFirstValue("profile_picture")" alt="img-user" class="avatar">
-                                <div class="comment-content">
-                                        <span class="user-name">@User.FindFirstValue(ClaimTypes.GivenName)</span>
-                                    <span class="comment-text">${event.currentTarget.value}</span>
+                                    <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
+                                            <span class="user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">@User.FindFirstValue(ClaimTypes.GivenName)</span>
+                                        <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${event.currentTarget.value}</span>
                                     <div>
-                                                 <span class= "comment-time" > ${formattedDateTime} </span>
-                                        <span class="comment-actions">Like (0)</span>
-                                             <span class="comment-actions" onclick="ReplyTo('@User.FindFirstValue(ClaimTypes.NameIdentifier)','@User.FindFirstValue(ClaimTypes.GivenName)','${event.currentTarget.value.length > 50 ? event.currentTarget.value.substring(0, 50) + '...' : event.currentTarget.value}','${event.currentTarget.id}', event)">Reply</span>
+                                                     <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
+                                            <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Like (0)</span>
+                                                 <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('@User.FindFirstValue(ClaimTypes.NameIdentifier)','@User.FindFirstValue(ClaimTypes.GivenName)','${event.currentTarget.value.length > 50 ? event.currentTarget.value.substring(0, 50) + '...' : event.currentTarget.value}','${event.currentTarget.id}', event)">Reply</span>
                                     </div>
                                 </div>
                             </div>
@@ -706,24 +706,23 @@
                 while (tempDiv.firstChild) {
                     replyingList.appendChild(tempDiv.firstChild);
                 }
-                replyingList.appendChild(value);
             }
         }else{
             const value = `
                     <div class="comment">
                                         <img src="@User.FindFirstValue("profile_picture")" alt="img-user" class="avatar">
-                                    <div class="comment-content">
-                                            <span class="user-name">@User.FindFirstValue(ClaimTypes.GivenName)</span>
-                                        <span class="comment-text">${event.currentTarget.value}</span>
+                                            <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
+                                                <span class="user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">@User.FindFirstValue(ClaimTypes.GivenName)</span>
+                                            <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${event.currentTarget.value}</span>
                                         <div>
-                                                     <span class= "comment-time" > ${formattedDateTime} </span>
-                                            <span class="comment-actions">Like (0)</span>
-                                                 <span class="comment-actions" onclick="ReplyTo('@User.FindFirstValue(ClaimTypes.NameIdentifier)','@User.FindFirstValue(ClaimTypes.GivenName)','${event.currentTarget.value.length > 50 ? event.currentTarget.value.substring(0, 50) + '...' : event.currentTarget.value}','${event.currentTarget.id}', event)">Reply</span>
+                                                         <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
+                                                <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Like (0)</span>
+                                                     <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('@User.FindFirstValue(ClaimTypes.NameIdentifier)','@User.FindFirstValue(ClaimTypes.GivenName)','${event.currentTarget.value.length > 50 ? event.currentTarget.value.substring(0, 50) + '...' : event.currentTarget.value}','${event.currentTarget.id}', event)">Reply</span>
                                         </div>
                                     </div>
                   </div>
             `;
-
+            
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = value;
             if (!commentsSection.querySelector("li")) {
@@ -733,9 +732,10 @@
             while (tempDiv.firstChild) {
                 commentsSection.querySelector("li").appendChild(tempDiv.firstChild);
             }
-            commentsSection.querySelector("li").appendChild(value);
-
+            
         }
+        event.currentTarget.value = '';
+        ReplyTo('-1', '0', '0', event.currentTarget.id);
     }
 </script>
 
