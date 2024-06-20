@@ -192,8 +192,8 @@ function handleCancelFriend(button) {
                 `;
     }
 
-    if (document.getElementById("pendinger")) {
-        document.getElementById("pendinger").outerHTML = `
+    if (button.closest("#pendinger")) {
+        button.closest("#pendinger").outerHTML = `
                                  <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
                                      <i class="ri-add-line me-1 text-white"></i>Add&nbspFriend
                                 </span>
@@ -226,8 +226,8 @@ function handleAcceptFriend(button) {
                     </div>
                 `;
     }
-    if (document.getElementById("pendinger")) {
-        document.getElementById("pendinger").innerHTML = `
+    if (button.closest("#pendinger")) {
+        button.closest("#pendinger").innerHTML = `
                                 <div class="dropdown">
                                     <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
                                         <i class="ri-check-line me-1 text-white"></i> Friend

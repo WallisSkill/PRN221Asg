@@ -514,7 +514,7 @@ button.toast-close-button {
 /*Post*/
 .post-image img{
     max-height:400px;
-    object-fit:cover
+/*    object-fit:cover*/
 }
 
 .comment-content-dark {
