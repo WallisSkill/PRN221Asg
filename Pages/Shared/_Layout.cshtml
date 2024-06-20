@@ -16,19 +16,9 @@
     <link rel="stylesheet" href="~/assets/vendor/vanillajs-datepicker/dist/css/datepicker.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/font-awesome-line-awesome/css/all.min.css">
     <link rel="stylesheet" href="~/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
     <link rel="stylesheet" href="~/css/site.css" />
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/hub")
-            .withAutomaticReconnect([0, 0, 10000])
-            .build();
-        connection.start().catch(err => console.error(err.toString()));
-    </script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="./css/slick.css" />
     <link rel="stylesheet" type="text/css" href="./css/slick-theme.css" />
     <script src="./js/signalR.js"></script>
     <script src="./js/jquery.js"></script>
@@ -80,7 +70,7 @@
     </a>
 </li>
 <li class="">
-    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class=" ">
+    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class=" ">
         <i class="las la-user"></i><span>Profile</span>
     </a>
 </li>
@@ -386,11 +376,11 @@
                 <i class="ri-home-line"></i>
             </a>
         </li>
-        <li onclick="fetchFriendRequests()" class="nav-item dropdown">
+            <li onclick="fetchFriendRequests()" class="nav-item dropdown">
             <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
                 <i class="ri-group-line"></i>
-                <h1 onclick="fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());" class="notification-badge request-noti"></h1>
+                <h1 class="notification-badge request-noti"></h1>
             </a>
             <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
                 <div class="card shadow-none m-0">
@@ -409,7 +399,7 @@
             </div>
         </li>
         <li class="nav-item dropdown">
-             <a onclick="fetchFriendRequests()" href="#" class="search-toggle dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
+                 <a onclick="fetchFriendRequestOtherNoti().then(() => updateNotificationBadgeG());" href="#" class="search-toggle dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
                 <i class="ri-notification-4-line"></i>
                 <h1 class="notification-badge noti-noti"></h1>
             </a>
@@ -511,19 +501,19 @@
                 <a href="#" class="  d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src="@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
                     <div class="caption">
-                        <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.NameIdentifier)</h6>
+                        <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.GivenName)</h6>
                     </div>
                 </a>
                 <div class="sub-drop dropdown-menu caption-menu" aria-labelledby="drop-down-arrow">
                     <div class="card shadow-none m-0">
                         <div class="card-header  bg-primary">
                             <div class="header-title">
-                                <h5 class="mb-0 text-white">Hello @User.FindFirstValue(ClaimTypes.NameIdentifier)</h5>
+                                <h5 class="mb-0 text-white">Hello @User.FindFirstValue(ClaimTypes.GivenName)</h5>
                                 <span class="text-white font-size-12">Available</span>
                             </div>
                         </div>
                         <div class="card-body p-0 ">
-                            <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.Authentication)" class="iq-sub-card iq-bg-primary-hover">
+                            <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class="iq-sub-card iq-bg-primary-hover">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded card-icon bg-soft-primary">
                                         <i class="ri-file-user-line"></i>
@@ -640,84 +630,8 @@
             </div>
             </div> *@
 </div>
+<script src="./js/DarkModeManager.js"></script>
 <script>
-
-            ////////////////////////////DarkMode
-    function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('bg-dark');
-
-        // Save the current mode to localStorage
-        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-
-        // Helper function to toggle classes on a set of elements
-        function toggleClasses(elements, ...classes) {
-            elements.forEach(element => {
-                classes.forEach(cls => element.classList.toggle(cls));
-            });
-        }
-
-        // Toggle classes for different elements
-        toggleClasses(document.querySelectorAll('[class*="iq"]'), 'bg-dark', 'text-white');
-        toggleClasses(document.querySelectorAll('.ri-time-line'), 'text-white');
-        toggleClasses(document.querySelectorAll('.swal2-popup'), 'bg-dark');
-        toggleClasses(document.querySelectorAll('.nav-link'), 'text-white');
-        toggleClasses(document.querySelectorAll('span'), 'text-white');
-        toggleClasses(document.querySelectorAll('.dropdown-item'), 'text-white', 'bg-dark');
-        toggleClasses(document.querySelectorAll('h2'), 'text-white');
-        toggleClasses(document.querySelectorAll('[class*="las"]'), 'text-white');
-        toggleClasses(document.querySelectorAll('[class*="card"]'), 'bg-dark', 'text-white');
-        toggleClasses(document.querySelectorAll('[class*="modal"]'), 'bg-dark');
-        toggleClasses(document.querySelectorAll('.modal-title'), 'text-white');
-        toggleClasses(document.querySelectorAll('.card-body h5'), 'text-white');
-        toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
-        toggleClasses(document.querySelectorAll('h6'), 'text-white');
-        toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
-        toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark');
-        toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
-        toggleClasses(document.querySelectorAll('.chat-input textarea'), 'bg-dark', 'text-white');
-        toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
-        toggleClasses(document.querySelectorAll('.emoji-picker-container'), 'bg-dark');
-        toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
-        toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
-        toggleClasses(document.querySelectorAll('.search-input'), 'text-white');
-        toggleClasses(document.querySelectorAll('.comment-content'), 'comment-content-dark');
-
-                    ///postArrrow
-                    var arrowColor = isDarkMode ? "white" : "black";
-        document.querySelectorAll('.slick-prev, .slick-next').forEach(el => {
-            el.style.color = arrowColor;
-        });
-                console.log(document.querySelectorAll('.slick-prev, .slick-next'));
-
-                // Handle special cases separately
-                document.querySelector('.navbar-collapse').classList.toggle('bg-dark');
-
-                document.querySelectorAll('.nav-link').forEach(navlinkElement => {
-                    navlinkElement.style.color = isDarkMode ? '#50b5ff' : '';
-                });
-
-                document.querySelectorAll('h4 h7').forEach(element => {
-                    element.classList.toggle('textfriend');
-                });
-
-                // Toggle the icon class for the button
-                const button = document.getElementById("changeView");
-                button.classList.toggle('ri-moon-line', isDarkMode);
-                button.classList.toggle('ri-sun-line', !isDarkMode);
-            }
-
-            // Call toggleDarkMode once at the beginning to apply the correct mode based on saved preference
-            document.addEventListener('DOMContentLoaded', () => {
-                if (localStorage.getItem('darkMode') === 'enabled') {
-                    toggleDarkMode();
-                }
-            });
-
-
-
-
-            ///////////////////////////
 
             ////////////////////////////
             document.addEventListener('click', function (event) {
@@ -757,98 +671,7 @@
                 });
             });
             //FriendRequest-js
-            function handleAddFriend(button) {
-                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
-                const friendUserId = button.getAttribute('data-user-id');
-                const fullname = button.getAttribute('data-user-name');
-                console.log(userId + "-" + friendUserId);
 
-                connection.invoke("SendFriendRequest", userId, friendUserId, fullname)
-                    .catch(function (err) {
-                        return console.error(err.toString());
-                    });
-
-                // Change the button to "Pending"
-                button.outerHTML = `
-        <li class="text-center" style="list-style: none;">
-            <div class="dropdown">
-                <span class="dropdown-toggle btn btn-warning me-2 ${body.classList.contains('bg-dark') ? 'text-white' : ''}" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                    <i class="clickable ri-time-line me-1 ${body.classList.contains('bg-dark') ? 'text-white' : ''}"></i> Pending
-                </span>
-                <div class="dropdown-menu dropdown-menu-right ${body.classList.contains('bg-dark') ? 'text-white' : ''}" aria-labelledby="dropdownMenuButton02">
-                    <a data-user-id="${friendUserId}" data-user-name="${fullname}" class="dropdown-item cancel-friend clickable" class="dropdown-item">Cancel Pending</a>
-                </div>
-            </div>
-        </li>
-    `;
-            }
-
-            function handleCancelFriend(button) {
-                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
-                const friendUserId = button.getAttribute('data-user-id');
-                const fullname = button.getAttribute('data-user-name');
-                connection.invoke("CancelFriendRequest", userId, friendUserId)
-                    .catch(function (err) {
-                        return console.error(err.toString());
-                    });
-                console.log("meow");
-                // Change the button to "Pending"
-                if (button.closest(".text-center")){
-                button.closest(".text-center").outerHTML = `
-                    <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
-                         <i class="ri-add-line me-1 text-white"></i>Add&nbspFriend
-                    </span>
-                `;
-                }
-
-                if (document.getElementById("pendinger")) {
-                    document.getElementById("pendinger").outerHTML = `
-                                 <span data-user-id="${friendUserId}" data-user-name="${fullname}"  class="btn btn-primary me-2 add-friend" role="button">
-                                     <i class="ri-add-line me-1 text-white"></i>Add&nbspFriend
-                                </span>
-                                        `;
-                }
-                fetchFriendRequests();
-                fetchFriendRequests();
-            }
-
-            function handleAcceptFriend(button) {
-                const userId = '@User.FindFirstValue(ClaimTypes.Authentication)';
-                const friendUserId = button.getAttribute('data-user-id');
-                const fullname = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
-
-                connection.invoke("AcceptFriendRequest", userId, friendUserId, fullname)
-                    .catch(function (err) {
-                        return console.error(err.toString());
-                    });
-
-                // Change the button to "Pending"
-                if (button.closest(".text-center")) {button.closest(".text-center").innerHTML = `
-                    <div class="dropdown">
-                        <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                            <i class="ri-check-line me-1 text-white"></i> Friend
-                        </span>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
-                        </div>
-                    </div>
-                `;}
-                if (document.getElementById("pendinger")) {
-                    document.getElementById("pendinger").innerHTML = `
-                                <div class="dropdown">
-                                    <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
-                                        <i class="ri-check-line me-1 text-white"></i> Friend
-                                    </span>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
-                                        <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
-                                    </div>
-                                </div>
-                            `;
-                }
-
-                fetchFriendRequests().then(() => updateNotificationBadgeM());
-                fetchFriendRequests();
-            }
 
             function toggleDropdown(dropdownToggle) {
                 const dropdownMenu = dropdownToggle.nextElementSibling;
@@ -884,7 +707,7 @@
 <!-- Wrapper End-->
 <!-- Backend Bundle JavaScript -->
 <script src="~/assets/js/libs.min.js"></script>
- <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+ <script type="text/javascript" src="./js/slick.min.js"></script>
 
 <!-- slider JavaScript -->
 <script src="~/assets/js/slider.js"></script>
@@ -903,204 +726,12 @@
 </body>
 
 <script>
+    const CURRENT_USER_ID = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
+    const CURRENT_USER_NAME = '@User.FindFirstValue(ClaimTypes.GivenName)';
     const body = document.body;
-    function sendMessage(receiverId,textarea) {
-        const senderId = '@User.FindFirstValue(ClaimTypes.Authentication)';
-        const messageInput = document.getElementById("chatinput-" + receiverId);
-        const message = messageInput.value.trim();
-
-        if (!message) return;
-        event.preventDefault();
-        displayOutgoingMessage(senderId, receiverId, messageInput.value);
-        // Send the message
-        connection.invoke("SendMessage", senderId, receiverId, messageInput.value)
-            .catch(err => console.error(err.toString()));
-        messageInput.value = '';
-        autoResizeTextarea(textarea);
-    }
-
-    // Event handler for keydown in the textarea
-    function handleKeyDown(event, receiverId,textarea) {
-        if (event.shiftKey) {
-            return;
-        }
-
-        // Check if Enter key is pressed
-        if (event.key === 'Enter') {
-            sendMessage(receiverId,textarea); // Call sendMessage function
-        }
-    }
-
-
-    function displayOutgoingMessage(senderId, receiverId, message) {
-        const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
-        if (chatBox) {
-            const messagesList = chatBox.querySelector('.chat-messages');
-            const messageContainer = document.createElement('div'); // Create a container for the message
-            messageContainer.classList.add('message-container'); // Add a class to the container
-            const msg = document.createElement('div'); // Create the message element
-            msg.innerHTML = message.replaceAll(/\n/g,'<br>'); // Set the message text
-            msg.classList.add('outgoing-message'); // Add a class to style the message
-            messageContainer.appendChild(msg); // Append the message to the container
-            messagesList.appendChild(messageContainer); // Append the container to the messages list
-            // Scroll to the bottom
-            messagesList.scrollTop = messagesList.scrollHeight;
-        }
-    }
-
-    connection.on("ReceiveMessage-@User.FindFirstValue(ClaimTypes.Authentication)", (user, message, name) => {
-        fetchListMess();
-        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${user}`);
-        if (chatBox) {
-            const messagesList = chatBox.querySelector('.chat-messages');
-            const messageContainer = document.createElement('div'); // Create a container for the message
-            messageContainer.classList.add('message-container'); // Add a class to the container
-            const msg = document.createElement('div'); // Create the message element
-            msg.innerHTML = message.replaceAll(/\n/g,'<br>'); // Set the message text
-            msg.classList.add('incoming-message'); // Add a class to style the message
-            messageContainer.appendChild(msg); // Append the message to the container
-            messagesList.appendChild(messageContainer); // Append the container to the messages list
-
-            // Scroll to the bottom
-            messagesList.scrollTop = messagesList.scrollHeight;
-        }
-        else {
-            if (@User.FindFirstValue(ClaimTypes.Authentication)!= user) {
-                openChat(user, name,false);
-            }
-        }
-    });
-
-
-
     
 
-    let chatOffset = 250;
-    const openChatBoxes = [];
-
-    function openChat(userId, name,open=false) {
-        let chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
-        const chatContainer = document.getElementById('chatContainer');
-        if (!chatBox) {
-            if (openChatBoxes.length >= 3) {
-                const oldestChatBoxId = openChatBoxes.shift();
-                closeChat(oldestChatBoxId);
-            }
-            chatBox = createChatBox(userId, name);
-            const chatBoxes = chatContainer.querySelectorAll('.chat-box');
-            const totalWidth = Array.from(chatBoxes).reduce((acc, box) => acc + box.offsetWidth, 0);
-
-            chatBox.style.right = `${totalWidth + chatOffset}px`;
-
-            const index = chatBoxes.length + 1;
-            const marginRight = index * 10;
-
-            chatBox.style.marginRight = `${marginRight}px`;
-            fetchMessages(userId, chatBox);
-            chatContainer.appendChild(chatBox);
-            openChatBoxes.push(userId);
-        }
-        if (open){
-            const inputField = chatBox.querySelector(`#chatinput-${userId}`);
-            inputField.focus();
-            fetchMessages(userId, chatBox,true);
-            }
-        fetchListMess();
-    }
-
-
-    async function fetchMessages(userId, chatBox,open = true) {
-        try {
-            const response = await fetch(`/Index?handler=GetMessages&senderId=@User.FindFirstValue(ClaimTypes.Authentication)&receiverId=${userId}&open=${open}`);
-            if (response.ok) {
-                const messages = await response.json();
-                displayMessages(messages, chatBox,open);
-            } else {
-                console.error('Failed to fetch messages');
-            }
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-        }
-    }
-
-
-    function displayMessages(messages, chatBox,open =true) {
-        const messagesList = chatBox.querySelector('.chat-messages');
-        messagesList.innerHTML = ''; // Clear existing messages
-
-        const startMessage = document.createElement('div');
-        startMessage.classList.add('conversation-start');
-        startMessage.textContent = '--- This is the start of this conversation ---';
-        messagesList.appendChild(startMessage);
-
-        messages.forEach(message => {
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add('message-container');
-
-            const msg = document.createElement('div');
-            msg.innerHTML = message.content.replaceAll(/\n/g,'<br>');
-            msg.classList.add(message.senderId === parseInt('@User.FindFirstValue(ClaimTypes.Authentication)') ? 'outgoing-message' : 'incoming-message');
-            messageContainer.appendChild(msg);
-            messagesList.appendChild(messageContainer);
-        });
-        if (open){
-        messagesList.scrollTop = messagesList.scrollHeight;
-        }
-    }
-
-
-    async function fetchListMess() {
-        try {
-            const response = await fetch(`/Index?handler=GetMessagesNoti`);
-            if (response.ok) {
-                const  listMess = await response.json();
-                displayListMess(listMess);
-                updateNotificationBadge(listMess);
-            } else {
-                console.error('Failed to fetch listMess');
-            }
-            
-        } catch (error) {
-            console.error('Error fetching listMess:', error);
-        }
-    }
-
-    function displayListMess(listMess) {
-        const chatContainer = document.querySelector('.chat-noti');
-        chatContainer.innerHTML = '';
-
-        if (listMess && listMess.length > 0) {
-            listMess.forEach(messData => {
-                const chatItem = document.createElement('a');
-                chatItem.href = '#';
-                chatItem.className = 'iq-sub-card';
-                chatItem.onclick = () => {openChat(messData.receiverId, messData.receiverName,true)
-                ;openChat(messData.receiverId, messData.receiverName,true);};
-
-                const chatContent = `
-                    <div class="d-flex align-items-center">
-                        <div>
-                            <img class="avatar-40 rounded" src="${messData.photoURL}" alt="">
-                        </div>
-                        <div class="w-100 ms-3">
-                            <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${messData.receiverName}</h6>
-                            <small class="float-left font-size-12">
-                                ${messData.isSendedByUser
-                        ? `<div>You: ${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
-                        : `<div style="${!messData.readed ? 'font-weight: bold' : ''}">${limitContent(messData.message)} ∙ ${getTimeFromMessage(messData.time)}</div>`
-                    }
-                            </small>
-                        </div>
-                    </div>
-                `;
-
-                chatItem.innerHTML = chatContent;
-                chatContainer.appendChild(chatItem);
-            });
-        } else {
-            chatContainer.innerHTML = '<div class="text-center">You don\'t have any messages!<br /> Let\'s chat with a friend.</div>';
-        }
-    }
+    
 
     // Automatically load listMess when the page is ready
 
@@ -1142,200 +773,7 @@
 
     ///////////////chatbox
 
-    function createChatBox(userId, name) {
-        const chatBox = document.createElement('div');
-        chatBox.id = `chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`;
-        chatBox.className = 'chat-box';
-        const currid = '@User.FindFirstValue(ClaimTypes.Authentication)';
-        // Add 'bg-dark' class if body has 'bg-dark' class
-        if (body.classList.contains('bg-dark')) {
-            chatBox.classList.add('bg-dark');
-        }
-
-        chatBox.innerHTML = `
-                <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                    <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
-                    <button class="close-button" onclick="closeChat('${userId}')">×</button>
-                </div>
-                <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                </div>
-                <div class="chat-input ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                    <div class="input-container">
-                <textarea oninput="autoResizeTextarea(this);" autocomplete="false" id="chatinput-${userId}" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') handleKeyDown(event, '${userId}',this)"></textarea>
-                        <button class="emoji-button ${body.classList.contains('bg-dark') ? '' :'text-dark'}" onclick="toggleEmojiPicker('${userId}')">☺️</button>
-                    </div>
-                    <div id="emoji-picker-${userId}" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
-                    </div>
-                    <button onclick="sendMessage('${userId}');">Send</button>
-                </div>
-        `;
-        // Apply dark mode styles to the input element if dark mode is active
-        if (body.classList.contains('bg-dark')) {
-            chatBox.classList.add('bg-dark');
-            chatBox.querySelector('textarea').classList.add('bg-dark');
-            chatBox.style.borderColor = '#555';
-            // Set cursor color to white
-            chatBox.querySelector('textarea').classList.add('text-white');
-        } else {
-            chatBox.style.borderColor = '#ccc';
-        }
-        return chatBox;
-    }
-
-    function autoResizeTextarea(textarea) {
-        // Set the textarea height to auto to calculate the natural height
-        textarea.style.height = '50px';
-
-        // Set the maximum height of the textarea to accommodate 5 rows
-        const maxHeight = 5 * parseFloat(getComputedStyle(textarea).lineHeight);
-
-        // Set the height to either the scroll height or the maximum height, whichever is smaller
-        textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px';
-
-        // Scroll to the bottom to show new content
-        textarea.scrollTop = textarea.scrollHeight;
-    }
-    /////////Emoji
-    // Function to close all emoji pickers
-    function closeAllEmojiPickers() {
-        const pickers = document.querySelectorAll('.emoji-picker-container');
-        pickers.forEach(picker => {
-            picker.style.display = 'none';
-        });
-        document.removeEventListener('click', handleClickOutsideEmojiPicker);
-    }
-
-    // Function to toggle the emoji picker for a specific chat box
-    function toggleEmojiPicker(userId) {
-        const picker = document.getElementById(`emoji-picker-${userId}`);
-
-        // Close all other emoji pickers first
-        closeAllEmojiPickers();
-
-        // Clear and create the search input
-        picker.innerHTML = '';
-        const emojiSearchInput = document.createElement('input');
-        emojiSearchInput.id = `emojiSearch-${userId}`;
-        emojiSearchInput.className = `search-emoji ${document.body.classList.contains('bg-dark') ? 'bg-dark text-white' : ''}`;
-        emojiSearchInput.type = 'text';
-        emojiSearchInput.placeholder = 'Search emojis...';
-        emojiSearchInput.style.width = '100%';
-        emojiSearchInput.addEventListener('keyup', () => fetchEmojis(userId, emojiSearchInput.value));
-        picker.appendChild(emojiSearchInput);
-
-        // Create the container for emojis
-        const emojiContainer = document.createElement('div');
-        emojiContainer.className = `picker-emoji-container-${userId}`;
-        picker.appendChild(emojiContainer);
-
-        // Toggle display and event listener for click outside
-        if (picker.style.display === 'block') {
-            picker.style.display = 'none';
-            document.removeEventListener('click', handleClickOutsideEmojiPicker);
-        } else {
-            picker.style.display = 'block';
-            fetchEmojis(userId, '');
-            setTimeout(() => {
-                document.addEventListener('click', handleClickOutsideEmojiPicker);
-            }, 0);
-        }
-    }
-
-    // Function to fetch emojis and display them
-    function fetchEmojis(userId, search) {
-        const picker = document.querySelector(`.picker-emoji-container-${userId}`);
-        picker.innerHTML = '';
-
-        const loader = document.createElement('div');
-        loader.className = 'loader-emoji';
-        loader.textContent = 'Loading...';
-        picker.appendChild(loader);
-
-        fetch(`https://emoji-api.com/emojis?search=${search}&access_key=ed5b51ac5f79b6156b30ae79891eb9bb0af2326c`)
-            .then(response => response.json())
-            .then(data => {
-                picker.removeChild(loader);
-                data.forEach(emoji => {
-                    const emojiSpan = document.createElement('span');
-                    emojiSpan.className = 'emoji-item';
-                    emojiSpan.innerText = emoji.character;
-                    emojiSpan.setAttribute('emoji-name', emoji.slug);
-                    emojiSpan.onclick = () => addEmojiToInput(userId, emoji.character);
-                    picker.appendChild(emojiSpan);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching emojis:', error);
-                picker.removeChild(loader);
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.textContent = 'Failed to load emojis.';
-                picker.appendChild(errorMessage);
-            });
-    }
-
-    // Function to add the selected emoji to the input field
-    function addEmojiToInput(userId, emoji) {
-        const input = document.getElementById(`chatinput-${userId}`);
-        input.value += emoji;
-    }
-
-    // Function to handle clicks outside the emoji picker
-    function handleClickOutsideEmojiPicker(event) {
-        const pickers = document.querySelectorAll('.emoji-picker-container');
-        pickers.forEach(picker => {
-            if (!picker.contains(event.target) && !event.target.classList.contains('emoji-button')) {
-                picker.style.display = 'none';
-            }
-        });
-
-        // Remove event listener if all pickers are closed
-        const anyPickerOpen = Array.from(pickers).some(picker => picker.style.display === 'block');
-        if (!anyPickerOpen) {
-            document.removeEventListener('click', handleClickOutsideEmojiPicker);
-        }
-    }
-///Emoji
-
-
-
-    function closeChat(userId) {
-        const chatBox = document.getElementById(`chatBox-@User.FindFirstValue(ClaimTypes.Authentication)-${userId}`);
-        if (chatBox) {
-            const offset = parseInt(chatBox.style.right, 10);
-            const boxWidth = chatBox.offsetWidth;
-            const deletedMargin = parseInt(chatBox.style.marginRight, 10);
-            chatBox.remove();
-
-            // After removing the chat box, adjust the position and margin of the remaining chat boxes
-            const chatBoxes = document.querySelectorAll('.chat-box');
-            chatBoxes.forEach(box => {
-                const currentOffset = parseInt(box.style.right, 10);
-                const currentMargin = parseInt(box.style.marginRight, 10);
-                const boxWidthDiff = currentOffset > offset ? boxWidth : 0; // If the box is to the right of the removed box, subtract its width
-                if (currentMargin > deletedMargin) {
-                    box.style.right = `${currentOffset - boxWidthDiff}px`;
-                    box.style.marginRight = `${currentMargin - 10}px`; // Decrease margin-right by 10
-                }
-            });
-        }
-    }
-
-    
-
-    function updateNotificationBadge(listMess) {
-        const unreadCount = listMess.filter(mess => !mess.readed).length;
-        const notificationBadge = document.querySelector('.message-noti');
-
-        if (unreadCount > 0) {
-            notificationBadge.textContent = unreadCount;
-            notificationBadge.style.display = '';
-        } else {
-            notificationBadge.style.display = 'none';
-        }
-        const unrep = document.querySelector(".unrep");
-        unrep.textContent = "Unread: " + unreadCount;
-    }
+   
 
     function updateNotificationBadgeG() {
         const number = document.querySelectorAll(".noti-list .iq-sub-card").length ?? 0;
@@ -1348,142 +786,25 @@
         const number = document.querySelector(".req-count").textContent ?? 0;
         document.querySelector(".request-noti").innerHTML = number;
     }
-    document.addEventListener('DOMContentLoaded', (event) => {
-        fetchListMess();
-        fetchFriendRequests().then(() => updateNotificationBadgeM());
-        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
-        updateNotificationBadgeM();
-    });
 
     function redirectToProfile(userId) {
         window.location.href = '/Profile?Id=' + userId;
     }
 
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-bottom-right",
-        "preventDuplicates": false,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "2000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    }
-    
-     function showToast(message, icon = 'success',userid) {
-         toastr.options.onclick = function() { userid !=null? redirectToProfile(userid) : e.preventDefault() };
-         toastr[icon](message);
-     }
-
-    connection.on("ReceiveFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
-        showToast(`${name} just send you friend request.`,'info',userId);
-        fetchFriendRequests().then(() => updateNotificationBadgeM());
-    });
-
-    connection.on("AcceptFriendRequest-@User.FindFirstValue(ClaimTypes.Authentication)", function(userId, friendUserId,name) {
-        showToast(`${name} has accepted your friend request.`,`success`,userId);
-        fetchFriendRequests().then(() => updateNotificationBadgeM());
-        fetchFriendRequestOtherNoti(@User.FindFirstValue(ClaimTypes.Authentication)).then(() => updateNotificationBadgeG());
-    });
-    ///Other
-    async function fetchFriendRequestOtherNoti(userId){
-        const response = await fetch(`/Index?handler=GetRequestsForNotification&&userid=${userId}`);
-        const friendRequests = await response.json();
-        const container = document.querySelector('.noti-list');
-        container.innerHTML = ''; // Clear existing content
-        const count = friendRequests.$values.length;
-        document.querySelector(".noti-noti").style.display = '';
-        friendRequests.$values.forEach(request => {
-            const requestDiv =document.createElement('a');
-            requestDiv.href=`/Profile?Id=${request.User.UserId}`;
-            requestDiv.className="iq-sub-card";
-            requestDiv.innerHTML = `
-                            <div class="d-flex align-items-center">
-                                <div class="">
-                                    <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
-                                </div>
-                                <div class="ms-3 w-100">
-                                    <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="errortext mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">accepted your friend request</p>
-                                        <small class="float-right font-size-12">${getTimeFromMessage(request.CreatedTime)}</small>
-                                    </div>
-                                </div>
-                            </div>
-                `;
-            container.appendChild(requestDiv);
-        })
-        if (count === 0){
-            const noRequestsMessage = document.createElement('div');
-            noRequestsMessage.textContent = 'No notifications to display';
-            noRequestsMessage.classList.add("text-center");
-            container.appendChild(noRequestsMessage);
-        }
-    }
-    ///Current
-    async function fetchFriendRequests() {
-        const response = await fetch('/Index?handler=GetRequests');
-        const friendRequests = await response.json();
-        const container = document.querySelector('.request-list');
-        container.innerHTML = ''; // Clear existing content
-        const count = friendRequests.$values.length;
-        const truecount = friendRequests.$values.filter(request => !request.Status).length;
-        document.querySelector(".req-count").innerHTML=truecount;
-        document.querySelector(".request-noti").style.display = '';
-        friendRequests.$values.forEach(request => {
-            const requestDiv = document.createElement('div');
-            requestDiv.className = 'iq-friend-request';
-            requestDiv.innerHTML = `
-                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
-                            <div class="ms-3">
-                                <h6 onclick="redirectToProfile(${request.User.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                           <div>You accepted</div>
-                        </div>
-                    </div>
-                `;
-            if (!request.Status){
-            requestDiv.innerHTML = `
-                    <div class="iq-sub-card iq-sub-card-big d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
-                            <div class="ms-3">
-                                <h6 onclick="redirectToProfile(${request.User.UserId})" class="clickable mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <a data-user-id="${request.User.UserId}" class="me-3 btn btn-primary rounded accept-friend">Confirm</a>
-                            <a data-user-id="${request.User.UserId}" data-user-name="${request.User.Fullname}" class="me-3 btn btn-secondary rounded cancel-friend">Cancel Request</a>
-                        </div>
-                    </div>
-                `;
-                }
-            container.appendChild(requestDiv);        
-        });
-        if (truecount ==0)  document.querySelector(".request-noti").style.display = 'none';
-        if (count === 0){
-            const noRequestsMessage = document.createElement('div');
-            noRequestsMessage.textContent = 'No friend requests to display';
-            noRequestsMessage.classList.add("text-center");
-            container.appendChild(noRequestsMessage);
-        }
-        updateNotificationBadgeM();
-    }
-
-    // Call the fetchFriendRequests function when the page loads
-    document.addEventListener('DOMContentLoaded', fetchFriendRequests);
+ 
 
 </script>
 
 
+
 </html>
+<script src="./js/ConnectionHandler/ConnectionHandler.js"></script>
+<script src="./js/chatbox/chatBoxHandler.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        fetchListMess();
+        fetchFriendRequests().then(() => updateNotificationBadgeM());
+        fetchFriendRequestOtherNoti(CURRENT_USER_ID).then(() => updateNotificationBadgeG());
+        updateNotificationBadgeM();
+    });
+</script>

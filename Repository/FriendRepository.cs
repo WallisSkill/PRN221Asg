@@ -97,6 +97,7 @@ namespace PRN221_Assignment.Repository
             var friend = _context.Set<Friend>().FirstOrDefault(x => (x.User1Id == userId && x.User2Id == receiverId) || (x.User1Id == receiverId && x.User2Id == userId));
             if (friend == null) return;
             friend.Status = true;
+            friend.CreatedAt = DateTime.Now;
             _context.Set<Friend>().Update(friend);
             _context.SaveChanges();
         }

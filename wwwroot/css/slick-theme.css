@@ -40,7 +40,7 @@
 .slick-next:hover,
 .slick-next:focus
 {
-    color: transparent;
+    color: black;
     outline: none;
     background: transparent;
 }
@@ -72,7 +72,7 @@
 
 .slick-prev
 {
-    left: -25px;
+    left: -20px;
 }
 [dir='rtl'] .slick-prev
 {
@@ -90,7 +90,7 @@
 
 .slick-next
 {
-    right: -25px;
+    right: -20px;
 }
 [dir='rtl'] .slick-next
 {

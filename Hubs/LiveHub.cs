@@ -28,7 +28,7 @@ public partial class LiveHub : Hub
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            await Clients.All.SendAsync("ReceiveMessage-"+receiverId, senderId, message, _context.Users.FirstOrDefault(x=>x.UserId== Int32.Parse(senderId))?.Fullname);
+            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderId, message, _context.Users.FirstOrDefault(x=>x.UserId== Int32.Parse(senderId))?.Fullname);
         }
         catch (Exception ex)
         {
@@ -40,12 +40,12 @@ public partial class LiveHub : Hub
     public async Task SendFriendRequest(string userId, string friendUserId,string name)
     {
         friendRepository.SendFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
-        await Clients.Others.SendAsync("ReceiveFriendRequest-"+friendUserId, userId, friendUserId,name);
+        await Clients.User(friendUserId).SendAsync("ReceiveFriendRequest", userId, friendUserId,name);
     }
     public async Task AcceptFriendRequest(string userId, string friendUserId,string name)
     {
         friendRepository.AcceptFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
-        await Clients.Others.SendAsync("AcceptFriendRequest-"+friendUserId, userId, friendUserId,name);
+        await Clients.User(friendUserId).SendAsync("AcceptFriendRequest", userId, friendUserId,name);
     }
 
     public void CancelFriendRequest(string userId, string friendUserId)

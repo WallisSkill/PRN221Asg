@@ -66,7 +66,7 @@
                     </div>
                     <div class="social-links">
                         <ul class="social-data-block d-flex align-items-center justify-content-between list-inline p-0 m-0">
-                            @if (!User.FindFirstValue(ClaimTypes.Authentication).Equals(user.UserId.ToString()))
+                            @if (!User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(user.UserId.ToString()))
                             {
                                 <li class="text-center">
                                     @if(userfriends.FirstOrDefault(x => x.User1Id == user.UserId || x.User2Id == user.UserId) == null){
@@ -1621,7 +1621,7 @@
                                 </div>
                             </div>
                             <div class="card-header-toolbar d-flex align-items-center">
-                                @if (friend.User.UserId != int.Parse(User.FindFirstValue(ClaimTypes.Authentication)))
+                                @if (friend.User.UserId != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
                                 {
                                     @if (userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null)
                                     {
@@ -1699,7 +1699,7 @@
                     </div>
                 </div>
                 <div class="card-header-toolbar d-flex align-items-center">
-                    @if (friend.User.UserId != int.Parse(User.FindFirstValue(ClaimTypes.Authentication)))
+                    @if (friend.User.UserId != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
                     {
                         @if (userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null)
                         {

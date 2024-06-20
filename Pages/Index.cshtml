@@ -455,7 +455,7 @@
                                                         <div class="total-like-block ms-2 me-3">
                                                             <div class="dropdown">
                                                                 @{
-                                                                    bool isLiked = post.ListLike.Any(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.Authentication)));
+                                                                    bool isLiked = post.ListLike.Any(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
                                                                 }
                                                                 <span @(isLiked ? "style=color:#50B5FF!important" : "") class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                                     @post.ListLike.Count Likes
