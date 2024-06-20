@@ -81,7 +81,7 @@
             html.Append("<div>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
             html.AppendFormat("<span class='comment-actions'>Like ({0})</span>", comment.CmtLikes.Count);
-            html.AppendFormat("<span class='comment-actions' onclick='ReplyTo('{0}')'>Reply</span>", comment.User.UserId);
+            html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}')\">Reply</span>", comment.User.UserId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
             html.Append("</div></div></div>");
 
             if (comment.ListComment != null && comment.ListComment.Any())
@@ -379,7 +379,7 @@
                                     <div class="user-post-data">
                                         <div class="d-flex justify-content-between">
                                             <div class="me-3">
-                                                <img class="avatar-60 img-fluid" src="@post.User.ProfilePhotoUrl" alt="img">
+                                                <img class="rounded-circle avatar-60 img-fluid" src="@post.User.ProfilePhotoUrl" alt="img">
                                             </div>
                                             <div class="w-100">
                                                 <div class="d-flex justify-content-between">
@@ -419,12 +419,13 @@
                                         <div class="newt">
                                             @foreach (var url in post.PhotoURL)
                                             {
-                                                if(url != null){
-                                            <div class="post-image">
-                                               
-                                                    <img src="@url" alt="post-image" class="img-fluid rounded w-100">
-                                                
-                                            </div>
+                                                if (string.IsNullOrEmpty(url))
+                                                {
+                                                    <div class="post-image">
+
+                                                        <img src="@url" alt="post-image" class="img-fluid rounded w-100">
+
+                                                    </div>
                                                 }
                                             }
                                         </div>
@@ -492,11 +493,16 @@
                                             @RenderComments(post.ListComments)
                                         </div>
                                         <form class="comment-text mt-3" action="javascript:void(0);">
-                                            <div id="replyDiv" class="comment-text d-flex align-items-center mt-3 justify-content-between" style="display: none !important">
-                                                <input class="reply" name="replyTo" style="border: none" readonly value="abc"></input>
-                                                <i class="fa fa-close"></i>
+                                            <div id="replyDiv-@post.Id" class="comment-text align-items-center mt-3 justify-content-between" style="display: none !important; border-top: 1px solid">
+                                                <div>
+                                                    <input type="text" id="displayReplyTo-@post.Id" style="border: none; width: 400px; font-weight: bold" readonly />
+                                                    <input type="text" id="displayComment-@post.Id" style="border: none; width: 573px; color: gray" readonly />
+                                                </div>
+                                                <input hidden name="replyTo" type="text" id="replyTo-@post.Id"/>
+                                                <input hidden name="postId" type="text" value="@post.Id"/>
+                                                <i class="fa fa-close" onclick="ReplyTo('-1', '0', '0', '@post.Id')"></i>
                                             </div>
-                                            <div class="comment-text d-flex align-items-center mt-3">
+                                            <div class="comment-text d-flex align-items-center">
                                                 <input type="text" class="form-control rounded" placeholder="Enter Your Comment">
                                                 <div class="comment-attagement d-flex">
                                                     <a href="javascript:void();"><i class="ri-link me-3"></i></a>
@@ -590,9 +596,22 @@
 </div>
 
 <script>
-    function ReplyTo(replyee){
-        var replyDiv = document.getElementById('replyDiv');
-        replyDiv.classList.toggle('hidden');
+    function ReplyTo(replyee, nameReplyee, comment, postId) {
+        var replyDiv = document.getElementById('replyDiv-'+postId);
+        var displayReplyTo = document.getElementById('displayReplyTo-'+postId);
+        var displayComment = document.getElementById('displayComment-' + postId)
+        var replyTo = document.getElementById('replyTo-' + postId);
+        if (replyee != '-1') {
+            displayReplyTo.setAttribute('value', 'Replying to ' + nameReplyee);
+            displayComment.setAttribute('value', comment);
+            replyTo.setAttribute('value', replyee);
+            replyDiv.style.display = 'flex';
+        }
+        else {
+            console.log("abc");
+            replyDiv.style.display = 'none';
+            replyTo.setAttribute('value', 0);
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -602,16 +621,16 @@
     });
 
     var styles = `
-                .slick-prev, .slick-next{
-                    color:black;
-                }
-        `
-    if (document.body.classList.contains("bg-dark")) {
-        styles = `
                     .slick-prev, .slick-next{
-                        color:white;
+                        color:black;
                     }
             `
+    if (document.body.classList.contains("bg-dark")) {
+        styles = `
+                        .slick-prev, .slick-next{
+                            color:white;
+                        }
+                `
     }
     var styleSheet = document.createElement("style")
     styleSheet.textContent = styles;
