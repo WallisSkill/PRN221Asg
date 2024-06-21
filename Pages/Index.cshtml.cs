@@ -73,4 +73,18 @@ public partial class IndexModel : PageModel
         return new JsonResult(friends, options);
     }
     
+    public IActionResult OnGetInsertComment(string commentText,int parentId, int postId)
+    {
+        Comment comment = new Comment()
+        {
+            CommentText = commentText,
+            PostId = postId,
+            ParentId = parentId
+        };
+        return new JsonResult(_postService.InsertComment(comment));
+    }
+    
+    //InsertComment
+    
+    
 }

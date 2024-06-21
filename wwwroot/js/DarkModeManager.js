@@ -50,7 +50,7 @@
     });
 
     document.querySelectorAll('h4 h7').forEach(element => {
-        element.classList.toggle('textfriend');
+        element.classList.toggle('text-friend');
     });
 
     // Toggle the icon class for the button

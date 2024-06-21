@@ -715,10 +715,7 @@
 <script src="~/assets/js/masonry.pkgd.min.js"></script>
 <!-- SweetAlert JavaScript -->
 <script src="~/assets/js/enchanter.js"></script>
-<!-- SweetAlert JavaScript -->
-<script src="~/assets/js/sweetalert.js"></script>
-<!-- app JavaScript -->
-<script src="~/assets/js/charts/weather-chart.js"></script>
+<!-- SweetAlert JavaScript --><!-- app JavaScript -->
 <script src="~/assets/js/app.js"></script>
 <script src="~/assets/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
 <script src="~/assets/js/lottie.js"></script>
@@ -728,6 +725,7 @@
 <script>
     const CURRENT_USER_ID = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
     const CURRENT_USER_NAME = '@User.FindFirstValue(ClaimTypes.GivenName)';
+    const CURRENT_USER_IMAGE ='@User.FindFirstValue("profile_picture")';
     const body = document.body;
     
 
@@ -800,6 +798,7 @@
 </html>
 <script src="./js/ConnectionHandler/ConnectionHandler.js"></script>
 <script src="./js/chatbox/chatBoxHandler.js"></script>
+<script src="./js/Post/commentHandler.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
@@ -808,3 +807,5 @@
         updateNotificationBadgeM();
     });
 </script>
+
+

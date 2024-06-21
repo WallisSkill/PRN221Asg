@@ -19,7 +19,7 @@ public partial class PostService : IPostService
     }
     public void CreatePost(Post post)
     {
-        _postRepository.CreatePost(post);
+       _postRepository.CreatePost(post);
     }
 
     private List<int> GetAllFriendAndFollowerId()
@@ -68,6 +68,13 @@ public partial class PostService : IPostService
         });
 
         return listPost;
+    }
+
+    public Comment InsertComment(Comment comment)
+    {
+        comment.UserId = _currentUser;
+        comment.CreatedAt = DateTime.Now;
+        return _postRepository.InsertComment(comment);
     }
 
     private List<CommentData> HandleCommentDatas(List<CommentData> comments)

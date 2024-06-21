@@ -81,7 +81,7 @@
             html.Append("<div>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
             html.AppendFormat("<span class='comment-actions'>Like ({0})</span>", comment.CmtLikes.Count);
-            html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}',event)\">Reply</span>", comment.User.UserId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
+            html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}',event)\">Reply</span>", comment.CommentId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
             html.Append("</div></div></div>");
 
             if (comment.ListComment != null && comment.ListComment.Any())
@@ -498,16 +498,16 @@
                                                     <input type="text" id="displayReplyTo-@post.Id" style="border: none; width: 400px; font-weight: bold" readonly />
                                                     <input type="text" id="displayComment-@post.Id" style="border: none; width: 573px; color: gray" readonly />
                                                 </div>
-                                                <input hidden name="replyTo" type="text" id="replyTo-@post.Id"/>
+                                                <input hidden name="replyTo" value="0" type="text" id="replyTo-@post.Id"/>
                                                 <input hidden name="postId" type="text" value="@post.Id"/>
                                                 <i class="fa fa-close closer" onclick="ReplyTo('-1', '0', '0', '@post.Id')"></i>
                                             </div>
                                             <div class="comment-text d-flex align-items-center">
                                                 <input id="@post.Id" type="text" onkeydown="if (event.key === 'Enter') newComment(event)" class="form-control rounded" placeholder="Enter Your Comment">
                                                 <div class="comment-attagement d-flex">
-                                                    <a href="javascript:void();"><i class="ri-link me-3"></i></a>
-                                                    <a href="javascript:void();"><i class="ri-user-smile-line me-3"></i></a>
-                                                    <a href="javascript:void();"><i class="ri-camera-line me-3"></i></a>
+                                                    <a href=""><i class="ri-link me-3"></i></a>
+                                                    <a href=""><i class="ri-user-smile-line me-3"></i></a>
+                                                    <a href=""><i class="ri-camera-line me-3"></i></a>
                                                 </div>
                                             </div>
                                         </form>
@@ -596,28 +596,7 @@
 </div>
 
 <script>
-    function ReplyTo(replyee, nameReplyee, comment, postId,event =null) {
-        var replyDiv = document.getElementById('replyDiv-'+postId);
-        var displayReplyTo = document.getElementById('displayReplyTo-'+postId);
-        var displayComment = document.getElementById('displayComment-' + postId)
-        var replyTo = document.getElementById('replyTo-' + postId);
-        if (document.querySelector(".replying-" + postId)) document.querySelector(".replying-" + postId).classList.remove("replying-" + postId);
-        if (replyee != '-1') {
-            displayReplyTo.setAttribute('value', 'Replying to ' + nameReplyee);
-            displayComment.setAttribute('value', comment);
-            replyTo.setAttribute('value', replyee);
-            replyDiv.style.display = 'flex';
-        }
-        else {
-            console.log("abc");
-            replyDiv.style.display = 'none';
-            replyTo.setAttribute('value', 0);
-            
-        }
-        if(event != null){
-            event.currentTarget.closest("li").classList.add("replying-" + postId);
-        }
-    }
+    
 
     document.addEventListener('DOMContentLoaded', () => {
         $('.newt').slick({
@@ -653,89 +632,5 @@
         } while (comment.length === 0);
 
     });
-    function formatDateTime(date) {
-        var month = date.getMonth() + 1; // Lấy tháng (0-11) và cộng 1 để có tháng thực tế
-        var day = date.getDate();        // Lấy ngày trong tháng
-        var year = date.getFullYear();   // Lấy năm
-
-        var hours = date.getHours();     // Lấy giờ (0-23)
-        var minutes = date.getMinutes(); // Lấy phút
-        var ampm = hours >= 12 ? 'PM' : 'AM'; // Xác định AM/PM
-        hours = hours % 12;              // Chuyển đổi sang giờ 12 (0-11)
-        hours = hours ? hours : 12;      // Giờ 0 phải chuyển thành 12
-        minutes = minutes < 10 ? '0' + minutes : minutes; // Thêm số 0 vào trước nếu phút < 10
-
-        var formattedDate = month + '/' + day + '/' + year;
-        var formattedTime = hours + ':' + minutes + ' ' + ampm;
-
-        return formattedDate + ' ' + formattedTime;
-    }
-
-
-    function newComment(event){
-
-        var now = new Date();
-        var formattedDateTime = formatDateTime(now);
-        var commentsSection= event.currentTarget.closest(".col-sm-12").querySelector(".comments-section");
-        if (commentsSection.querySelector('[class^="replying-"]')) {
-            const value = `
-                 <ul>
-                    <ul>
-                        <li>
-                            <div class="comment">
-                                    <img src="@User.FindFirstValue("profile_picture")" alt="img-user" class="avatar">
-                                    <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
-                                            <span class="user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">@User.FindFirstValue(ClaimTypes.GivenName)</span>
-                                        <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${event.currentTarget.value}</span>
-                                    <div>
-                                                     <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
-                                            <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Like (0)</span>
-                                                 <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('@User.FindFirstValue(ClaimTypes.NameIdentifier)','@User.FindFirstValue(ClaimTypes.GivenName)','${event.currentTarget.value.length > 50 ? event.currentTarget.value.substring(0, 50) + '...' : event.currentTarget.value}','${event.currentTarget.id}', event)">Reply</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </ul>
-            `;
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = value;
-
-            const replyingList = commentsSection.querySelector('[class^="replying-"]');
-            if (replyingList) {
-                while (tempDiv.firstChild) {
-                    replyingList.appendChild(tempDiv.firstChild);
-                }
-            }
-        }else{
-            const value = `
-                    <div class="comment">
-                                        <img src="@User.FindFirstValue("profile_picture")" alt="img-user" class="avatar">
-                                            <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
-                                                <span class="user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">@User.FindFirstValue(ClaimTypes.GivenName)</span>
-                                            <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${event.currentTarget.value}</span>
-                                        <div>
-                                                         <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
-                                                <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Like (0)</span>
-                                                     <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('@User.FindFirstValue(ClaimTypes.NameIdentifier)','@User.FindFirstValue(ClaimTypes.GivenName)','${event.currentTarget.value.length > 50 ? event.currentTarget.value.substring(0, 50) + '...' : event.currentTarget.value}','${event.currentTarget.id}', event)">Reply</span>
-                                        </div>
-                                    </div>
-                  </div>
-            `;
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = value;
-            if (!commentsSection.querySelector("li")) {
-                const li = document.createElement('li');
-                commentsSection.querySelector("ul").appendChild(li);
-            }
-            while (tempDiv.firstChild) {
-                commentsSection.querySelector("li").appendChild(tempDiv.firstChild);
-            }
-            
-        }
-        event.currentTarget.value = '';
-        ReplyTo('-1', '0', '0', event.currentTarget.id);
-    }
 </script>
 

@@ -7,4 +7,6 @@ public interface IPostService
 {
     void CreatePost(Post post);
     List<PostData> GetAllPostOfFriendAndFollower(bool onlyCurrentUser = false);
+
+    Comment InsertComment(Comment comment);
 }

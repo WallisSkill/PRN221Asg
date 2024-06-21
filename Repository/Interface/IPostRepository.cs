@@ -12,4 +12,5 @@ public interface IPostRepository
     List<CommentData> GetAllComments(List<int> listPostId);
     List<LikeData> GetAllCommentsLike(List<int> listCmtId);
     List<LikeData> GetAllPostsLike(List<int> listPostId);
+    Comment InsertComment(Comment comment);
 }

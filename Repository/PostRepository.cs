@@ -114,4 +114,11 @@ public partial class PostRepository : IPostRepository
                     };
         return query.ToList();
     }
+
+    public Comment InsertComment(Comment comment)
+    {
+        _context.Set<Comment>().Add(comment);
+        _context.SaveChanges();
+        return comment;
+    }
 }
