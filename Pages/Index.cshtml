@@ -500,7 +500,7 @@
                                                 </div>
                                                 <input hidden name="replyTo" type="text" id="replyTo-@post.Id"/>
                                                 <input hidden name="postId" type="text" value="@post.Id"/>
-                                                <i class="fa fa-close" onclick="ReplyTo('-1', '0', '0', '@post.Id')"></i>
+                                                <i class="fa fa-close closer" onclick="ReplyTo('-1', '0', '0', '@post.Id')"></i>
                                             </div>
                                             <div class="comment-text d-flex align-items-center">
                                                 <input id="@post.Id" type="text" onkeydown="if (event.key === 'Enter') newComment(event)" class="form-control rounded" placeholder="Enter Your Comment">

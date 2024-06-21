@@ -28,14 +28,13 @@
     toggleClasses(document.querySelectorAll('.profile-detail h3'), 'text-white');
     toggleClasses(document.querySelectorAll('h6'), 'text-white');
     toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
-    toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark');
+    toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark','text-white');
     toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
     toggleClasses(document.querySelectorAll('.chat-input textarea'), 'bg-dark', 'text-white');
     toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
     toggleClasses(document.querySelectorAll('.emoji-picker-container'), 'bg-dark');
     toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
     toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
-    toggleClasses(document.querySelectorAll('.search-input'), 'text-white');
     toggleClasses(document.querySelectorAll('.comment-content'), 'comment-content-dark');
 
     ///postArrrow

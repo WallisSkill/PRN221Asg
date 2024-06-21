@@ -26,6 +26,11 @@ body {
     cursor: pointer;
 }
 
+.closer{
+    position: absolute;
+    right: 5px;
+}
+
 .textfriend {
     color: #fffc;
 }
