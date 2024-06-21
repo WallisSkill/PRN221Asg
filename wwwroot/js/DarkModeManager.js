@@ -36,7 +36,7 @@
     toggleClasses(document.querySelectorAll('.emoji-button'), 'text-dark');
     toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
     toggleClasses(document.querySelectorAll('.comment-content'), 'comment-content-dark');
-
+    toggleClasses(document.querySelectorAll('#about h4'), 'text-white');
     ///postArrrow
     var arrowColor = isDarkMode ? "white" : "black";
     document.querySelectorAll('.slick-prev, .slick-next').forEach(el => {
