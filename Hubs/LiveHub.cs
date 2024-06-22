@@ -85,7 +85,7 @@ public partial class LiveHub : Hub
     public async Task GetOnlineUsers()
     {
         var onlineUsers = _users.Keys.ToList();
-        await Clients.All.SendAsync("ReceiveOnlineUsers", onlineUsers);
+        await Clients.Caller.SendAsync("ReceiveOnlineUsers", onlineUsers);
     }
     
     public bool IsUserOnline(string userId)

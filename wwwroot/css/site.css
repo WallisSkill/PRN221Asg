@@ -20,7 +20,9 @@ html {
 body {
     margin-bottom: 60px;
 }
-
+.iq-profile-avatar {
+    transition: background-color 0.3s ease;
+}
 
 .clickable {
     cursor: pointer;
