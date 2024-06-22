@@ -1,5 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using PRN221_Assignment.Hubs;
 using PRN221_Assignment.Models;
 
@@ -11,7 +12,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(o =>
+{
+    o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+});
 builder.Services.AutoRegisterServices();
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)
