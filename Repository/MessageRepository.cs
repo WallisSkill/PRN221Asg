@@ -32,6 +32,12 @@ public partial class MessageRepository: IMessageRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task InsertNewMessage(Message message)
+    {
+        _context.Messages.Add(message);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<IList<MessageData>> GetAllMessage(int userId)
     {
         return await (from T1 in _context.Set<Message>()

@@ -9,4 +9,5 @@ public interface IMessageRepository
     Task<IList<MessageData>> GetAllMessage(int userId);
     Task<IList<User>> GetUsers();
     Task UpdateMessage(string senderId, string receiverId);
+    Task InsertNewMessage(Message message);
 }
