@@ -23,7 +23,7 @@ function showToast(message, icon = 'success', userid) {
 
 ///Other
 async function fetchFriendRequestOtherNoti(userId = CURRENT_USER_ID) {
-    
+
     const response = await fetch(`/Index?handler=GetRequestsForNotification&&userid=${userId}`);
     const friendRequests = await response.json();
     const container = document.querySelector('.noti-list');
@@ -237,6 +237,80 @@ function handleAcceptFriend(button) {
                                     </div>
                                 </div>
                             `;
+    }
+
+    fetchFriendRequests().then(() => updateNotificationBadgeM());
+    fetchFriendRequests();
+}
+
+function handleAcceptFriend(button) {
+    const userId = `${CURRENT_USER_ID}`;
+    const friendUserId = button.getAttribute('data-user-id');
+    const fullname = `${CURRENT_USER_NAME}`;
+
+    connection.invoke("AcceptFriendRequest", userId, friendUserId, fullname)
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    // Change the button to "Pending"
+    if (button.closest(".text-center")) {
+        button.closest(".text-center").innerHTML = `
+                    <div class="dropdown">
+                        <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                            <i class="ri-check-line me-1 text-white"></i> Friend
+                        </span>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                            <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
+                        </div>
+                    </div>
+                `;
+    }
+    if (button.closest("#pendinger")) {
+        button.closest("#pendinger").innerHTML = `
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle btn btn-secondary me-2" id="dropdownMenuButton03" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                        <i class="ri-check-line me-1 text-white"></i> Friend
+                                    </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton03">
+                                        <a data-user-id="${userId}" data-user-name="${fullname}" class="dropdown-item clickable cancel-friend">Unfriend</a>
+                                    </div>
+                                </div>
+                            `;
+    }
+
+    fetchFriendRequests().then(() => updateNotificationBadgeM());
+    fetchFriendRequests();
+}
+
+function handleAcceptFriendSearch(button) {
+    const userId = `${CURRENT_USER_ID}`;
+    const friendUserId = button.getAttribute('data-user-id');
+    const fullname = `${CURRENT_USER_NAME}`;
+
+    connection.invoke("AcceptFriendRequest", userId, friendUserId, fullname)
+        .catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    // Change the button to "Pending"
+    if (button.closest(".text-center")) {
+        button.closest(".text-center").innerHTML = `
+                    <div class="">
+                        <span onclick="openChat('@u.UserId','@u.Fullname')" class="btn btn-primary me-2" role="button">
+                             <i class="ri-message-line me-1 text-white"></i>Message
+                        </span>
+                    </div>
+                `;
+    }
+    if (button.closest("#pendinger")) {
+        button.closest("#pendinger").innerHTML = `
+                    <div class="">
+                        <span onclick="openChat('@u.UserId','@u.Fullname')" class="btn btn-primary me-2" role="button">
+                              <i class="ri-message-line me-1 text-white"></i>Message
+                        </span>
+                    </div>
+                 `;
     }
 
     fetchFriendRequests().then(() => updateNotificationBadgeM());

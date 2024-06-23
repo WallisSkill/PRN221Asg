@@ -7,8 +7,9 @@
     var userfriends = (List<Friend>)ViewBag.userFriends;
     var searchUser = (List<User>)ViewBag.searchUser;
     var SeeAll = ViewBag.SeeAll;
-    var count = 0;
+    // var count = 0;
     var searchTerm = ViewBag.searchTerm;
+    var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 
@@ -38,7 +39,7 @@
 @using PRN221_Assignment.Data
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page"; 
+    ViewData["Title"] = "Home page";
     var listFriend = (List<User>)ViewBag.listFriend;
     var upComing = (List<User>)ViewBag.upComingBirthdayFriend;
     string CalculateDay(DateTime? dob)
@@ -56,7 +57,7 @@
         }
         return differ + " days after";
     }
-    
+
     string LimitContent(string content)
     {
         if (content.Length > 20)
@@ -111,15 +112,11 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            @if (searchUser.Count != 0 )
+                            @if (searchUser.Count != 0)
                             {
                                 @foreach (var u in searchUser)
                                 {
-                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(u.UserId.ToString()))
-                                    {
-                                        count++;
-                                        continue;
-                                    }
+
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="user-img">
                                             <img src="@u.ProfilePhotoUrl" alt="userimg" class="avatar-60 rounded-circle">
@@ -129,45 +126,88 @@
                                             <span class="form-control rounded" style="border:none; background:none"> @u.Bio</span>
                                         </div>
                                         <div>
-                                                @if (userfriends.FirstOrDefault(x => x.User1Id == u.UserId || x.User2Id == u.UserId) == null)
-                                                {
-                                                    <span  data-user-id="@u.UserId" data-user-name="@u.Fullname" class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01"  role="button">
-                                                        <i  class="ri-add-line me-1 text-white"></i>Add&nbsp;Friend
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                 <span onclick="openChat('@u.UserId','@u.Fullname')" class="btn btn-primary me-2" role="button">
-                                                    <i class="ri-message-line me-1 text-white"></i>Message
-                                                 </span>
-                                                }
+                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(u.UserId.ToString()))
+                                            {
+                                                <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class="btn btn-primary me-2 ">
+                                                    <i class="ri-user-line me-1 text-white"></i>Profile
+
+                                                </a>
+                                            }
+                                            else if (!User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(u.UserId.ToString()))
+                                            {
+                                                <div class="text-center">
+                                                    @if (userfriends.FirstOrDefault(x => x.User1Id == u.UserId || x.User2Id == u.UserId) == null)
+                                                    {
+                                                        <span data-user-id="@u.UserId" data-user-name="@u.Fullname" class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01" role="button">
+                                                            <i class="ri-add-line me-1 text-white"></i>Add&nbsp;Friend
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        bool? status = userfriends.FirstOrDefault(x => x.User1Id == u.UserId || x.User2Id == u.UserId) != null ? userfriends.FirstOrDefault(x => x.User1Id == u.UserId || x.User2Id == u.UserId)?.Status : false;
+                                                        if (status is true)
+                                                        {
+                                                            <div class="">
+                                                                <span onclick="openChat('@u.UserId','@u.Fullname')" class="btn btn-primary me-2" role="button">
+                                                                    <i class="ri-message-line me-1 text-white"></i>Message
+                                                                </span>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="dropdown">
+                                                                <span class="dropdown-toggle btn btn-warning me-2" id="dropdownMenuButton02" data-bs-toggle="dropdown" aria-expanded="true" role="button">
+                                                                    <i class="ri-time-line me-1"></i> Pending
+                                                                </span>
+                                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton02">
+                                                                    @{
+                                                                        bool? status2 = userfriends.FirstOrDefault(x => x.User1Id == u.UserId) != null ? userfriends.FirstOrDefault(x => x.User1Id == u.UserId).User1Id == u.UserId : false;
+                                                                    }
+                                                                    @if (status2 is false)
+                                                                    {
+                                                                        <a data-user-id="@u.UserId" data-user-name="@u.Fullname" class="dropdown-item cancel-friend clickable">Cancel Pending</a>
+                                                                    }
+
+                                                                    else
+                                                                    {
+                                                                        <a data-user-id="@u.UserId" class="dropdown-item accept-friend-search clickable">Confirm</a>
+                                                                        <a data-user-id="@u.UserId" data-user-name="@u.Fullname" class="dropdown-item clickable cancel-friend">Cancel</a>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                                
+                                            }
+
                                         </div>
 
                                     </div>
                                 }
 
-                                @if (SeeAll == "false" && searchUser.Count>2)
+                                @if (SeeAll == "false" && searchUser.Count > 2)
                                 {
                                     <hr>
                                     <form asp-action="/Search" method="post" class="d-flex center">
-                                            <button class="btn btn-soft-primary" style="width:100%; font-weight:bold">
-                                              See all
-                                            </button>
+                                        <button class="btn btn-soft-primary" style="width:100%; font-weight:bold">
+                                            See all
+                                        </button>
                                         <input type="hidden" name="SeeAll" value="true">
                                         <input type="hidden" name="searchTerm" value="@searchTerm" />
-                                        
+
                                     </form>
                                 }
-                                
+
 
                             }
-                            @if (searchUser.Count == count || searchUser.Count==0)
+                            @if (searchUser.Count == 0)
                             {
                                 <div class="d-flex center">Not Found User</div>
                             }
-                            
-                            
-                            
+
+
+
                         </div>
                     </div>
                 </div>
@@ -1085,7 +1125,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-sm-12 text-center">
                 <img src="~/assets/images/page-img/page-load-loader.gif" alt="loader" style="height: 100px;">
             </div>
