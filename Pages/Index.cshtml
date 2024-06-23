@@ -619,18 +619,13 @@
     var styleSheet = document.createElement("style")
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
-
-    var comment = document.querySelectorAll(".comment-content");
-    document.addEventListener('DOMContentLoaded', (event) => {
-        do {
-            comment = document.querySelectorAll(".comment-content")
-            comment.forEach(m => {
-                if (document.body.classList.contains('bg-dark')) {
-                    m.classList.add("comment-content-dark");
-                }
-            });
-        } while (comment.length === 0);
-
-    });
+    window.onload = (event) => {
+        var comment = document.querySelectorAll(".comment-content");
+        comment.forEach(m => {
+            if (document.body.classList.contains('bg-dark')) {
+                m.classList.add("comment-content-dark");
+            }
+        });
+    };
 </script>
 
