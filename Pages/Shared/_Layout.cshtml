@@ -25,7 +25,6 @@
 
     <script src="./js/toast.js"></script>
     <link rel="stylesheet" href="~/css/site.css"/>
-    <script src="./js/connection.js"></script>
 </head>
 <body>
 @*     <header>
@@ -656,6 +655,10 @@
                     if (event.target.classList.contains('accept-friend')) {
                         handleAcceptFriend(event.target);
                     }
+                    
+                    if (event.target.classList.contains('accept-friend-search')) {
+                        handleAcceptFriendSearch(event.target);
+                    }
 /////////////////////////////
                     // Handle dropdown toggle click
                     if (event.target.closest('.dropdown-toggle')) {
@@ -796,6 +799,7 @@
 
 
 </html>
+<script src="./js/connection.js"></script>
 <script src="./js/ConnectionHandler/ConnectionHandler.js"></script>
 <script src="./js/chatbox/chatBoxHandler.js"></script>
 <script src="./js/Post/commentHandler.js"></script>

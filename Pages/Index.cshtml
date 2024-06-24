@@ -184,8 +184,8 @@
                     {
                         foreach (var user in listFriend)
                         {
-                            <div class="clickable d-flex align-items-center mb-4" onclick="openChat('@user.UserId','@user.Fullname',true);openChat('@user.UserId','@user.Fullname',true)">
-                                <div class="iq-profile-avatar status-online">
+                            <div class="clickable d-flex align-items-center mb-4" id="friend-@user.UserId" onclick="openChat('@user.UserId','@user.Fullname',true);openChat('@user.UserId','@user.Fullname',true)">
+                                <div class="iq-profile-avatar status-offline">
                                     <img class="rounded-circle avatar-50" src="@user.ProfilePhotoUrl" alt="">
                                 </div>
                                 <div class="ms-3">
@@ -619,18 +619,13 @@
     var styleSheet = document.createElement("style")
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
-
-    var comment = document.querySelectorAll(".comment-content");
-    document.addEventListener('DOMContentLoaded', (event) => {
-        do {
-            comment = document.querySelectorAll(".comment-content")
-            comment.forEach(m => {
-                if (document.body.classList.contains('bg-dark')) {
-                    m.classList.add("comment-content-dark");
-                }
-            });
-        } while (comment.length === 0);
-
-    });
+    window.onload = (event) => {
+        var comment = document.querySelectorAll(".comment-content");
+        comment.forEach(m => {
+            if (document.body.classList.contains('bg-dark')) {
+                m.classList.add("comment-content-dark");
+            }
+        });
+    };
 </script>
 

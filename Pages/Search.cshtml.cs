@@ -6,13 +6,15 @@ using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Pages
 {
+    [Authorize]
     [RequiredArgsConstructor]
     public partial class SearchModel : PageModel
     {
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string searchTerm { get; set; }
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string SeeAll { get; set; }
+
         private readonly ISearchService _searchService;
         private readonly IUserResolverService _userResolver;
         private readonly IProfileService _profileService;
@@ -39,7 +41,7 @@ namespace PRN221_Assignment.Pages
                 SeeAll = SeeAll
             });
         }
-
+        
         public void OnGet(string searchTerm, string SeeAll)
         {
             this.searchTerm = searchTerm;
