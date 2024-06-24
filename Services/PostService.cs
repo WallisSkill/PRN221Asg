@@ -103,4 +103,31 @@ public partial class PostService : IPostService
 
         return result;
     }
+
+    public List<LikeData> GetLikeDataOfPostAfterLike(int postId, int emotionId, bool deleteStatus)
+    {
+        HandleLikePost(postId, emotionId, deleteStatus);
+        var likeDataOfPost = _postRepository.GetAllPostsLike(new List<int> { postId });
+        return likeDataOfPost;
+    }
+
+    private void HandleLikePost(int postId, int emotionId, bool deleteStatus)
+    {
+        var postLike = _postRepository.GetPostLike(postId, _currentUser);
+        if (postLike != null)
+        {
+            if(deleteStatus)
+            {
+                _postRepository.DeletePostLike(postId, _currentUser);
+            }
+            else
+            {
+                _postRepository.UpdatePostLike(postId, _currentUser, emotionId);
+            }
+        }
+        else
+        {
+            _postRepository.InsertPostLike(postId, _currentUser, emotionId);
+        }
+    }
 }

@@ -14,13 +14,13 @@
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
     <None Include="wwwroot\css\fonts\slick.svg" />
-    <None Include="wwwroot\Image\Emoji\angry.png" />
-    <None Include="wwwroot\Image\Emoji\care.png" />
-    <None Include="wwwroot\Image\Emoji\haha.png" />
-    <None Include="wwwroot\Image\Emoji\heart.png" />
-    <None Include="wwwroot\Image\Emoji\like.png" />
-    <None Include="wwwroot\Image\Emoji\sad.png" />
-    <None Include="wwwroot\Image\Emoji\wow.png" />
+    <None Include="wwwroot\Image\Emoji\Angry.png" />
+    <None Include="wwwroot\Image\Emoji\Care.png" />
+    <None Include="wwwroot\Image\Emoji\Haha.png" />
+    <None Include="wwwroot\Image\Emoji\Love.png" />
+    <None Include="wwwroot\Image\Emoji\Like.png" />
+    <None Include="wwwroot\Image\Emoji\Sad.png" />
+    <None Include="wwwroot\Image\Emoji\Wow.png" />
   </ItemGroup>
 
   <ItemGroup>

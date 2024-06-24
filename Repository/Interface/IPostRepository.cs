@@ -13,4 +13,8 @@ public interface IPostRepository
     List<LikeData> GetAllCommentsLike(List<int> listCmtId);
     List<LikeData> GetAllPostsLike(List<int> listPostId);
     Comment InsertComment(Comment comment);
+    PostLike GetPostLike(int postId, int currentUser);
+    void UpdatePostLike(int postId, int currentUser, int emotionId);
+    void InsertPostLike(int postId, int currentUser, int emotionId);
+    void DeletePostLike(int postId, int currentUser);
 }

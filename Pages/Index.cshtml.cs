@@ -83,8 +83,16 @@ public partial class IndexModel : PageModel
         };
         return new JsonResult(_postService.InsertComment(comment));
     }
-    
+
     //InsertComment
-    
-    
+    public IActionResult OnPostHandleLike(int postId, int emotionId, bool deleteStatus)
+    {
+
+        var listPostLike = _postService.GetLikeDataOfPostAfterLike(postId, emotionId, deleteStatus);
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+        return new JsonResult(listPostLike, options);
+    }
 }

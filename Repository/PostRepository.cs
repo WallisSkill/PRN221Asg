@@ -121,4 +121,36 @@ public partial class PostRepository : IPostRepository
         _context.SaveChanges();
         return comment;
     }
+
+    public PostLike GetPostLike(int postId, int currentUser)
+    {
+        var query = _context.Set<PostLike>().FirstOrDefault(x => x.PostId == postId && currentUser == x.UserId);
+        return query; 
+    }
+
+    public void UpdatePostLike(int postId, int currentUser, int emotionId)
+    {
+        var postLike = _context.Set<PostLike>().FirstOrDefault(x => x.PostId == postId && x.UserId == currentUser);
+        postLike.EmotionId = emotionId;
+        _context.SaveChanges();
+    }
+
+    public void InsertPostLike(int postId, int currentUser, int emotionId)
+    {
+        _context.Set<PostLike>().Add(new PostLike()
+        {
+            PostId = postId,
+            UserId = currentUser,
+            EmotionId = emotionId,
+            CreatedAt = DateTime.Now,
+        });
+        _context.SaveChanges();
+    }
+
+    public void DeletePostLike(int postId, int currentUser)
+    {
+        var postLike = _context.Set<PostLike>().FirstOrDefault(x => x.PostId == postId && x.UserId == currentUser);
+        _context.Set<PostLike>().Remove(postLike);
+        _context.SaveChanges();
+    }
 }

@@ -7,6 +7,6 @@ public interface IPostService
 {
     void CreatePost(Post post);
     List<PostData> GetAllPostOfFriendAndFollower(bool onlyCurrentUser = false);
-
     Comment InsertComment(Comment comment);
+    List<LikeData> GetLikeDataOfPostAfterLike(int postId, int emotionId, bool deleteStatus);
 }
