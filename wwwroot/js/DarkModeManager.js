@@ -29,6 +29,7 @@
     toggleClasses(document.querySelectorAll('h6'), 'text-white');
     toggleClasses(document.querySelectorAll('.right-sidebar-panel'), 'bg-dark');
     toggleClasses(document.querySelectorAll('input[type="text"]'), 'bg-dark','text-white');
+    toggleClasses(document.querySelectorAll('input[type="date"]'), 'date-dark', 'bg-dark', 'text-white');
     toggleClasses(document.querySelectorAll('[class*="chat"]'), 'bg-dark');
     toggleClasses(document.querySelectorAll('.chat-input textarea'), 'bg-dark', 'text-white');
     toggleClasses(document.querySelectorAll('.errortext'), 'text-white');
@@ -37,6 +38,12 @@
     toggleClasses(document.querySelectorAll('.search-emoji'), 'bg-dark', 'text-white');
     toggleClasses(document.querySelectorAll('.comment-content'), 'comment-content-dark');
     toggleClasses(document.querySelectorAll('#about h4'), 'text-white');
+    ///////////////Longngu
+    toggleClasses(document.querySelectorAll('.editprofile-address'), 'bg-dark', 'text-white');
+
+    //////////////HoangAnh
+
+    /////////////Hung
     ///postArrrow
     var arrowColor = isDarkMode ? "white" : "black";
     document.querySelectorAll('.slick-prev, .slick-next').forEach(el => {

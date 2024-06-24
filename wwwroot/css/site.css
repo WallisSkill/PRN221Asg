@@ -28,6 +28,10 @@ body {
     cursor: pointer;
 }
 
+.date-dark{
+    color-scheme:dark;
+}
+
 .closer{
     position: absolute;
     right: 5px;

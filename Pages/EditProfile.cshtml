@@ -1,9 +1,10 @@
 ﻿@page
-@model PRN221_Assignment.Pages.EditProfileModel
-@using PRN221_Assignment.Models
+@using System.Globalization
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using PRN221_Assignment.Data
-
+@using PRN221_Assignment.Models
+@model EditProfileModel
 <div id="content-page" class="content-page">
     <div class="container">
         <div class="row">
@@ -22,16 +23,7 @@
                                         Change Password
                                     </a>
                                 </li>
-                                <li class="col-md-3 p-0">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#emailandsms">
-                                        Email and SMS
-                                    </a>
-                                </li>
-                                <li class="col-md-3 p-0">
-                                    <a class="nav-link" data-bs-toggle="pill" href="#manage-contact">
-                                        Manage Contact
-                                    </a>
-                                </li>
+
                             </ul>
                         </div>
                     </div>
@@ -48,97 +40,54 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    <form method="post">
                                         <div class="form-group row align-items-center">
                                             <div class="col-md-12">
                                                 <div class="profile-img-edit">
-                                                    <img class="profile-pic" src="../assets/images/user/11.png" alt="profile-pic">
+                                                    <img class="profile-pic" src="@User.FindFirstValue("profile_picture")" alt="profile-pic">
                                                     <div class="p-image">
                                                         <i class="ri-pencil-line upload-button text-white"></i>
-                                                        <input class="file-upload" type="file" accept="image/*" />
+                                                        <input class="file-upload" type="file" accept="image/*" asp-for="user.profilePhotoUrl" />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class=" row align-items-center">
                                             <div class="form-group col-sm-6">
-                                                <label for="fname" class="form-label">First Name:</label>
-                                                <input type="text" class="form-control" id="fname" placeholder="Bni">
+                                                <label for="fname" class="form-label">Full Name:</label>
+                                                <input type="text" class="form-control" asp-for="user.Fullname" id="fname" required />
                                             </div>
                                             <div class="form-group col-sm-6">
-                                                <label for="lname" class="form-label">Last Name:</label>
-                                                <input type="text" class="form-control" id="lname" placeholder="Jhon">
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label for="uname" class="form-label">User Name:</label>
-                                                <input type="text" class="form-control" id="uname" placeholder="Bni@01">
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label for="cname" class="form-label">City:</label>
-                                                <input type="text" class="form-control" id="cname" placeholder="Atlanta">
+                                                <label for="uname" class="form-label">Email:</label>
+                                                <input type="text" class="form-control" id="uname" asp-for="user.Email" required />
                                             </div>
                                             <div class="form-group col-sm-6">
                                                 <label class="form-label d-block">Gender:</label>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio10" value="option1">
-                                                    <label class="form-check-label" for="inlineRadio10"> Male</label>
+                                                    <input class="form-check-input" type="radio" asp-for="user.Gender" id="genderMale" value="1" checked="@(Model.user.Gender == 1)">
+                                                    <label class="form-check-label" for="genderMale"> Male</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio11" value="option1">
-                                                    <label class="form-check-label" for="inlineRadio11">Female</label>
+                                                    <input class="form-check-input" type="radio" asp-for="user.Gender" id="genderFemale" value="0" checked="@(Model.user.Gender == 0)">
+                                                    <label class="form-check-label" for="genderFemale"> Female</label>
                                                 </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" asp-for="user.Gender" id="genderOther" value="3" checked="@(Model.user.Gender > 2)">
+                                                    <label class="form-check-label" for="genderOther"> Other</label>
+                                                </div>
+
                                             </div>
                                             <div class="form-group col-sm-6">
                                                 <label for="dob" class="form-label">Date Of Birth:</label>
-                                                <input class="form-control" id="dob" placeholder="1984-01-24">
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label class="form-label">Marital Status:</label>
-                                                <select class="form-select" aria-label="Default select example">
-                                                    <option selected="">Single</option>
-                                                    <option>Married</option>
-                                                    <option>Widowed</option>
-                                                    <option>Divorced</option>
-                                                    <option>Separated </option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label class="form-label">Age:</label>
-                                                <select class="form-select" aria-label="Default select example 2">
-                                                    <option>46-62</option>
-                                                    <option>63 > </option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label class="form-label">Country:</label>
-                                                <select class="form-select" aria-label="Default select example 3">
-                                                    <option>Caneda</option>
-                                                    <option>Noida</option>
-                                                    <option selected="">USA</option>
-                                                    <option>India</option>
-                                                    <option>Africa</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label class="form-label">State:</label>
-                                                <select class="form-select" aria-label="Default select example 4">
-                                                    <option>California</option>
-                                                    <option>Florida</option>
-                                                    <option selected="">Georgia</option>
-                                                    <option>Connecticut</option>
-                                                    <option>Louisiana</option>
-                                                </select>
+                                                <input type="date" class="form-control" id="dob" asp-for="user.Dob" required>
                                             </div>
                                             <div class="form-group col-sm-12">
-                                                <label class="form-label">Address:</label>
-                                                <textarea class="form-control" name="address" rows="5" style="line-height: 22px;">
-                                                37 Cardinal Lane
-                                                Petersburg, VA 23803
-                                                United States of America
-                                                Zip Code: 85001
+                                                <label class="form-label">Bio:</label>
+                                                <textarea class="form-control editprofile-address" asp-for="user.Bio" rows="5" style="line-height: 22px;">
                                                 </textarea>
                                             </div>
                                         </div>
+                                        <input type="hidden"  asp-for="user.UserId">
                                         <button type="submit" class="btn btn-primary me-2">Submit</button>
                                         <button type="reset" class="btn bg-soft-danger">Cancle</button>
                                     </form>
@@ -173,103 +122,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="emailandsms" role="tabpanel">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between">
-                                    <div class="header-title">
-                                        <h4 class="card-title">Email and SMS</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <form>
-                                        <div class="form-group row align-items-center">
-                                            <label class="col-md-3" for="emailnotification">Email Notification:</label>
-                                            <div class="col-md-9 form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked11" checked>
-                                                <label class="form-check-label" for="flexSwitchCheckChecked11">Checked switch checkbox input</label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row align-items-center">
-                                            <label class="col-md-3" for="smsnotification">SMS Notification:</label>
-                                            <div class="col-md-9 form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked12" checked>
-                                                <label class="form-check-label" for="flexSwitchCheckChecked12">Checked switch checkbox input</label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row align-items-center">
-                                            <label class="col-md-3" for="npass">When To Email</label>
-                                            <div class="col-md-9">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault12">
-                                                    <label class="form-check-label" for="flexCheckDefault12">
-                                                        You have new notifications.
-                                                    </label>
-                                                </div>
-                                                <div class="form-check d-block">
-                                                    <input class="form-check-input" type="checkbox" value="" id="email02">
-                                                    <label class="form-check-label" for="email02">You're sent a direct message</label>
-                                                </div>
-                                                <div class="form-check d-block">
-                                                    <input type="checkbox" class="form-check-input" id="email03" checked="">
-                                                    <label class="form-check-label" for="email03">Someone adds you as a connection</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row align-items-center">
-                                            <label class="col-md-3" for="npass">When To Escalate Emails</label>
-                                            <div class="col-md-9">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="email04">
-                                                    <label class="form-check-label" for="email04">
-                                                        Upon new order.
-                                                    </label>
-                                                </div>
-                                                <div class="form-check d-block">
-                                                    <input class="form-check-input" type="checkbox" value="" id="email05">
-                                                    <label class="form-check-label" for="email05">New membership approval</label>
-                                                </div>
-                                                <div class="form-check d-block">
-                                                    <input type="checkbox" class="form-check-input" id="email06" checked="">
-                                                    <label class="form-check-label" for="email06">Member registration</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary me-2">Submit</button>
-                                        <button type="reset" class="btn bg-soft-danger">Cancle</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="manage-contact" role="tabpanel">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between">
-                                    <div class="header-title">
-                                        <h4 class="card-title">Manage Contact</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <form>
-                                        <div class="form-group">
-                                            <label for="cno" class="form-label">Contact Number:</label>
-                                            <input type="text" class="form-control" id="cno" value="001 2536 123 458">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email" class="form-label">Email:</label>
-                                            <input type="text" class="form-control" id="email" value="Bnijone@demo.com">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="url" class="form-label">Url:</label>
-                                            <input type="text" class="form-control" id="url" value="https://getbootstrap.com">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary me-2">Submit</button>
-                                        <button type="reset" class="btn bg-soft-danger">Cancle</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function formatDate(input) {
+        let date = new Date(input.value);
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0'); 
+        let year = date.getFullYear();
+    }
+</script>
