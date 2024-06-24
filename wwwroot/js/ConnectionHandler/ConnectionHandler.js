@@ -242,3 +242,29 @@ function handleAcceptFriend(button) {
     fetchFriendRequests().then(() => updateNotificationBadgeM());
     fetchFriendRequests();
 }
+////Status friend
+connection.on("UserConnected", function (userId, username) {
+    const friendElement = document.getElementById(`friend-${userId}`);
+    if (friendElement) {
+        friendElement.querySelector(".iq-profile-avatar").classList.remove("status-offline");
+        friendElement.querySelector(".iq-profile-avatar").classList.add("status-online");
+    }
+});
+
+connection.on("UserDisconnected", function (userId) {
+    const friendElement = document.getElementById(`friend-${userId}`);
+    if (friendElement) {
+        friendElement.querySelector(".iq-profile-avatar").classList.remove("status-online");
+        friendElement.querySelector(".iq-profile-avatar").classList.add("status-offline");
+    }
+});
+
+connection.on("ReceiveOnlineUsers", function (onlineUsers) {
+    onlineUsers.forEach(function (userId) {
+        const friendElement = document.getElementById(`friend-${userId}`);
+        if (friendElement) {
+            friendElement.querySelector(".iq-profile-avatar").classList.remove("status-offline");
+            friendElement.querySelector(".iq-profile-avatar").classList.add("status-online");
+        }
+    });
+});

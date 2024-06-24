@@ -48,9 +48,17 @@ function newComment(event) {
     var commentText = event.currentTarget.value;
     var postId = event.currentTarget.id;
     var currentReply = commentsSection.querySelector('[class^="replying-"]');
-    var url = `/Index?handler=InsertComment&&commentText=${commentText}&&postId=${postId}&&parentId=${replyTo}`;
+    var formData = new FormData();
+    formData.append("CommentText",commentText);
+    formData.append("PostId",postId);
+    formData.append("ParentId",replyTo);
+    formData.forEach((value, key) => {
+        console.log(key + ': ' + value);
+    });
+    var url = `/Index?handler=InsertComment`;
     fetch(url, {
-        method: 'GET',
+        method: 'POST',
+        body: formData
     })
         .then(response => {
             if (!response.ok) {
