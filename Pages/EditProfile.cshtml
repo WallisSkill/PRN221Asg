@@ -40,14 +40,14 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <form method="post">
+                                    <form method="post" enctype="multipart/form-data">
                                         <div class="form-group row align-items-center">
                                             <div class="col-md-12">
                                                 <div class="profile-img-edit">
-                                                    <img class="profile-pic" src="@User.FindFirstValue("profile_picture")" alt="profile-pic">
+                                                    <img class="profile-pic" src="@Model.user.ProfilePhotoUrl" alt="profile-pic">
                                                     <div class="p-image">
                                                         <i class="ri-pencil-line upload-button text-white"></i>
-                                                        <input class="file-upload" type="file" accept="image/*" asp-for="user.profilePhotoUrl" />
+                                                        <input class="file-upload" type="file" accept="image/*" value="@Model.user.ProfilePhotoUrl" name="profilePhoto" />
                                                     </div>
                                                 </div>
                                             </div>

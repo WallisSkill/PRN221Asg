@@ -333,8 +333,6 @@ Index Of Script
                         }, t.readAsDataURL(e.files[0])
                     }
                 }(this)
-            }), $(".upload-button").on("click", function() {
-                $(".file-upload").click()
             })
         }), $(function() {
             function e(e) {

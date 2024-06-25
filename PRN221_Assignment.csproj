@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\ChatBox\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,8 +12,13 @@ public partial class Profile : PageModel
 {
     private readonly IProfileService _profileService;
     private readonly IUserResolverService _userResolver;
+    private int? _id;
     [BindProperty(SupportsGet = true)]
-    public int Id { get; set; }
+    public int Id
+    {
+        get => _id ?? _userResolver.GetUser(); 
+        set => _id = value;
+    }
     public IActionResult OnGet()
     {
         if (Id == 0) return RedirectToPage("/Index");
