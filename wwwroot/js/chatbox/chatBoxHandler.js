@@ -357,13 +357,13 @@ function displayOutgoingMessage(senderId, receiverId, message) {
     const chatBox = document.getElementById(`chatBox-${senderId}-${receiverId}`);
     if (chatBox) {
         const messagesList = chatBox.querySelector('.chat-messages');
-        const messageContainer = document.createElement('div'); // Create a container for the message
-        messageContainer.classList.add('message-container'); // Add a class to the container
-        const msg = document.createElement('div'); // Create the message element
-        msg.innerHTML = message.replaceAll(/\n/g, '<br>'); // Set the message text
-        msg.classList.add('outgoing-message'); // Add a class to style the message
-        messageContainer.appendChild(msg); // Append the message to the container
-        messagesList.appendChild(messageContainer); // Append the container to the messages list
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message-container');
+        const msg = document.createElement('div'); 
+        msg.innerHTML = message.replaceAll(/\n/g, '<br>'); 
+        msg.classList.add('outgoing-message');
+        messageContainer.appendChild(msg); 
+        messagesList.appendChild(messageContainer);
         // Scroll to the bottom
         messagesList.scrollTop = messagesList.scrollHeight;
     }
