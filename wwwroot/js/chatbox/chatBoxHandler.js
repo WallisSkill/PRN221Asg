@@ -147,12 +147,12 @@ function createChatBox(userId, name) {
                 </div>
                 <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                 </div>
-                <div class="chat-input ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                <div class="chat-input inputter ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                     <div class="input-container">
-                <textarea oninput="autoResizeTextarea(this);" autocomplete="false" id="chatinput-${userId}" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') handleKeyDown(event, '${userId}',this)"></textarea>
-                        <button class="emoji-button ${body.classList.contains('bg-dark') ? '' : 'text-dark'}" onclick="toggleEmojiPicker('${userId}')">☺️</button>
+                    <textarea oninput="autoResizeTextarea(this);" autocomplete="false" id="chatinput-${userId}" class="emoji-holder" placeholder="Type a message..." onclick="openChat('${userId}','${name}',true);" onkeydown="if (event.key === 'Enter') handleKeyDown(event, '${userId}',this)"></textarea>
+                    <button class="emoji-button ${body.classList.contains('bg-dark') ? '' : 'text-dark'}" onclick="toggleEmojiPicker(event,'textarea')">☺️</button>
                     </div>
-                    <div id="emoji-picker-${userId}" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
+                    <div id="emoji-picker" class="emoji-picker-container ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                     </div>
                     <button onclick="sendMessage('${userId}');">Send</button>
                 </div>
@@ -194,26 +194,26 @@ function closeAllEmojiPickers() {
 }
 
 // Function to toggle the emoji picker for a specific chat box
-function toggleEmojiPicker(userId) {
-    const picker = document.getElementById(`emoji-picker-${userId}`);
-
+function toggleEmojiPicker(event,type) {
+    const picker = event.currentTarget.closest(".inputter").querySelector(".emoji-picker-container");
+    const newType = type;
     // Close all other emoji pickers first
     closeAllEmojiPickers();
 
     // Clear and create the search input
     picker.innerHTML = '';
     const emojiSearchInput = document.createElement('input');
-    emojiSearchInput.id = `emojiSearch-${userId}`;
+    emojiSearchInput.id = `emojiSearch`;
     emojiSearchInput.className = `search-emoji ${document.body.classList.contains('bg-dark') ? 'bg-dark text-white' : ''}`;
     emojiSearchInput.type = 'text';
     emojiSearchInput.placeholder = 'Search emojis...';
     emojiSearchInput.style.width = '100%';
-    emojiSearchInput.addEventListener('keyup', () => fetchEmojis(userId, emojiSearchInput.value));
+    emojiSearchInput.addEventListener('keyup', () => fetchEmojis(picker,emojiSearchInput.value,newType));
     picker.appendChild(emojiSearchInput);
 
     // Create the container for emojis
     const emojiContainer = document.createElement('div');
-    emojiContainer.className = `picker-emoji-container-${userId}`;
+    emojiContainer.className = `picker-emoji-container`;
     picker.appendChild(emojiContainer);
 
     // Toggle display and event listener for click outside
@@ -222,7 +222,7 @@ function toggleEmojiPicker(userId) {
         document.removeEventListener('click', handleClickOutsideEmojiPicker);
     } else {
         picker.style.display = 'block';
-        fetchEmojis(userId, '');
+        fetchEmojis(picker,'',newType);
         setTimeout(() => {
             document.addEventListener('click', handleClickOutsideEmojiPicker);
         }, 0);
@@ -230,10 +230,9 @@ function toggleEmojiPicker(userId) {
 }
 
 // Function to fetch emojis and display them
-function fetchEmojis(userId, search) {
-    const picker = document.querySelector(`.picker-emoji-container-${userId}`);
+function fetchEmojis(true_picker,search,type) {
+    const picker = true_picker.querySelector(".picker-emoji-container");
     picker.innerHTML = '';
-
     const loader = document.createElement('div');
     loader.className = 'loader-emoji';
     loader.textContent = 'Loading...';
@@ -248,7 +247,7 @@ function fetchEmojis(userId, search) {
                 emojiSpan.className = 'emoji-item';
                 emojiSpan.innerText = emoji.character;
                 emojiSpan.setAttribute('emoji-name', emoji.slug);
-                emojiSpan.onclick = () => addEmojiToInput(userId, emoji.character);
+                emojiSpan.onclick = () => addEmojiToInput(event, emoji.character,type);
                 picker.appendChild(emojiSpan);
             });
         })
@@ -263,8 +262,8 @@ function fetchEmojis(userId, search) {
 }
 
 // Function to add the selected emoji to the input field
-function addEmojiToInput(userId, emoji) {
-    const input = document.getElementById(`chatinput-${userId}`);
+function addEmojiToInput(event, emoji,type) {
+    const input = event.currentTarget.closest(".inputter").querySelector(type);
     input.value += emoji;
 }
 

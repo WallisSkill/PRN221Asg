@@ -1,0 +1,138 @@
+﻿@page
+@using System.Globalization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PRN221_Assignment.Data
+@using PRN221_Assignment.Models
+@model EditProfileModel
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="iq-edit-list">
+                            <ul class="iq-edit-profile row nav nav-pills">
+                                <li class="col-md-3 p-0">
+                                    <a class="nav-link active" data-bs-toggle="pill" href="#personal-information">
+                                        Personal Information
+                                    </a>
+                                </li>
+                                <li class="col-md-3 p-0">
+                                    <a class="nav-link" data-bs-toggle="pill" href="#chang-pwd">
+                                        Change Password
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="iq-edit-list-data">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <div class="header-title">
+                                        <h4 class="card-title">Personal Information</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post" enctype="multipart/form-data">
+                                        <div class="form-group row align-items-center">
+                                            <div class="col-md-12">
+                                                <div class="profile-img-edit">
+                                                    <img class="profile-pic" src="@Model.user.ProfilePhotoUrl" alt="profile-pic">
+                                                    <div class="p-image">
+                                                        <i class="ri-pencil-line upload-button text-white"></i>
+                                                        <input class="file-upload" type="file" accept="image/*" value="@Model.user.ProfilePhotoUrl" name="profilePhoto" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=" row align-items-center">
+                                            <div class="form-group col-sm-6">
+                                                <label for="fname" class="form-label">Full Name:</label>
+                                                <input type="text" class="form-control" asp-for="user.Fullname" id="fname" required />
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="uname" class="form-label">Email:</label>
+                                                <input type="text" class="form-control" id="uname" asp-for="user.Email" required />
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label class="form-label d-block">Gender:</label>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" asp-for="user.Gender" id="genderMale" value="1" checked="@(Model.user.Gender == 1)">
+                                                    <label class="form-check-label" for="genderMale"> Male</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" asp-for="user.Gender" id="genderFemale" value="0" checked="@(Model.user.Gender == 0)">
+                                                    <label class="form-check-label" for="genderFemale"> Female</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" asp-for="user.Gender" id="genderOther" value="3" checked="@(Model.user.Gender > 2)">
+                                                    <label class="form-check-label" for="genderOther"> Other</label>
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label for="dob" class="form-label">Date Of Birth:</label>
+                                                <input type="date" class="form-control" id="dob" asp-for="user.Dob" required>
+                                            </div>
+                                            <div class="form-group col-sm-12">
+                                                <label class="form-label">Bio:</label>
+                                                <textarea class="form-control editprofile-address" asp-for="user.Bio" rows="5" style="line-height: 22px;">
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                        <input type="hidden"  asp-for="user.UserId">
+                                        <button type="submit" class="btn btn-primary me-2">Submit</button>
+                                        <button type="reset" class="btn bg-soft-danger">Cancle</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="chang-pwd" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <div class="iq-header-title">
+                                        <h4 class="card-title">Change Password</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="cpass" class="form-label">Current Password:</label>
+                                            <a href="#" class="float-end">Forgot Password</a>
+                                            <input type="Password" class="form-control" id="cpass" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="npass" class="form-label">New Password:</label>
+                                            <input type="Password" class="form-control" id="npass" value="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vpass" class="form-label">Verify Password:</label>
+                                            <input type="Password" class="form-control" id="vpass" value="">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary me-2">Submit</button>
+                                        <button type="reset" class="btn bg-soft-danger">Cancle</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function formatDate(input) {
+        let date = new Date(input.value);
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0'); 
+        let year = date.getFullYear();
+    }
+</script>

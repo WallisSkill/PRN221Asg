@@ -58,4 +58,9 @@ public partial class ProfileService: IProfileService
     {
         return _friendRepository.GetAllFriendRelationshipsOfUser(userId,false);
     }
+
+    public void EditProfile(User user)
+    {
+        _profileRepository.EditProfile(user);
+    }
 }

@@ -13,4 +13,6 @@ public interface IProfileService
 
     List<UserProfile> GetAllFriendOfUser(int userid);
     List<Friend> GetAllFriendRelatetionshipOfUser(int userId);
+
+    void EditProfile(User user);
 }

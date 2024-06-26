@@ -1,5 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
+using Microsoft.EntityFrameworkCore;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
 
@@ -42,5 +43,21 @@ public partial class ProfileRepository: IProfileRepository
             where p.UserId == userid
             select c).Count();
         return result;
+    }
+
+    public void EditProfile(User user)
+    {
+        var userToUpdate = _context.Users.FirstOrDefault(u => u.UserId == user.UserId);
+
+        if (userToUpdate != null)
+        {
+            userToUpdate.Fullname = user.Fullname;
+            userToUpdate.Email = user.Email;
+            userToUpdate.Bio = user.Bio;
+            userToUpdate.Gender = user.Gender;
+            userToUpdate.Dob = user.Dob;
+            userToUpdate.profilePhotoUrl = user.ProfilePhotoUrl;
+            _context.SaveChanges();
+        }
     }
 }
