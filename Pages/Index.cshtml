@@ -113,104 +113,6 @@
         return new HtmlString(html.ToString());
     }
 }
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
-    .comments-section {
-        font-family: Arial, sans-serif;
-    }
-
-    .comment {
-        display: flex;
-        margin-bottom: 10px;
-        position: relative;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-        border: 2px solid gray;
-    }
-
-    .comment-content {
-        background-color: #f0f0f0;
-        border-radius: 10px;
-        padding: 10px;
-        flex: 1;
-    }
-
-    .user-name {
-        font-weight: bold;
-        margin-right: 5px;
-    }
-
-    .comment-text {
-        display: block;
-    }
-
-    .comment-time {
-        font-size: 0.8em;
-        color: #777;
-    }
-
-    .comment-actions {
-        margin: 0 10px 0 10px;
-        cursor: pointer;
-        color: #007bff;
-    }
-
-        .comment-actions :hover {
-            text-decoration: underline;
-        }
-
-    ul {
-        list-style-type: none;
-        padding-left: 20px;
-    }
-
-        ul li {
-            margin-bottom: 10px;
-        }
-
-        ul.nested-comments {
-            position: relative;
-            padding-left: 20px;
-            border-left: 2px solid #ccc;
-        }
-
-            ul.nested-comments:before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                width: 2px;
-                background: #ccc;
-            }
-
-    .row-block {
-        flex: 5%;
-        justify-content: center;
-        border-radius: 5px;
-        padding: 10px 0 10px 0
-    }
-
-        .row-block:hover {
-            background-color: #f2f2f2;
-        }
-
-    body.bg-dark .row-block:hover {
-        background-color: #333333; /* Ngài có thể thay đổi mã màu tùy ý */
-    }
-
-
-    .nofirst-icon {
-        margin-left: -5px;
-        border: 2px solid white;
-        border-radius: 50%;
-    }
-</style>
 
 <div class="right-sidebar-mini right-sidebar">
     <div class="right-sidebar-panel p-0">
@@ -246,7 +148,7 @@
 <div id="content-page" class="content-page">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 row m-0 p-0">
+            <div class="col-lg-8 row m-0 p-0" style="display:flow">
                 <div class="col-sm-12">
                     <div id="post-modal-data" class="card card-block card-stretch card-height">
                         <div class="card-header d-flex justify-content-between">
@@ -406,7 +308,7 @@
                         </div>
                     </div>
                 </div>
-                @if (listPost != null)
+                @if (listPost.Count>0)
                 {
                     foreach (var post in listPost)
                     {
@@ -600,6 +502,16 @@
                         </div>
                     }
                 }
+                else{
+                    <div class="col-sm-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body" style="display: flex;padding-bottom: 0;margin: auto;align-items: center;height: 400px;font-size: 5mm;">
+                                <div class="user-post-data"> No post display, Add more friends to view more
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                }
             </div>
             <div class="col-lg-4">
                 <div class="card">
@@ -678,50 +590,4 @@
     </div>
 </div>
 
-<script>
-    function toggleComment(postId) {
-        var commentDiv = document.getElementById("comment-container-" + postId);
-        var cardBody = document.getElementById("card-body-" + postId);
-        var hr = document.getElementById("hr-element-" + postId);
-        if (commentDiv.hidden) {
-            commentDiv.hidden = false;
-            cardBody.style.paddingBottom = '10px';
-            hr.hidden = false
-        } else {
-            commentDiv.hidden = true;
-            cardBody.style.paddingBottom = '0';
-            hr.hidden = true;
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        $('.newt').slick({
-            infinite: false,
-        });
-    });
-
-    var styles = `
-                                                                                    .slick-prev, .slick-next{
-                                                                                        color:black;
-                                                                                    }
-                                                                            `
-    if (document.body.classList.contains("bg-dark")) {
-        styles = `
-                                                                                        .slick-prev, .slick-next{
-                                                                                            color:white;
-                                                                                        }
-                                                                                `
-    }
-    var styleSheet = document.createElement("style")
-    styleSheet.textContent = styles;
-    document.head.appendChild(styleSheet);
-    window.onload = (event) => {
-        var comment = document.querySelectorAll(".comment-content");
-        comment.forEach(m => {
-            if (document.body.classList.contains('bg-dark')) {
-                m.classList.add("comment-content-dark");
-            }
-        });
-    };
-</script>
 

@@ -548,3 +548,99 @@ button.toast-close-button {
     }
 }
 
+/*post*/
+.comments-section {
+    font-family: Arial, sans-serif;
+}
+
+.comment {
+    display: flex;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid gray;
+}
+
+.comment-content {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px;
+    flex: 1;
+}
+
+.user-name {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.comment-text {
+    display: block;
+}
+
+.comment-time {
+    font-size: 0.8em;
+    color: #777;
+}
+
+.comment-actions {
+    margin: 0 10px 0 10px;
+    cursor: pointer;
+    color: #007bff;
+}
+
+    .comment-actions :hover {
+        text-decoration: underline;
+    }
+
+ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+    ul li {
+        margin-bottom: 10px;
+    }
+
+    ul.nested-comments {
+        position: relative;
+        padding-left: 20px;
+        border-left: 2px solid #ccc;
+    }
+
+        ul.nested-comments:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ccc;
+        }
+
+.row-block {
+    flex: 5%;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 10px 0 10px 0
+}
+
+    .row-block:hover {
+        background-color: #f2f2f2;
+    }
+
+body.bg-dark .row-block:hover {
+    background-color: #333333; 
+}
+
+
+.nofirst-icon {
+    margin-left: -5px;
+    border: 2px solid white;
+    border-radius: 50%;
+}

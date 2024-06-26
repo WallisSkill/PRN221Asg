@@ -2,6 +2,7 @@ using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PRN221_Assignment.Services;
 using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Pages;
@@ -12,6 +13,7 @@ public partial class Profile : PageModel
 {
     private readonly IProfileService _profileService;
     private readonly IUserResolverService _userResolver;
+    private readonly IPostService _postService;
     private int? _id;
     [BindProperty(SupportsGet = true)]
     public int Id
@@ -30,6 +32,8 @@ public partial class Profile : PageModel
         ViewData["friends"] = b;
         var a =  _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
         ViewData["userFriends"] = a;
+        ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower(true);
+        ViewData["listSaved"] = _postService.GetAllPostIdsaved();
         return Page();
     }
 }

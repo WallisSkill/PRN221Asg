@@ -209,7 +209,7 @@ function UpdateLikeData(data, postId) {
             Like
         </span>`
     } else {
-        likeDisplayElement += ` <span class="dropdown-toggle" style="color: ${getColorOfEmotion(userLike.EmotionURL)}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+        likeDisplayElement += ` <span class="dropdown-toggle ${body.classList.contains('bg-dark') ? 'text-white' : ''}" style="color: ${getColorOfEmotion(userLike.EmotionURL)}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                             <img src="${userLike.EmotionURL}" style="margin-top: -5px"></img>
                                                             ${userLike.EmotionURL.split('/').pop().replace(".png", "")}
                                                         </span>`
@@ -227,3 +227,48 @@ function UpdateLikeData(data, postId) {
                                                 </div>`;
     likeDisplay.innerHTML = likeDisplayElement;
 }
+
+function toggleComment(postId) {
+    var commentDiv = document.getElementById("comment-container-" + postId);
+    var cardBody = document.getElementById("card-body-" + postId);
+    var hr = document.getElementById("hr-element-" + postId);
+    if (commentDiv.hidden) {
+        commentDiv.hidden = false;
+        cardBody.style.paddingBottom = '10px';
+        hr.hidden = false
+    } else {
+        commentDiv.hidden = true;
+        cardBody.style.paddingBottom = '0';
+        hr.hidden = true;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    $('.newt').slick({
+        infinite: false,
+    });
+});
+
+var styles = `
+                                                                                    .slick-prev, .slick-next{
+                                                                                        color:black;
+                                                                                    }
+                                                                            `
+if (document.body.classList.contains("bg-dark")) {
+    styles = `
+                                                                                        .slick-prev, .slick-next{
+                                                                                            color:white;
+                                                                                        }
+                                                                                `
+}
+var styleSheet = document.createElement("style")
+styleSheet.textContent = styles;
+document.head.appendChild(styleSheet);
+window.onload = (event) => {
+    var comment = document.querySelectorAll(".comment-content");
+    comment.forEach(m => {
+        if (document.body.classList.contains('bg-dark')) {
+            m.classList.add("comment-content-dark");
+        }
+    });
+};
