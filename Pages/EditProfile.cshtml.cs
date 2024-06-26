@@ -18,7 +18,7 @@ namespace PRN221_Assignment.Pages
         private readonly IUserResolverService userResolverService;
 
         [BindProperty]
-        public User user { get; set; }
+        public User? user { get; set; }
         public IActionResult OnGet()
         {
             user = _profileService.GetUserInfo(userResolverService.GetUser());
@@ -39,7 +39,7 @@ namespace PRN221_Assignment.Pages
             }
 
             _profileService.EditProfile(user);
-            UpdateUserClaims(user);
+            await UpdateUserClaims(user);
             return RedirectToPage("/Profile");
         }
 

@@ -9,4 +9,8 @@ public interface IPostService
     List<PostData> GetAllPostOfFriendAndFollower(bool onlyCurrentUser = false);
     Comment InsertComment(Comment comment);
     List<LikeData> GetLikeDataOfPostAfterLike(int postId, int emotionId, bool deleteStatus);
+    List<int> GetAllPostIdsaved();
+    List<PostData> GetAllPostCurrentUserSaved();
+    void SavePost(int postId);
+    void RemovePost(int postId);
 }

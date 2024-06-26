@@ -23,6 +23,7 @@ public partial class IndexModel : PageModel
         ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
         ViewData["upComingBirthdayFriend"] = _homePageService.GetUpComingBirthdayFriends();
         ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
+        ViewData["listSaved"] = _postService.GetAllPostIdsaved();
         return Page();
     }
     public IList<Message> Messages { get; set; }

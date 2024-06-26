@@ -8,6 +8,7 @@ public interface IPostRepository
     void CreatePost(Post post);
     List<int> GetAllFollower(int currentUser);
     List<PostData> GetAllPost(List<int> listUser);
+    List<PostData> GetAllPostSaved(List<int> listPosId,int currentUserId);
     List<int> GetAllFriendId(int currentUser);
     List<CommentData> GetAllComments(List<int> listPostId);
     List<LikeData> GetAllCommentsLike(List<int> listCmtId);
@@ -17,4 +18,7 @@ public interface IPostRepository
     void UpdatePostLike(int postId, int currentUser, int emotionId);
     void InsertPostLike(int postId, int currentUser, int emotionId);
     void DeletePostLike(int postId, int currentUser);
+    List<int> GetAllPostIdsaved(int currentUser);
+    void SavePost(int postId, int currentUserid);
+    void RemovePost(int postId, int currentUserid);
 }

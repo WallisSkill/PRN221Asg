@@ -42,7 +42,8 @@
     toggleClasses(document.querySelectorAll('.editprofile-address'), 'bg-dark', 'text-white');
 
     //////////////HoangAnh
-
+    toggleClasses(document.querySelectorAll('.ri-save-line'), 'text-white');
+    toggleClasses(document.querySelectorAll('.ri-close-line'), 'text-white');
     /////////////Hung
     ///postArrrow
     var arrowColor = isDarkMode ? "white" : "black";

@@ -130,4 +130,50 @@ public partial class PostService : IPostService
             _postRepository.InsertPostLike(postId, _currentUser, emotionId);
         }
     }
+    //Saved
+    public List<int> GetAllPostIdsaved()
+    {
+        var listPostId = _postRepository.GetAllPostIdsaved(_currentUser);
+        return listPostId.Distinct().ToList();
+    }
+    public List<PostData> GetAllPostCurrentUserSaved()
+    {
+        var listPost = _postRepository.GetAllPostSaved(GetAllPostIdsaved(), _currentUser);
+
+        var listPostId = listPost.Select(x => x.Id).Distinct().ToList();
+        var listComment = _postRepository.GetAllComments(listPostId);
+        var listCommentId = listComment.Select(x => x.CommentId).Distinct().ToList();
+
+        var listCmtLikes = _postRepository.GetAllCommentsLike(listCommentId);
+        var listPostLikes = _postRepository.GetAllPostsLike(listPostId);
+
+        listComment.ForEach(item =>
+        {
+            item.CmtLikes = listCmtLikes.Where(x => x.ConnectId == item.CommentId).ToList();
+        });
+
+        listPost.ForEach(item =>
+        {
+            var listCmtOfPost = listComment.Where(x => x.PostId == item.Id).ToList();
+            if (listCmtOfPost.Count > 0)
+            {
+                item.ListComments = HandleCommentDatas(listCmtOfPost);
+                item.countComment = listCmtOfPost.Count;
+                item.ListCommentsTotal = listCmtOfPost;
+            }
+            item.ListLike = listPostLikes.Where(x => x.ConnectId == item.Id).ToList();
+        });
+
+        return listPost;
+    }
+
+    public void SavePost(int postId)
+    {
+        _postRepository.SavePost(postId,_currentUser);
+    }
+
+    public void RemovePost(int postId)
+    {
+        _postRepository.RemovePost(postId, _currentUser);
+    }
 }

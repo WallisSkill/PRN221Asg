@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\Post\SavePostHandler.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\font-awesome.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\Post\SavePostHandler.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +26,7 @@
     <None Include="wwwroot\Image\Emoji\Like.png" />
     <None Include="wwwroot\Image\Emoji\Sad.png" />
     <None Include="wwwroot\Image\Emoji\Wow.png" />
+    <None Include="wwwroot\js\Post\SavePostHandler.js" />
   </ItemGroup>
 
   <ItemGroup>

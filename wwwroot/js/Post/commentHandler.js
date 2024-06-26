@@ -52,9 +52,6 @@ function newComment(event) {
     formData.append("CommentText",commentText);
     formData.append("PostId",postId);
     formData.append("ParentId",replyTo);
-    formData.forEach((value, key) => {
-        console.log(key + ': ' + value);
-    });
     var url = `/Index?handler=InsertComment`;
     fetch(url, {
         method: 'POST',
@@ -175,11 +172,11 @@ function UpdateLikeData(data, postId) {
         _.forEach(dataTake3, function (value) {
             var dataValue = _.first(value);
             likePostData += ` <div class="total-like-block">
-                                                                <div class="dropdown">
-                                                                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                                        <img src='${dataValue.EmotionURL}' ${dataValue == _.first(value) ? 'class="nofirst-icon"' : ''}/>
-                                                                    </span>
-                                                                    <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">`
+                                <div class="dropdown">
+                                    <span class="dropdown-toggle ${body.classList.contains('bg-dark') ? 'text-white' : ''}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                        <img src='${dataValue.EmotionURL}' ${dataValue == _.first(value) ? 'class="nofirst-icon"' : ''}/>
+                                    </span>
+                                    <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">`
             _.forEach(value, function (like) {
                 likePostData += `<div style="color: white; padding-left: 10px;">${like.User.Fullname}</div>`;
             })
@@ -206,10 +203,11 @@ function UpdateLikeData(data, postId) {
     });
     var likeDisplayElement = ` <div class="dropdown d-flex" style="justify-content: center">`
     if (typeof (userLike) === 'undefined') {
-        likeDisplayElement += `                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                            <i class="fa-regular fa-thumbs-up"></i>
-                                                            Like
-                                                        </span>`
+        likeDisplayElement += `                         
+        <span class="dropdown-toggle ${body.classList.contains('bg-dark') ? 'text-white' : ''}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+            <i class="fa-regular fa-thumbs-up"></i>
+            Like
+        </span>`
     } else {
         likeDisplayElement += ` <span class="dropdown-toggle" style="color: ${getColorOfEmotion(userLike.EmotionURL)}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                             <img src="${userLike.EmotionURL}" style="margin-top: -5px"></img>
