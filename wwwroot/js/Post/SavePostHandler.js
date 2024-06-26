@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const postId = iconElement.getAttribute('data-post-id');
             optionPost.addEventListener('click', () => {
                 if (iconElement.classList.contains('ri-save-line')) {
-                    console.log(`Save post với ID: ${postId}`);
                     interactSave(postId);
                     iconElement.classList.remove('ri-save-line');
                     iconElement.classList.add('ri-close-line');
@@ -18,7 +17,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         dataElement.querySelector('p').innerText = 'Remove this from your saved items';
                     }
                 } else if (iconElement.classList.contains('ri-close-line')) {
-                    console.log(`Remove saved post với ID: ${postId}`);
                     interactSave(postId, false);
                     if (window.location.href.includes("Saved")) {
                         optionPost.closest(".col-sm-12").remove();
@@ -38,12 +36,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 // Hàm save post
 function interactSave(postId,type = true) {
-    if (type) {
-        console.log(`Lưu bài post với ID: ${postId}`);
-    }
-    else {
-        console.log(`Xóa bài post đã lưu với ID: ${postId}`);
-    }
 
     var formData = new FormData();
     formData.append("PostId", postId);
@@ -57,8 +49,7 @@ function interactSave(postId,type = true) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
-            
+            showToast(type ? "Save post successfully" : "Remove post successfully");    
         })
 }
 

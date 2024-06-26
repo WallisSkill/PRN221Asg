@@ -64,9 +64,9 @@
 <div id="sidebar-scrollbar">
 <nav class="iq-sidebar-menu">
 <ul id="iq-sidebar-toggle" class="iq-menu">
-<li class="active">
-    <a href="~/Index" class=" ">
-        <i class="las la-newspaper"></i><span>Newsfeed</span>
+<li class="">
+    <a href="/" class=" ">
+        <i class="las la-home"></i><span>HomePage</span>
     </a>
 </li>
 <li class="">
@@ -75,11 +75,11 @@
     </a>
 </li>
 <li class="">
-    <a href="~/app/group.html" class=" ">
-        <i class="las la-users"></i><span>Group</span>
+    <a href="/Saved" class=" ">
+        <i class="las la-bookmark"></i><span>Saved</span>
     </a>
 </li>
-<li class=" ">
+@* <li class=" ">
     <a href="~/app/todo.html" class=" ">
         <i class="las la-check-circle"></i><span>Todo</span>
     </a>
@@ -332,7 +332,7 @@
             </ul>
         </li>
     </ul>
-</li>
+</li> *@
 </ul>
 </nav>
 <div class="p-5"></div>
@@ -343,7 +343,7 @@
 <div class="iq-navbar-custom">
 <nav class="navbar navbar-expand-lg navbar-light p-0">
 <div class="iq-navbar-logo d-flex justify-content-between">
-    <a href="/Index">
+    <a href="/">
         <img src="~/assets/images/logo.png" class="img-fluid" alt="">
         <span>SocialV</span>
     </a>
@@ -811,6 +811,31 @@
         fetchFriendRequests().then(() => updateNotificationBadgeM());
         fetchFriendRequestOtherNoti(CURRENT_USER_ID).then(() => updateNotificationBadgeG());
         updateNotificationBadgeM();
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentPath = window.location.pathname;
+        const menuLinks = document.querySelectorAll('#iq-sidebar-toggle a');
+        console.log(currentPath.length);
+        menuLinks.forEach(link => {
+            if (currentPath.includes('/Profile')) {
+                // Use .includes() for Profile link
+                if (link.getAttribute('href').length > 1) {
+
+                    if (link.getAttribute('href').includes(currentPath)) {
+                        link.parentNode.classList.add('active');
+                    }
+                }
+
+            } else {
+                // Use == for all other links
+                if (currentPath === link.getAttribute('href')) {
+                    link.parentNode.classList.add('active');
+                }
+            }
+        });
     });
 </script>
 
