@@ -44,6 +44,7 @@
     //////////////HoangAnh
     toggleClasses(document.querySelectorAll('.ri-save-line'), 'text-white');
     toggleClasses(document.querySelectorAll('.ri-close-line'), 'text-white');
+    toggleClasses(document.querySelectorAll('[id*="pass"]'), 'bg-dark', 'text-white');
     /////////////Hung
     ///postArrrow
     var arrowColor = isDarkMode ? "white" : "black";
