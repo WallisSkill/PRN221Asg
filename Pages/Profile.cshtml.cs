@@ -32,7 +32,7 @@ public partial class Profile : PageModel
         ViewData["friends"] = b;
         var a =  _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
         ViewData["userFriends"] = a;
-        ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower(true);
+        ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower(Id);
         ViewData["listSaved"] = _postService.GetAllPostIdsaved();
         return Page();
     }
