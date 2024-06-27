@@ -30,12 +30,12 @@ public partial class PostService : IPostService
         return listFollowerId.Distinct().ToList();
     }
 
-    public List<PostData> GetAllPostOfFriendAndFollower(bool onlyCurrentUser = false)
+    public List<PostData> GetAllPostOfFriendAndFollower(int Id =0)
     {
         var listUsers = new List<int>();
-        if(onlyCurrentUser)
+        if(Id > 0)
         {
-            listUsers.Add(_currentUser);
+            listUsers.Add(Id);
         }
         else
         {

@@ -6,7 +6,7 @@ namespace PRN221_Assignment.Services.Interface;
 public interface IPostService
 {
     void CreatePost(Post post);
-    List<PostData> GetAllPostOfFriendAndFollower(bool onlyCurrentUser = false);
+    List<PostData> GetAllPostOfFriendAndFollower(int Id =0);
     Comment InsertComment(Comment comment);
     List<LikeData> GetLikeDataOfPostAfterLike(int postId, int emotionId, bool deleteStatus);
     List<int> GetAllPostIdsaved();
