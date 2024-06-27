@@ -249,18 +249,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-var styles = `
-                                                                                    .slick-prev, .slick-next{
-                                                                                        color:black;
-                                                                                    }
-                                                                            `
-if (document.body.classList.contains("bg-dark")) {
-    styles = `
-                                                                                        .slick-prev, .slick-next{
-                                                                                            color:white;
-                                                                                        }
-                                                                                `
+var styles = `                                                                      
+.slick-prev,.slick-next{
+    color:black;
 }
+body.bg-dark .slick-prev,body.bg-dark .slick-next{
+    color:white;
+}
+                                                                                    
+  `
 var styleSheet = document.createElement("style")
 styleSheet.textContent = styles;
 document.head.appendChild(styleSheet);

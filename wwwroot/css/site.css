@@ -644,3 +644,9 @@ body.bg-dark .row-block:hover {
     border: 2px solid white;
     border-radius: 50%;
 }
+
+body.bg-dark .nofirst-icon {
+    margin-left: -5px;
+    border: 2px solid #212529;
+    border-radius: 50%;
+}
