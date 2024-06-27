@@ -28,6 +28,7 @@ public partial class PostRepository : IPostRepository
                     on T1.PostId equals T3.PostId into photos
                     from T3 in photos.DefaultIfEmpty() // Left join
                     group new { T1, T3 } by new { T1.PostId, T2.UserId, T2.Fullname, T2.ProfilePhotoUrl, T2.Dob, T1.Caption } into g
+                    orderby g.Max(x => x.T1.CreatedAt) descending
                     select new PostData()
                     {
                         Id = g.Key.PostId,

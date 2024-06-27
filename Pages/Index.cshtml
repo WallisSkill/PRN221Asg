@@ -209,100 +209,29 @@
                                         <h5 class="modal-title" id="post-modalLabel">Create Post</h5>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ri-close-fill"></i></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <form class="modal-body modal-body-scrollable" method="post" enctype="multipart/form-data" id="postForm">
                                         <div class="d-flex align-items-center">
                                             <div class="user-img">
                                                 <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
                                             </div>
-                                            <form id="caption" class="post-text ms-3 w-100" action="javascript:void);">
-                                                <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;">
-                                            </form>
+                                           <div id="caption" class="post-text ms-3 w-100" action="javascript:void);">
+                                                <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;" asp-for="post.Caption">
+                                                <input type="hidden" asp-for="post.UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                                            </div>
                                         </div>
+                                        <div id="imagePreview" class="newt"></div>
                                         <hr>
                                         <ul class="d-flex flex-wrap align-items-center list-inline m-0 p-0">
                                             <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo/Video</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/08.png" alt="icon" class="img-fluid"> Tag Friend</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/09.png" alt="icon" class="img-fluid"> Feeling/Activity</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/10.png" alt="icon" class="img-fluid"> Check in</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/11.png" alt="icon" class="img-fluid"> Live Video</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/12.png" alt="icon" class="img-fluid"> Gif</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/13.png" alt="icon" class="img-fluid"> Watch Party</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/14.png" alt="icon" class="img-fluid"> Play with Friends</div>
+                                                <div class="bg-soft-primary rounded p-2 pointer me-3" onclick="document.getElementById('fileInput').click()">
+                                                    <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo
+                                                </div>
+                                                <input type="file" id="fileInput" style="display: none;" name="listfile" accept="image/*" multiple>
                                             </li>
                                         </ul>
                                         <hr>
-                                        <div class="other-option">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="user-img me-3">
-                                                        <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
-                                                    </div>
-                                                    <h6>Your Story</h6>
-                                                </div>
-                                                <div class="card-post-toolbar">
-                                                    <div class="dropdown">
-                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                            <span class="btn btn-primary">Friend</span>
-                                                        </span>
-                                                        <div class="dropdown-menu m-0 p-0">
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-save-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Public</h6>
-                                                                        <p class="mb-0">Anyone on or off Facebook</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-close-circle-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Friends</h6>
-                                                                        <p class="mb-0">Your Friend on facebook</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-user-unfollow-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Friends except</h6>
-                                                                        <p class="mb-0">Don't show to some friends</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-notification-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Only Me</h6>
-                                                                        <p class="mb-0">Only me</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary d-block w-100 mt-3">Post</button>
-                                    </div>
+                                        <button class="btn btn-primary d-block w-100 mt-3 js-add-slide" id="postButton">Post</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -371,7 +300,7 @@
                                         <div class="newt">
                                             @foreach (var url in post.PhotoURL)
                                             {
-                                                if (string.IsNullOrEmpty(url))
+                                                if (!string.IsNullOrEmpty(url))
                                                 {
                                                     <div class="post-image">
 
@@ -591,4 +520,66 @@
     </div>
 </div>
 
+<script>
+    var slideIndex = 0;
+    $('#fileInput').on('change', function (event) {
+        var files = event.target.files;
+        var preview = $('#imagePreview');
+        preview.slick('unslick');
 
+        Array.from(files).forEach(file => {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var imgHTML = '<div class="post-image">' +
+                    '<img src="' + e.target.result + '" class="img-fluid rounded w-100">' +
+                    '<button  type="button" class="delete-btn btn btn-danger btn-sm " style="position:absolute;top:0;"><i class="fa fa-close"></i></button>' +
+                    '</div>';;
+                // preview.append(imgHTML);
+                preview.slick('slickAdd', imgHTML); // Add to slick slider
+            }
+            reader.readAsDataURL(file);
+        });
+        preview.slick({
+            infinite: false
+        });
+
+        var a= document.querySelector(".modal-body");
+        a.classList.remove("modal-body-scrollable");
+        a.classList.add("modal-body-scrollable");
+
+        preview.on('click', '.delete-btn', function () {
+            var slideIndex = $(this).closest('.slick-slide').data('slick-index');
+            preview.slick('slickRemove', slideIndex);
+        });
+    });
+
+
+const form = document.getElementById('postForm');
+form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    // Create FormData object to collect form data
+    const formData = new FormData(form);
+
+    try {
+        // Send form data to the server using fetch
+        const response = await fetch('/Index', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json();
+
+        console.log('Post successful:', responseData);
+
+        document.getElementById('caption').value = '';
+        
+    } catch (error) {
+        console.error('Error posting data:', error);
+    }
+});
+</script>

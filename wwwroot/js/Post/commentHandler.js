@@ -247,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('.newt').slick({
         infinite: false,
     });
+
 });
 
 var styles = `                                                                      
