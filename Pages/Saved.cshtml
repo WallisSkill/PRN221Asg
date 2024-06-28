@@ -133,12 +133,6 @@
         border: 2px solid gray;
     }
 
-    .comment-content {
-        background-color: #f0f0f0;
-        border-radius: 10px;
-        padding: 10px;
-        flex: 1;
-    }
 
     .user-name {
         font-weight: bold;
@@ -278,7 +272,7 @@
                                         <div class="newt">
                                             @foreach (var url in post.PhotoURL)
                                             {
-                                                if (string.IsNullOrEmpty(url))
+                                                if (!string.IsNullOrEmpty(url))
                                                 {
                                                     <div class="post-image">
 
@@ -433,11 +427,11 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    window.onload = () => { 
         $('.newt').slick({
             infinite: false,
         });
-    });
+    };
 
     var styles = `
                                                                                            body.bg-dark .slick-prev, body.bg-dark .slick-next{

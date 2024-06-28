@@ -572,6 +572,8 @@ button.toast-close-button {
     border-radius: 10px;
     padding: 10px;
     flex: 1;
+    max-width:300px;
+    min-width:300px;
 }
 
 .user-name {

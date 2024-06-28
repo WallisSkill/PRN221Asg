@@ -117,7 +117,7 @@ ipch/
 *.vsp
 *.vspx
 *.sap
-
+wwwroot/Image/UploadPic/*
 # Visual Studio Trace Files
 *.e2e
 
