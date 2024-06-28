@@ -156,10 +156,10 @@ function addNewPostToDOM(data) {
                                                     <a class="dropdown-item p-3 option-post clickable text-white bg-dark">
                                                         <div class="d-flex align-items-top">
                                                             <div class="h4">
-                                                                    <i data-post-id="${data.post.postId}" class="ri-save-line text-white"></i>
+                                                                    <i data-post-id="${data.post.postId}" class="ri-save-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
                                                             </div>
                                                             <div class="data ms-2">
-                                                                <h6 class="text-white">Save Post</h6>
+                                                                <h6 class="${body.classList.contains("bg-dark") ? 'text-white' : ''}">Save Post</h6>
                                                                 <p class="mb-0">Add this to your saved items</p>
                                                             </div>
                                                         </div>
@@ -198,7 +198,7 @@ function addNewPostToDOM(data) {
                             <div class="d-flex justify-content-between align-items-center flex-wrap" style="padding: 3px 0 3px 0">
                                         <div class="like-data row-block" onclick="HandleLike('${data.post.postId}', '1', 'true', event)" id="like-display-${data.post.postId}">
                                     <div class="dropdown d-flex" style="justify-content: center">
-                                        <span class="dropdown-toggle text-white" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                        <span class="dropdown-toggle ${body.classList.contains('bg-dark') ? 'text-white' : ''}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                             <i class="fa-regular fa-thumbs-up"></i>
                                             Like
                                         </span>
@@ -214,7 +214,7 @@ function addNewPostToDOM(data) {
                                     </div>
                                 </div>
                                     <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0 row-block clickable" onclick="toggleComment('${data.post.postId}')">
-                                    <span class="text-white">
+                                    <span class="${body.classList.contains('bg-dark') ? 'text-white' : ''}">
                                         <i class="fa-regular fa-comment"></i>
                                         Comment
                                     </span>
@@ -227,11 +227,11 @@ function addNewPostToDOM(data) {
                                 <form class="comment-text mt-3">
                                         <div id="replyDiv-${data.post.postId}" class="comment-text align-items-center mt-3 justify-content-between" style="display: none !important; border-top: 1px solid">
                                         <div>
-                                                <input type="text" id="displayReplyTo-${data.post.postId}" style="border: none; width: 400px; font-weight: bold" readonly="" class="bg-dark text-white">
-                                                <input type="text" id="displayComment-${data.post.postId}" style="border: none; width: 573px; color: gray" readonly="" class="bg-dark text-white">
+                                                <input type="text" id="displayReplyTo-${data.post.postId}" style="border: none; width: 400px; font-weight: bold" readonly="" class="${body.classList.contains("bg-dark") ? 'bg-dark text-white' : ''}">
+                                                <input type="text" id="displayComment-${data.post.postId}" style="border: none; width: 573px; color: gray" readonly="" class="${body.classList.contains("bg-dark") ? 'bg-dark text-white' : ''}">
                                         </div>
-                                            <input hidden="" name="replyTo" value="0" type="text" id="replyTo-${data.post.postId}" class="bg-dark text-white">
-                                            <input hidden="" name="postId" type="text" value="${data.post.postId}" class="bg-dark text-white">
+                                            <input hidden="" name="replyTo" value="0" type="text" id="replyTo-${data.post.postId}" class="${body.classList.contains("bg-dark") ? 'bg-dark text-white' : ''}">
+                                            <input hidden="" name="postId" type="text" value="${data.post.postId}" class="${body.classList.contains("bg-dark") ? 'bg-dark text-white' : ''}">
                                             <i class="fa fa-close closer" onclick="ReplyTo('-1', '0', '0', '${data.post.postId}')"></i>
                                     </div>
                                 <div class="comment-text d-flex align-items-center">
