@@ -143,7 +143,7 @@ function createChatBox(userId, name) {
     chatBox.innerHTML = `
                 <div class="chat-header ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                     <span class="clickable" onclick="redirectToProfile(${userId})">${name}</span>
-                    <button class="close-button" onclick="closeChat('${userId}')">×</button>
+                    <button class="close-button" onclick="closeChat('${userId}')">X</button>
                 </div>
                 <div class="chat-messages ${body.classList.contains('bg-dark') ? 'bg-dark' : ''}">
                 </div>

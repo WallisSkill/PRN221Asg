@@ -666,3 +666,8 @@ body.bg-dark .nofirst-icon {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+.close-img {
+    position: absolute;
+    top: 0;
+}

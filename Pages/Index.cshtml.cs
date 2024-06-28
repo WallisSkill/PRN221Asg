@@ -126,6 +126,7 @@ public partial class IndexModel : PageModel
         }
 
         post.CreatedAt = DateTime.Now;
+       
         _postService.CreatePost(post);
 
         foreach (string photoName in listPhotoName)
@@ -136,7 +137,13 @@ public partial class IndexModel : PageModel
             photo.PostId = post.PostId;
             _photoService.AddPhoto(photo);
         }
+        var newPostData = new
+        {
+            post,
+            Photos = listPhotoName.Select(photoName => "/Image/UploadPic/" + photoName).ToList()
+        };
 
-        return RedirectToPage();
+        return new JsonResult(newPostData);
     }
+
 }
