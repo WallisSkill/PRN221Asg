@@ -659,7 +659,10 @@
                             </div>
                         </div>
                         <div class="comment-area mt-3">
-                            <div class="d-flex justify-content-between align-items-center flex-wrap"></div>
+                                <div class="like-block position-relative d-flex align-items-center">
+                                      <div class="d-flex align-items-center" id="like-post-${data.post.postId}">
+                                  </div>
+                               </div>
                             <hr style="margin-bottom: 0">
                             <div class="d-flex justify-content-between align-items-center flex-wrap" style="padding: 3px 0 3px 0">
                                         <div class="like-data row-block" onclick="HandleLike('${data.post.postId}', '1', 'true', event)" id="like-display-${data.post.postId}">
