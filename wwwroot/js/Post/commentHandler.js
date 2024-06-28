@@ -165,7 +165,7 @@ function getColorOfEmotion(emotionURL) {
 function UpdateLikeData(data, postId) {
     var likeOfPost = document.getElementById("like-post-" + postId);
     var likePostData = ``;
-    if (data != null) {
+    if (data?.$values.length) {
         var dataGrouped = _.groupBy(data.$values, likeData => likeData.EmotionURL);
         var dataOrder = _.orderBy(dataGrouped, 'length', ['desc']);
         var dataTake3 = _.take(dataOrder, 3);
