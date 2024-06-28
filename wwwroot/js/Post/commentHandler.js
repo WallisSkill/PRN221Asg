@@ -74,7 +74,7 @@ function newComment(event) {
                             <div class="comment">
                                     <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
                                     <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
-                                            <span class="user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
+                                            <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
                                         <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${commentText}</span>
                                     <div>
                                                      <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
@@ -102,7 +102,7 @@ function newComment(event) {
                     <div class="comment">
                                         <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
                                             <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
-                                                <span class="user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
+                                                <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
                                             <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${commentText}</span>
                                         <div>
                                                          <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
@@ -178,7 +178,7 @@ function UpdateLikeData(data, postId) {
                                     </span>
                                     <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">`
             _.forEach(value, function (like) {
-                likePostData += `<div style="color: white; padding-left: 10px;">${like.User.Fullname}</div>`;
+                likePostData += `<div class="clickable" onclick="redirectToProfile(${like.User.UserId})" style="color: white; padding - left: 10px; ">${like.User.Fullname}</div>`;
             })
             likePostData += `</div ></div ></div > `;
         });

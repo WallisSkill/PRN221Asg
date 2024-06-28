@@ -91,7 +91,7 @@
             html.Append("<div class='comment'>");
             html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
             html.Append("<div class='comment-content'>");
-            html.AppendFormat("<span class='user-name'>{0}</span>", comment.User.Fullname);
+            html.AppendFormat("<span onclick='redirectToProfile({1})' class='user-name clickable'>{0}</span>", comment.User.Fullname, comment.User.UserId);
             html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
             html.Append("<div>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
@@ -112,7 +112,6 @@
         html.Append("</ul>");
         return new HtmlString(html.ToString());
     }
-}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
     .comments-section {
@@ -209,200 +208,216 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 row m-0 p-0">
-                @if (listPost != null)
-                {
-                    foreach (var post in listPost)
-                    {
-                        <div class="col-sm-12">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body" id="card-body-@post.Id" style="padding-bottom: 0">
-                                    <div class="user-post-data">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="me-3">
-                                                <img class="rounded-circle avatar-60 img-fluid" src="@post.User.ProfilePhotoUrl" alt="img">
-                                            </div>
-                                            <div class="w-100">
-                                                <div class="d-flex justify-content-between">
-                                                    <div class="">
-                                                        <h5 class="mb-0 d-inline-block">@post.User.Fullname</h5>
-                                                        <span class="mb-0 d-inline-block">Add New Post</span>
-                                                        <p class="mb-0 text-primary">@GetTimeToNow(post.Time)</p>
-                                                    </div>
-                                                    <div class="card-post-toolbar">
-                                                        <div class="dropdown">
-                                                            <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                                <i class="ri-more-fill"></i>
-                                                            </span>
-                                                            <div class="dropdown-menu m-0 p-0">
-                                                                <a class="dropdown-item p-3 option-post clickable">
-                                                                    <div class="d-flex align-items-top">
-                                                                        @if (!listSaved.Contains(post.Id))
-                                                                        {
-                                                                            <div class="h4">
-                                                                                <i data-post-id="@post.Id" class="ri-save-line"></i>
-                                                                            </div>
-                                                                            <div class="data ms-2">
-                                                                                <h6>Save Post</h6>
-                                                                                <p class="mb-0">Add this to your saved items</p>
-                                                                            </div>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <div class="h4">
-                                                                                <i data-post-id="@post.Id" class="ri-close-line"></i>
-                                                                            </div>
-                                                                            <div class="data ms-2">
-                                                                                <h6>Remove Saved Post</h6>
-                                                                                <p class="mb-0">Remove this from your saved items</p>
-                                                                            </div>
-                                                                        }
+                        <div id="postList">
+                            @if (listPost.Count > 0)
+                            {
+                                foreach (var post in listPost)
+                                {
+                                    <div class="col-sm-12">
+                                        <div class="card card-block card-stretch card-height">
+                                            <div class="card-body" id="card-body-@post.Id" style="padding-bottom: 0">
+                                                <div class="user-post-data">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="me-3">
+                                                            <img class="rounded-circle avatar-60 img-fluid" src="@post.User.ProfilePhotoUrl" alt="img">
+                                                        </div>
+                                                        <div class="w-100">
+                                                            <div class="d-flex justify-content-between">
+                                                                <div class="">
+                                                                    <h5 class="mb-0 d-inline-block clickable" onclick="redirectToProfile(@post.User.UserId)">@post.User.Fullname</h5>
+                                                                    <span class="mb-0 d-inline-block">Add New Post</span>
+                                                                    <p class="mb-0 text-primary">@GetTimeToNow(post.Time)</p>
+                                                                </div>
+                                                                <div class="card-post-toolbar">
+                                                                    <div class="dropdown">
+                                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                            <i class="ri-more-fill"></i>
+                                                                        </span>
+                                                                        <div class="dropdown-menu m-0 p-0">
+                                                                            <a class="dropdown-item p-3 option-post clickable">
+                                                                                <div class="d-flex align-items-top">
+                                                                                    @if (!listSaved.Contains(post.Id))
+                                                                                    {
+                                                                                        <div class="h4">
+                                                                                            <i data-post-id="@post.Id" class="ri-save-line"></i>
+                                                                                        </div>
+                                                                                        <div class="data ms-2">
+                                                                                            <h6>Save Post</h6>
+                                                                                            <p class="mb-0">Add this to your saved items</p>
+                                                                                        </div>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <div class="h4">
+                                                                                            <i data-post-id="@post.Id" class="ri-close-line"></i>
+                                                                                        </div>
+                                                                                        <div class="data ms-2">
+                                                                                            <h6>Remove Saved Post</h6>
+                                                                                            <p class="mb-0">Remove this from your saved items</p>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
-                                                                </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <p>@post.Caption</p>
-                                    </div>
-                                    <div class="user-post">
-                                        <div class="newt">
-                                            @foreach (var url in post.PhotoURL)
-                                            {
-                                                if (!string.IsNullOrEmpty(url))
-                                                {
-                                                    <div class="post-image">
-
-                                                        <img src="@url" alt="post-image" class="img-fluid rounded w-100">
-
-                                                    </div>
-                                                }
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="comment-area mt-3">
-                                        <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                            @if (post.ListLike.Count > 0)
-                                            {
-                                                <div class="like-block position-relative d-flex align-items-center">
-                                                    <div class="d-flex align-items-center" id="like-post-@post.Id">
-                                                        @foreach (var item in post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
+                                                <div class="mt-3">
+                                                    <p>@post.Caption</p>
+                                                </div>
+                                                <div class="user-post">
+                                                    <div class="newt">
+                                                        @foreach (var url in post.PhotoURL)
                                                         {
-                                                            <div class="total-like-block">
+                                                            if (!string.IsNullOrEmpty(url))
+                                                            {
+                                                                <div class="post-image">
+
+                                                                    <img src="@url" alt="post-image" class="img-fluid rounded w-100">
+
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="comment-area mt-3">
+                                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                                                        <div class="like-block position-relative d-flex align-items-center">
+                                                            <div class="d-flex align-items-center" id="like-post-@post.Id">
+                                                                @if (post.ListLike.Count > 0)
+                                                                {
+                                                                    @foreach (var item in post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
+                                                                    {
+                                                                        <div class="total-like-block">
+                                                                            <div class="dropdown">
+                                                                                <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                    <img src='@item.Key' @(item != post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3).First() ? "class=nofirst-icon" : "") />
+                                                                                </span>
+                                                                                <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">
+                                                                                    @foreach (var like in item)
+                                                                                    {
+                                                                                        <div onclick="redirectToProfile(@like.User.UserId)" class="clickable" style="color: white; padding-left: 10px;">@like.User.Fullname</div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                    <div class="total-like-block ms-2 me-3">
+                                                                        <div class="dropdown">
+                                                                            <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                @post.ListLike.Count
+                                                                            </span>
+                                                                            <div class="dropdown-menu">
+                                                                                @foreach (var like in post.ListLike)
+                                                                                {
+                                                                                    <div class="dropdown-item">@like.User.Fullname</div>
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+
+                                                        @if (post.ListComments.Any())
+                                                        {
+                                                            <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
                                                                 <div class="dropdown">
                                                                     <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                                        <img src='@item.Key' @(item != post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3).First() ? "class=nofirst-icon" : "") />
+                                                                        @post.countComment Comments
                                                                     </span>
-                                                                    <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">
-                                                                        @foreach (var like in item)
+                                                                    <div class="dropdown-menu">
+                                                                        @foreach (var cmt in post.ListCommentsTotal.DistinctBy(x => x.User.UserId))
                                                                         {
-                                                                            <div style="color: white; padding-left: 10px;">@like.User.Fullname</div>
+                                                                            <a class="dropdown-item" href="/Profile?Id=@cmt.User.UserId">@cmt.User.Fullname</a>
                                                                         }
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         }
-                                                        <div class="total-like-block ms-2 me-3">
-                                                            <div class="dropdown">
-                                                                <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                                    @post.ListLike.Count
-                                                                </span>
-                                                                <div class="dropdown-menu">
-                                                                    @foreach (var like in post.ListLike)
-                                                                    {
-                                                                        <div class="dropdown-item">@like.User.Fullname</div>
-                                                                    }
+                                                    </div>
+                                                    <hr style="margin-bottom: 0">
+                                                    <div class="d-flex justify-content-between align-items-center flex-wrap" style="padding: 3px 0 3px 0">
+                                                        <div class="like-data row-block" onclick="HandleLike('@post.Id', '1', 'true', event)" id="like-display-@post.Id">
+                                                            @{
+                                                                var likeData = post.ListLike.FirstOrDefault(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+                                                            }
+                                                            <div class="dropdown d-flex" style="justify-content: center">
+                                                                @if (likeData != null)
+                                                                {
+                                                                    <span class="dropdown-toggle" style="color: @GetColorOfEmotion(likeData.EmotionURL)" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                        <img src="@likeData.EmotionURL" style="margin-top: -5px"></img>
+                                                                        @likeData.EmotionURL.Split('/').Last().Replace(".png", "")
+                                                                    </span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                        <i class="fa-regular fa-thumbs-up"></i>
+                                                                        Like
+                                                                    </span>
+                                                                }
+                                                                <div class="dropdown-menu py-2" style="border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 243px">
+                                                                    <a class="ms-2 icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '1', 'false', event)"><img src="~/Image/Emoji/like.png" class="img-fluid" alt=""></a>
+                                                                    <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '2', 'false', event)"><img src="~/Image/Emoji/love.png" class="img-fluid" alt=""></a>
+                                                                    <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '3', 'false', event)"><img src="~/Image/Emoji/care.png" class="img-fluid" alt=""></a>
+                                                                    <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '4', 'false', event)"><img src="~/Image/Emoji/haha.png" class="img-fluid" alt=""></a>
+                                                                    <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '5', 'false', event)"><img src="~/Image/Emoji/wow.png" class="img-fluid" alt=""></a>
+                                                                    <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '6', 'false', event)"><img src="~/Image/Emoji/sad.png" class="img-fluid" alt=""></a>
+                                                                    <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '7', 'false', event)"><img src="~/Image/Emoji/angry.png" class="img-fluid" alt=""></a>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            }
-                                            @if (post.ListComments.Any())
-                                            {
-                                                <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
-                                                    <div class="dropdown">
-                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                            @post.countComment Comments
-                                                        </span>
-                                                        <div class="dropdown-menu">
-                                                            @foreach (var cmt in post.ListCommentsTotal)
-                                                            {
-                                                                <a class="dropdown-item" href="#">@cmt.User.Fullname</a>
-                                                            }
+                                                        <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0 row-block clickable" onclick="toggleComment('@post.Id')">
+                                                            <span>
+                                                                <i class="fa-regular fa-comment"></i>
+                                                                Comment
+                                                            </span>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        <hr style="margin-bottom: 0">
-                                        <div class="d-flex justify-content-between align-items-center flex-wrap" style="padding: 3px 0 3px 0">
-                                            <div class="like-data row-block" onclick="HandleLike('@post.Id', '1', 'true', event)" id="like-display-@post.Id">
-                                                @{
-                                                    var likeData = post.ListLike.FirstOrDefault(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
-                                                }
-                                                <div class="dropdown d-flex" style="justify-content: center">
-                                                    @if (likeData != null)
-                                                    {
-                                                        <span class="dropdown-toggle" style="color: @GetColorOfEmotion(likeData.EmotionURL)" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                            <img src="@likeData.EmotionURL" style="margin-top: -5px"></img>
-                                                            @likeData.EmotionURL.Split('/').Last().Replace(".png", "")
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                            <i class="fa-regular fa-thumbs-up"></i>
-                                                            Like
-                                                        </span>
-                                                    }
-                                                    <div class="dropdown-menu py-2" style="border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 243px">
-                                                        <a class="ms-2 icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '1', 'false', event)"><img src="~/Image/Emoji/like.png" class="img-fluid" alt=""></a>
-                                                        <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '2', 'false', event)"><img src="~/Image/Emoji/love.png" class="img-fluid" alt=""></a>
-                                                        <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '3', 'false', event)"><img src="~/Image/Emoji/care.png" class="img-fluid" alt=""></a>
-                                                        <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '4', 'false', event)"><img src="~/Image/Emoji/haha.png" class="img-fluid" alt=""></a>
-                                                        <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '5', 'false', event)"><img src="~/Image/Emoji/wow.png" class="img-fluid" alt=""></a>
-                                                        <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '6', 'false', event)"><img src="~/Image/Emoji/sad.png" class="img-fluid" alt=""></a>
-                                                        <a class="icon me-2" data-bs-toggle="tooltip" data-bs-placement="top" onclick="HandleLike('@post.Id', '7', 'false', event)"><img src="~/Image/Emoji/angry.png" class="img-fluid" alt=""></a>
+                                                    <hr style="margin-top: 0" id="hr-element-@post.Id" hidden>
+                                                    <div id="comment-container-@post.Id" hidden>
+                                                        <div class="comments-section">
+                                                            @RenderComments(post.ListComments)
+                                                        </div>
+                                                        <form class="comment-text mt-3">
+                                                            <div id="replyDiv-@post.Id" class="comment-text align-items-center mt-3 justify-content-between" style="display: none !important; border-top: 1px solid">
+                                                                <div>
+                                                                    <input type="text" id="displayReplyTo-@post.Id" style="border: none; width: 400px; font-weight: bold" readonly />
+                                                                    <input type="text" id="displayComment-@post.Id" style="border: none; width: 573px; color: gray" readonly />
+                                                                </div>
+                                                                <input hidden name="replyTo" value="0" type="text" id="replyTo-@post.Id" />
+                                                                <input hidden name="postId" type="text" value="@post.Id" />
+                                                                <i class="fa fa-close closer" onclick="ReplyTo('-1', '0', '0', '@post.Id')"></i>
+                                                            </div>
+                                                            <div class="comment-text d-flex align-items-center">
+                                                                <input id="@post.Id" type="text" onkeydown="if (event.key === 'Enter') newComment(event)" class="form-control rounded" placeholder="Enter Your Comment">
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0 row-block clickable" onclick="toggleComment('@post.Id')">
-                                                <span>
-                                                    <i class="fa-regular fa-comment"></i>
-                                                    Comment
-                                                </span>
-                                            </div>
                                         </div>
-                                        <hr style="margin-top: 0" id="hr-element-@post.Id" hidden>
-                                        <div id="comment-container-@post.Id" hidden>
-                                            <div class="comments-section">
-                                                @RenderComments(post.ListComments)
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-sm-12">
+                                    <div class="card card-block card-stretch card-height">
+                                        <div class="card-body" style="display: flex;padding-bottom: 0;margin: auto;align-items: center;height: 400px;font-size: 5mm;">
+                                            <div class="user-post-data">
+                                                No post display, Add more friends to view more
                                             </div>
-                                            <form class="comment-text mt-3">
-                                                <div id="replyDiv-@post.Id" class="comment-text align-items-center mt-3 justify-content-between" style="display: none !important; border-top: 1px solid">
-                                                    <div>
-                                                        <input type="text" id="displayReplyTo-@post.Id" style="border: none; width: 400px; font-weight: bold" readonly />
-                                                        <input type="text" id="displayComment-@post.Id" style="border: none; width: 573px; color: gray" readonly />
-                                                    </div>
-                                                    <input hidden name="replyTo" value="0" type="text" id="replyTo-@post.Id" />
-                                                    <input hidden name="postId" type="text" value="@post.Id" />
-                                                    <i class="fa fa-close closer" onclick="ReplyTo('-1', '0', '0', '@post.Id')"></i>
-                                                </div>
-                                                <div class="comment-text d-flex align-items-center">
-                                                    <input id="@post.Id" type="text" onkeydown="if (event.key === 'Enter') newComment(event)" class="form-control rounded" placeholder="Enter Your Comment">
-                                                </div>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         </div>
-                    }
-                }
             </div>
             <div class="col-sm-12 text-center">
                 <img src="~/assets/images/page-img/page-load-loader.gif" alt="loader" style="height: 100px;">

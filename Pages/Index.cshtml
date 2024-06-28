@@ -91,7 +91,7 @@
             html.Append("<div class='comment'>");
             html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
             html.Append("<div class='comment-content'>");
-            html.AppendFormat("<span class='user-name'>{0}</span>", comment.User.Fullname);
+            html.AppendFormat("<span onclick='redirectToProfile({1})' class='user-name clickable'>{0}</span>", comment.User.Fullname, comment.User.UserId);
             html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
             html.Append("<div>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
@@ -253,7 +253,7 @@
                                             <div class="w-100">
                                                 <div class="d-flex justify-content-between">
                                                     <div class="">
-                                                        <h5 class="mb-0 d-inline-block">@post.User.Fullname</h5>
+                                                            <h5 class="mb-0 d-inline-block clickable" onclick="redirectToProfile(@post.User.UserId)">@post.User.Fullname</h5>
                                                         <span class="mb-0 d-inline-block">Add New Post</span>
                                                         <p class="mb-0 text-primary">@GetTimeToNow(post.Time)</p>
                                                     </div>
@@ -329,7 +329,7 @@
                                                                     <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">
                                                                         @foreach (var like in item)
                                                                         {
-                                                                            <div style="color: white; padding-left: 10px;">@like.User.Fullname</div>
+                                                                                <div onclick="redirectToProfile(@like.User.UserId)" class="clickable" style="color: white; padding-left: 10px;">@like.User.Fullname</div>
                                                                         }
                                                                     </div>
                                                                 </div>
@@ -343,7 +343,7 @@
                                                                 <div class="dropdown-menu">
                                                                     @foreach (var like in post.ListLike)
                                                                     {
-                                                                        <div class="dropdown-item">@like.User.Fullname</div>
+                                                                            <div class="dropdown-item">@like.User.Fullname</div>
                                                                     }
                                                                 </div>
                                                             </div>
@@ -360,9 +360,9 @@
                                                             @post.countComment Comments
                                                         </span>
                                                         <div class="dropdown-menu">
-                                                            @foreach (var cmt in post.ListCommentsTotal)
+                                                            @foreach (var cmt in post.ListCommentsTotal.DistinctBy(x => x.User.UserId))
                                                             {
-                                                                <a class="dropdown-item" href="#">@cmt.User.Fullname</a>
+                                                                    <a class="dropdown-item" href="/Profile?Id=@cmt.User.UserId">@cmt.User.Fullname</a>
                                                             }
                                                         </div>
                                                     </div>
