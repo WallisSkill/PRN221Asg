@@ -34,6 +34,7 @@ public partial class Profile : PageModel
         ViewData["userFriends"] = a;
         ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower(Id);
         ViewData["listSaved"] = _postService.GetAllPostIdsaved();
+        ViewData["isFollow"] = _profileService.CheckIsFollow(_userResolver.GetUser(),Id);
         return Page();
     }
 }

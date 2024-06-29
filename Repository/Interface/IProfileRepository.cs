@@ -10,4 +10,5 @@ public interface IProfileRepository
     int GetCountNumberComments(int userid);
 
     void EditProfile(User user);
+	bool? CheckIsFollow(int currentUserId,int id);
 }

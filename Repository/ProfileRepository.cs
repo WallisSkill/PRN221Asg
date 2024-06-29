@@ -60,4 +60,9 @@ public partial class ProfileRepository: IProfileRepository
             _context.SaveChanges();
         }
     }
+
+	public bool? CheckIsFollow(int currentUserId ,int id)
+	{
+		return _context.Set<Follow>().Where(x => x.FollowerId== currentUserId && x.FolloweeId == id).Any();
+	}
 }

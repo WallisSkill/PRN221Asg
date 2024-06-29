@@ -63,4 +63,9 @@ public partial class ProfileService: IProfileService
     {
         _profileRepository.EditProfile(user);
     }
+
+	public bool? CheckIsFollow(int currentUserId,int id)
+	{
+		return _profileRepository.CheckIsFollow(currentUserId,id);
+	}
 }
