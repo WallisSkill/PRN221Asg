@@ -2,6 +2,8 @@ using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PRN221_Assignment.Models;
+using PRN221_Assignment.Services;
 using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Pages
@@ -12,61 +14,61 @@ namespace PRN221_Assignment.Pages
     {
         [BindProperty(SupportsGet = true)]
         public string searchTerm { get; set; }
-        [BindProperty(SupportsGet = true)]
-        public string SeeAll { get; set; }
 
         private readonly ISearchService _searchService;
         private readonly IUserResolverService _userResolver;
         private readonly IProfileService _profileService;
+        private readonly IPostService _postService;
 
         public IActionResult OnPost()
         {
-            if (SeeAll == null) return RedirectToPage("/Index");
+            if (searchTerm == null) return RedirectToPage("/Index");
             ViewData["searchPost"] = _searchService.SearchPost(searchTerm.Trim());
             var a = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
             ViewData["userFriends"] = a;
-            if (SeeAll == "true")
-            {
-                ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
-            }
-            else
-            {
-                ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim()).Take(3).ToList();
-            }
-            ViewData["SeeAll"] = SeeAll;
+            ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
             ViewData["searchTerm"] = searchTerm;
+            ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
+            ViewData["listSaved"] = _postService.GetAllPostIdsaved();
             return RedirectToPage(new
             {
                 searchTerm = searchTerm,
-                SeeAll = SeeAll
             });
         }
-        
+
         public void OnGet(string searchTerm, string SeeAll)
         {
             this.searchTerm = searchTerm;
-            this.SeeAll = SeeAll;
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                var searchTermTrimmed = searchTerm.Trim();
-                ViewData["searchPost"] = _searchService.SearchPost(searchTermTrimmed);
-
-                var userFriends = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
-                ViewData["userFriends"] = userFriends;
-
-                if (SeeAll == "true")
-                {
-                    ViewData["searchUser"] = _searchService.SearchUser(searchTermTrimmed);
-                }
-                else
-                {
-                    ViewData["searchUser"] = _searchService.SearchUser(searchTermTrimmed).Take(3).ToList();
-                }
-
-                ViewData["SeeAll"] = SeeAll;
+                ViewData["searchPost"] = _searchService.SearchPost(searchTerm.Trim());
+                ViewData["userFriends"] = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
+                ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
                 ViewData["searchTerm"] = searchTerm;
+                ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
+                ViewData["listSaved"] = _postService.GetAllPostIdsaved();
             }
+        }
+
+        public IActionResult OnGetGetSuggestions(string query)
+        {
+            var listFriend = _profileService.GetAllFriendOfUser(_userResolver.GetUser());
+            var listUser = _searchService.SearchUser(query.Trim());
+            var suggestions = listFriend
+                .Where(u => u.User.Fullname.Contains(query, System.StringComparison.OrdinalIgnoreCase))
+                .Take(5)
+                .Select(u => new { u.User.UserId, u.User.Fullname, u.User.profilePhotoUrl, IsFriend = true })
+                .ToList();
+            if (suggestions.Count == 0)
+            {
+                suggestions = listUser
+                    .Where(u => u.Fullname.Contains(query, System.StringComparison.OrdinalIgnoreCase))
+                    .Take(5)
+                    .Select(u => new { u.UserId, u.Fullname, u.profilePhotoUrl, IsFriend = false })
+                    .ToList();
+            }
+            return new JsonResult(suggestions);
         }
     }
 }
