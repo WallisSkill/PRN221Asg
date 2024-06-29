@@ -23,7 +23,6 @@ namespace PRN221_Assignment.Pages
         public IActionResult OnPost()
         {
             if (searchTerm == null) return RedirectToPage("/Index");
-            ViewData["searchPost"] = _searchService.SearchPost(searchTerm.Trim());
             var a = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
             ViewData["userFriends"] = a;
             ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
@@ -42,7 +41,6 @@ namespace PRN221_Assignment.Pages
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                ViewData["searchPost"] = _searchService.SearchPost(searchTerm.Trim());
                 ViewData["userFriends"] = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
                 ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
                 ViewData["searchTerm"] = searchTerm;
