@@ -4,9 +4,11 @@ using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Services.Interface;
+
 
 namespace PRN221_Assignment.Pages;
 
@@ -18,6 +20,8 @@ public partial class IndexModel : PageModel
     private readonly IHomePageService _homePageService;
     private readonly IMessageService _messageService;
     private readonly IPostService _postService;
+    private readonly IPhotoService _photoService;
+ 
     public IActionResult OnGet()
     {
         ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
@@ -28,7 +32,7 @@ public partial class IndexModel : PageModel
     }
     public IList<Message> Messages { get; set; }
     public IList<MessageData> MessagesData { get; set; }
-
+    public Post post {  get; set; } 
     
     //MessageChat
     public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId,bool open = false)
@@ -90,4 +94,56 @@ public partial class IndexModel : PageModel
         };
         return new JsonResult(listPostLike, options);
     }
+
+
+    public async Task<IActionResult> OnPost(Post post, List<IFormFile> listfile)
+    {
+        List<string> listPhotoName = new List<string>();
+        if (listfile != null)
+        {
+            foreach (var file in listfile)
+            {
+                if (file.Length > 0)
+                {
+                    string fileExtension = Path.GetExtension(file.FileName);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", file.FileName);
+                    int index = 1;
+
+                    while (System.IO.File.Exists(filePath))
+                    {
+                        filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", fileNameWithoutExtension + "(" + index + ")" + fileExtension);
+                        index++;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    listPhotoName.Add(Path.GetFileName(filePath));
+                }
+            }
+        }
+
+        post.CreatedAt = DateTime.Now;
+       
+        _postService.CreatePost(post);
+
+        foreach (string photoName in listPhotoName)
+        {
+            Photo photo = new Photo();
+            photo.PhotoUrl = "/Image/UploadPic/" + photoName;
+            photo.CreatedAt = DateTime.Now;
+            photo.PostId = post.PostId;
+            _photoService.AddPhoto(photo);
+        }
+        var newPostData = new
+        {
+            post,
+            Photos = listPhotoName.Select(photoName => "/Image/UploadPic/" + photoName).ToList()
+        };
+
+        return new JsonResult(newPostData);
+    }
+
 }

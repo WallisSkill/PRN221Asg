@@ -91,7 +91,7 @@
             html.Append("<div class='comment'>");
             html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
             html.Append("<div class='comment-content'>");
-            html.AppendFormat("<span class='user-name'>{0}</span>", comment.User.Fullname);
+            html.AppendFormat("<span onclick='redirectToProfile({1})' class='user-name clickable'>{0}</span>", comment.User.Fullname, comment.User.UserId);
             html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
             html.Append("<div>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
@@ -209,105 +209,35 @@
                                         <h5 class="modal-title" id="post-modalLabel">Create Post</h5>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ri-close-fill"></i></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <form class="modal-body modal-body-scrollable" method="post" enctype="multipart/form-data" id="postForm">
                                         <div class="d-flex align-items-center">
                                             <div class="user-img">
                                                 <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
                                             </div>
-                                            <form id="caption" class="post-text ms-3 w-100" action="javascript:void);">
-                                                <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;">
-                                            </form>
+                                           <div id="caption" class="post-text ms-3 w-100" action="javascript:void);">
+                                                <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;" asp-for="post.Caption">
+                                                <input type="hidden" asp-for="post.UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                                            </div>
                                         </div>
+                                        <div id="imagePreview" class="newt"></div>
                                         <hr>
                                         <ul class="d-flex flex-wrap align-items-center list-inline m-0 p-0">
                                             <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo/Video</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/08.png" alt="icon" class="img-fluid"> Tag Friend</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/09.png" alt="icon" class="img-fluid"> Feeling/Activity</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/10.png" alt="icon" class="img-fluid"> Check in</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/11.png" alt="icon" class="img-fluid"> Live Video</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/12.png" alt="icon" class="img-fluid"> Gif</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/13.png" alt="icon" class="img-fluid"> Watch Party</div>
-                                            </li>
-                                            <li class="col-md-6 mb-3">
-                                                <div class="bg-soft-primary rounded p-2 pointer me-3"><a href="#"></a><img src="~/assets/images/small/14.png" alt="icon" class="img-fluid"> Play with Friends</div>
+                                                <div class="bg-soft-primary rounded p-2 pointer me-3" onclick="document.getElementById('fileInput').click()">
+                                                    <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo
+                                                </div>
+                                                <input type="file" id="fileInput" style="display: none;" name="listfile" accept="image/*" multiple>
                                             </li>
                                         </ul>
                                         <hr>
-                                        <div class="other-option">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="user-img me-3">
-                                                        <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
-                                                    </div>
-                                                    <h6>Your Story</h6>
-                                                </div>
-                                                <div class="card-post-toolbar">
-                                                    <div class="dropdown">
-                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
-                                                            <span class="btn btn-primary">Friend</span>
-                                                        </span>
-                                                        <div class="dropdown-menu m-0 p-0">
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-save-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Public</h6>
-                                                                        <p class="mb-0">Anyone on or off Facebook</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-close-circle-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Friends</h6>
-                                                                        <p class="mb-0">Your Friend on facebook</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-user-unfollow-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Friends except</h6>
-                                                                        <p class="mb-0">Don't show to some friends</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                            <a class="dropdown-item p-3" href="#">
-                                                                <div class="d-flex align-items-top">
-                                                                    <i class="ri-notification-line h4"></i>
-                                                                    <div class="data ms-2">
-                                                                        <h6>Only Me</h6>
-                                                                        <p class="mb-0">Only me</p>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary d-block w-100 mt-3">Post</button>
-                                    </div>
+                                        <button class="btn btn-primary d-block w-100 mt-3 js-add-slide" id="postButton">Post</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div id="postList">
                 @if (listPost.Count>0)
                 {
                     foreach (var post in listPost)
@@ -323,7 +253,7 @@
                                             <div class="w-100">
                                                 <div class="d-flex justify-content-between">
                                                     <div class="">
-                                                        <h5 class="mb-0 d-inline-block">@post.User.Fullname</h5>
+                                                            <h5 class="mb-0 d-inline-block clickable" onclick="redirectToProfile(@post.User.UserId)">@post.User.Fullname</h5>
                                                         <span class="mb-0 d-inline-block">Add New Post</span>
                                                         <p class="mb-0 text-primary">@GetTimeToNow(post.Time)</p>
                                                     </div>
@@ -371,7 +301,7 @@
                                         <div class="newt">
                                             @foreach (var url in post.PhotoURL)
                                             {
-                                                if (string.IsNullOrEmpty(url))
+                                                if (!string.IsNullOrEmpty(url))
                                                 {
                                                     <div class="post-image">
 
@@ -384,10 +314,11 @@
                                     </div>
                                     <div class="comment-area mt-3">
                                         <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                            @if (post.ListLike.Count > 0)
-                                            {
+                                            
                                                 <div class="like-block position-relative d-flex align-items-center">
                                                     <div class="d-flex align-items-center" id="like-post-@post.Id">
+                                                        @if (post.ListLike.Count > 0)
+                                                        {
                                                         @foreach (var item in post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
                                                         {
                                                             <div class="total-like-block">
@@ -398,7 +329,7 @@
                                                                     <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">
                                                                         @foreach (var like in item)
                                                                         {
-                                                                            <div style="color: white; padding-left: 10px;">@like.User.Fullname</div>
+                                                                                <div onclick="redirectToProfile(@like.User.UserId)" class="clickable" style="color: white; padding-left: 10px;">@like.User.Fullname</div>
                                                                         }
                                                                     </div>
                                                                 </div>
@@ -412,14 +343,15 @@
                                                                 <div class="dropdown-menu">
                                                                     @foreach (var like in post.ListLike)
                                                                     {
-                                                                        <div class="dropdown-item">@like.User.Fullname</div>
+                                                                            <div class="dropdown-item">@like.User.Fullname</div>
                                                                     }
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        }
                                                     </div>
                                                 </div>
-                                            }
+
                                             @if (post.ListComments.Any())
                                             {
                                                 <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
@@ -428,9 +360,9 @@
                                                             @post.countComment Comments
                                                         </span>
                                                         <div class="dropdown-menu">
-                                                            @foreach (var cmt in post.ListCommentsTotal)
+                                                            @foreach (var cmt in post.ListCommentsTotal.DistinctBy(x => x.User.UserId))
                                                             {
-                                                                <a class="dropdown-item" href="#">@cmt.User.Fullname</a>
+                                                                    <a class="dropdown-item" href="/Profile?Id=@cmt.User.UserId">@cmt.User.Fullname</a>
                                                             }
                                                         </div>
                                                     </div>
@@ -513,6 +445,7 @@
                          </div>
                      </div>
                 }
+                </div>
             </div>
             <div class="col-lg-4">
                 <div class="card">
@@ -590,5 +523,3 @@
         </div>
     </div>
 </div>
-
-

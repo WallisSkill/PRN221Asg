@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\ChatBox\" />
+    <Folder Include="wwwroot\Image\UploadPic\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
