@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Services;
 using PRN221_Assignment.Services.Interface;
+using System.Linq;
 
 namespace PRN221_Assignment.Pages
 {
@@ -51,21 +52,23 @@ namespace PRN221_Assignment.Pages
 
         public IActionResult OnGetGetSuggestions(string query)
         {
-            var listFriend = _profileService.GetAllFriendOfUser(_userResolver.GetUser());
+            var currentUser = _userResolver.GetUser();
+            var listFriend = _profileService.GetAllFriendOfUser(currentUser);
             var listUser = _searchService.SearchUser(query.Trim());
-            var suggestions = listFriend
-                .Where(u => u.User.Fullname.Contains(query, System.StringComparison.OrdinalIgnoreCase))
+
+            var friendIds = new List<int>(listFriend.Select(f => f.User.UserId));
+
+            var suggestions = listUser
+                .Where(u => u.Fullname.Contains(query, StringComparison.OrdinalIgnoreCase))
                 .Take(5)
-                .Select(u => new { u.User.UserId, u.User.Fullname, u.User.profilePhotoUrl, IsFriend = true })
+                .Select(u => new
+                {
+                    u.UserId,
+                    u.Fullname,
+                    IsFriend = friendIds.Contains(u.UserId)
+                })
                 .ToList();
-            if (suggestions.Count == 0)
-            {
-                suggestions = listUser
-                    .Where(u => u.Fullname.Contains(query, System.StringComparison.OrdinalIgnoreCase))
-                    .Take(5)
-                    .Select(u => new { u.UserId, u.Fullname, u.profilePhotoUrl, IsFriend = false })
-                    .ToList();
-            }
+
             return new JsonResult(suggestions);
         }
     }

@@ -364,7 +364,7 @@
                         </div>
                         <div class="iq-search-bar device-search">
                             <form class="searchbox" method="post" asp-page="/Search">
-                                <a class="search-link" href="#">
+                                <a class="search-link" href="#" id="search-link">
                                     <i class="ri-search-line"></i>
                                 </a>
                                 <input type="text" name="searchTerm" class="text search-input" placeholder="Search here..." oninput="fetchSuggestions(this.value)">
@@ -843,31 +843,35 @@
     async function fetchSuggestions(value) {
         let dropdown = document.getElementById('dropdown-searchbox');
         dropdown.innerHTML = '';
-
+        const searchLink = document.getElementById('search-link');
+        searchLink.href = '/Search?searchTerm='+encodeURIComponent(value);
         if (value.length === 0) {
             dropdown.classList.remove('show');
             return;
         }
 
         try {
-            let response = await fetch('/Search?handler=GetSuggestions&query=' + encodeURIComponent(value)+'&Id=');
+            let response = await fetch('/Search?handler=GetSuggestions&query=' + encodeURIComponent(value));
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
             let suggestions = await response.json();
-
+           
             let html = suggestions.map(s => `
-                                                    <a href="Profile?Id=${s.userId}" class="searchbox d-flex">
-                                                <div class="user-img">
-                                                            <img src="${s.profilePhotoUrl}" alt="userimg" class="avatar-60 rounded-circle">
-                                                </div>
-                                                   <div class="post-text ms-3 w-100" data-bs-toggle="modal" data-bs-target="#post-modal">
-                        <div class="form-control rounded" style="border:none; font-weight:bold; background:none">${s.fullname}</div>
-                        ${s.isFriend ? '<span class="form-control rounded" style="border:none; background:none">Friend</span>' : ''}
-                    </div>
-                                                     </a>
-                        `).join('');
+
+                                             <a href="/Profile?Id=${s.userId}" class="a-layout searchbox" >
+                                             <div class="d-flex align-items-center " style="line-height:0;">
+                             <img src="@User.FindFirstValue("profile_picture")" alt="profile-img" class="img-fluid profile-img2">
+                                 
+                             <div class="friend-info ms-3">
+                                     <h5 class="text">${s.fullname}</h5>
+                                              ${s.userId == @User.FindFirstValue(ClaimTypes.NameIdentifier) ? '<h6 class="fullname-layout" style="border:none; background:none">View Profile</h6>' : s.isFriend ? '<h6 class="fullname-layout" style="border:none; background:none">Friend</h6>' : ''}
+                             </div>
+                                  </div>
+                                 </a>
+                                    
+                            `).join('');
 
             dropdown.innerHTML = html;
 
@@ -880,8 +884,6 @@
             console.error('There has been a problem with your fetch operation:', error);
         }
     }
-
-
     window.onclick = function (event) {
         if (!event.target.matches('.search-input')) {
             let dropdown = document.getElementById('dropdown-searchbox');

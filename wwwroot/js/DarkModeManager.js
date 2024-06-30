@@ -40,7 +40,8 @@
     toggleClasses(document.querySelectorAll('#about h4'), 'text-white');
     ///////////////Longngu
     toggleClasses(document.querySelectorAll('.editprofile-address'), 'bg-dark', 'text-white');
-
+    //toggleClasses(document.querySelectorAll('.fullname-layout'), 'bg-dark', 'text-white');
+    //toggleClasses(document.querySelectorAll('.a-layout'), 'bg-dark', 'text-white');
     //////////////HoangAnh
     toggleClasses(document.querySelectorAll('.ri-save-line'), 'text-white');
     toggleClasses(document.querySelectorAll('.ri-close-line'), 'text-white');
