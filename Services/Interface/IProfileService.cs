@@ -15,5 +15,9 @@ public interface IProfileService
     List<Friend> GetAllFriendRelatetionshipOfUser(int userId);
 
     void EditProfile(User user);
-	Boolean? CheckIsFollow(int currentUserId,int id);
+    Boolean? CheckIsFollow(int currentUserId,int id);
+    void Follow(int v, int id);
+    void UnFollow(int v, int id);
+    int? GetCountNumberFollower(int id);
+    int? GetCountNumberfollowing(int id);
 }

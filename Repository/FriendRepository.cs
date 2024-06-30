@@ -101,5 +101,6 @@ namespace PRN221_Assignment.Repository
             _context.Set<Friend>().Update(friend);
             _context.SaveChanges();
         }
+
     }
 }

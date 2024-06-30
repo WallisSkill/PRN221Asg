@@ -11,4 +11,8 @@ public interface IProfileRepository
 
     void EditProfile(User user);
 	bool? CheckIsFollow(int currentUserId,int id);
+    void Follow(int v, int id);
+    void UnFollow(int v, int id);
+    int? GetCountNumberFollower(int id);
+    int? GetCountNumberFollowing(int id);
 }

@@ -34,7 +34,21 @@ public partial class Profile : PageModel
         ViewData["userFriends"] = a;
         ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower(Id);
         ViewData["listSaved"] = _postService.GetAllPostIdsaved();
-        ViewData["isFollow"] = _profileService.CheckIsFollow(_userResolver.GetUser(),Id);
+        ViewData["isFollow"] = _profileService.CheckIsFollow(_userResolver.GetUser(), Id);
+        ViewData["following"] = _profileService.GetCountNumberfollowing(Id);
+        ViewData["follower"] = _profileService.GetCountNumberFollower(Id);
         return Page();
+    }
+
+    public IActionResult OnPostFollow(int UserId)
+    {
+        _profileService.Follow(_userResolver.GetUser(), UserId);
+        return new JsonResult("ok");
+    }
+
+    public IActionResult OnDeleteFollow(int UserId)
+    {
+        _profileService.UnFollow(_userResolver.GetUser(), UserId);
+        return new JsonResult("ok");
     }
 }

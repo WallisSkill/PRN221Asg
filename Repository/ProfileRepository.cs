@@ -8,7 +8,7 @@ namespace PRN221_Assignment.Repository;
 
 [Service]
 [RequiredArgsConstructor]
-public partial class ProfileRepository: IProfileRepository
+public partial class ProfileRepository : IProfileRepository
 {
     private readonly social_mediaContext _context;
     
@@ -65,4 +65,34 @@ public partial class ProfileRepository: IProfileRepository
 	{
 		return _context.Set<Follow>().Where(x => x.FollowerId== currentUserId && x.FolloweeId == id).Any();
 	}
+
+    public void Follow(int v, int id)
+    {
+       _context.Set<Follow>().Add(new Follow()
+       {
+           FollowerId = v,
+           FolloweeId = id
+       });
+        _context.SaveChanges();
+    }
+
+    public void UnFollow(int v, int id)
+    {
+       _context.Set<Follow>().Remove(new Follow()
+       {
+           FollowerId = v,
+           FolloweeId = id
+       });
+       _context.SaveChanges();
+    }
+
+    public int? GetCountNumberFollower(int id)
+    {
+        return _context.Set<Follow>().Where(x => x.FolloweeId == id).Count();
+    }
+
+    public int? GetCountNumberFollowing(int id)
+    {
+        return _context.Set<Follow>().Where(x => x.FollowerId == id).Count();
+    }
 }

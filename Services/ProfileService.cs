@@ -9,7 +9,7 @@ namespace PRN221_Assignment.Services;
 
 [Service]
 [RequiredArgsConstructor]
-public partial class ProfileService: IProfileService
+public partial class ProfileService : IProfileService
 {
     private readonly IProfileRepository _profileRepository;
     private readonly IFriendRepository _friendRepository;
@@ -68,4 +68,24 @@ public partial class ProfileService: IProfileService
 	{
 		return _profileRepository.CheckIsFollow(currentUserId,id);
 	}
+
+    public void Follow(int v, int id)
+    {
+        _profileRepository.Follow(v, id);
+    }
+
+    public void UnFollow(int v, int id)
+    {
+        _profileRepository.UnFollow(v, id);
+    }
+
+    public int? GetCountNumberFollower(int id)
+    {
+        return _profileRepository.GetCountNumberFollower(id);
+    }
+
+    public int? GetCountNumberfollowing(int id)
+    {
+        return _profileRepository.GetCountNumberFollowing(id);
+    }
 }
