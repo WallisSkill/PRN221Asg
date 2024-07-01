@@ -859,19 +859,22 @@
             let suggestions = await response.json();
            
             let html = suggestions.map(s => `
+                      <a href="/Profile?Id=${s.userId}" class="a-layout searchbox">
+                        <div class="d-flex align-items-center" style="line-height:0;">
+                              <img src="${CURRENT_USER_IMAGE}" alt="profile-img" class="img-fluid profile-img2">
+                          <div class="friend-info ms-3">
+                            <h5 class="text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${s.fullname}</h5>
+                            ${(s.userId == CURRENT_USER_ID) ?
+                                    `<h6 class="fullname-layout ${body.classList.contains('bg-dark') ? 'text-white' : ''}" style="border:none; background:none">View Profile</h6>` :
+                                    s.isFriend ?
+                                        `<h6 class="fullname-layout ${body.classList.contains('bg-dark') ? 'text-white' : ''}" style="border:none; background:none">Friend</h6>` :
+                                        ''
+                                }
+                          </div>
+                        </div>
+                      </a>
+                    `).join('');
 
-                                             <a href="/Profile?Id=${s.userId}" class="a-layout searchbox" >
-                                             <div class="d-flex align-items-center " style="line-height:0;">
-                             <img src="@User.FindFirstValue("profile_picture")" alt="profile-img" class="img-fluid profile-img2">
-                                 
-                             <div class="friend-info ms-3">
-                                     <h5 class="text">${s.fullname}</h5>
-                                              ${s.userId == @User.FindFirstValue(ClaimTypes.NameIdentifier) ? '<h6 class="fullname-layout" style="border:none; background:none">View Profile</h6>' : s.isFriend ? '<h6 class="fullname-layout" style="border:none; background:none">Friend</h6>' : ''}
-                             </div>
-                                  </div>
-                                 </a>
-                                    
-                            `).join('');
 
             dropdown.innerHTML = html;
 

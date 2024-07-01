@@ -723,7 +723,15 @@ body.bg-dark .nofirst-icon {
     }
 
         .dropdown-content-searchbox a:hover {
-            background-color: #f1f1f1;
+            background-color: gray;
+        }
+
+        .dropdown-content-searchbox a:hover h5 {
+                color: white !important;
+         }
+
+        .dropdown-content-searchbox a:hover h6 {
+                color: white !important;
         }
 
     .dropdown-content-searchbox.show {

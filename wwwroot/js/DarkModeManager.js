@@ -46,6 +46,7 @@
     toggleClasses(document.querySelectorAll('.ri-save-line'), 'text-white');
     toggleClasses(document.querySelectorAll('.ri-close-line'), 'text-white');
     toggleClasses(document.querySelectorAll('[id*="pass"]'), 'bg-dark', 'text-white');
+    toggleClasses(document.querySelectorAll('.dropdown-content-searchbox'), 'bg-dark');
     /////////////Hung
     ///postArrrow
     var arrowColor = isDarkMode ? "white" : "black";
