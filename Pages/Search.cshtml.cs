@@ -36,7 +36,7 @@ namespace PRN221_Assignment.Pages
             });
         }
 
-        public void OnGet(string searchTerm, string SeeAll)
+        public void OnGet(string searchTerm)
         {
             this.searchTerm = searchTerm;
 
@@ -47,6 +47,7 @@ namespace PRN221_Assignment.Pages
                 ViewData["searchTerm"] = searchTerm;
                 ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
                 ViewData["listSaved"] = _postService.GetAllPostIdsaved();
+
             }
         }
 

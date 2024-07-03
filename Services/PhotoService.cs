@@ -16,5 +16,10 @@ public partial class PhotoService : IPhotoService
         {
             _photoRepository.AddPhoto(photo);
         }
+
+    public void DeletePhoto(int postId)
+    {
+        _photoRepository.DeletePhoto(postId);
+    }
 }
 

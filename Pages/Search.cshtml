@@ -293,9 +293,9 @@
                     <div id="postList">
                         @if (listPost.Count > 0)
                         {
-                            foreach (var post in listPost.Where(x => x.Caption.ToLower().Contains(searchTerm.ToLower())))
+                            foreach (var post in listPost.Where(x => x.Caption != null && x.Caption.ToLower().Contains(searchTerm.ToLower())))
                             {
-                                <div class="col-sm-12">
+                                <div class="col-sm-12 data-item-post">
                                     <div class="card card-block card-stretch card-height ">
                                         <div class="card-body" id="card-body-@post.Id" style="padding-bottom: 0">
                                             <div class="user-post-data">

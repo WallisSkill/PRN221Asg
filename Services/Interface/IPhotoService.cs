@@ -6,5 +6,6 @@ namespace PRN221_Assignment.Services.Interface
     public interface IPhotoService
     {
         void AddPhoto(Photo photo);
+        void DeletePhoto(int postId);
     }
 }
