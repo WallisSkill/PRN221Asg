@@ -13,4 +13,6 @@ public interface IPostService
     List<PostData> GetAllPostCurrentUserSaved();
     void SavePost(int postId);
     void RemovePost(int postId);
+    void DeletePost(int postId);
+    void UpdatePost(Post post);
 }

@@ -21,4 +21,6 @@ public interface IPostRepository
     List<int> GetAllPostIdsaved(int currentUser);
     void SavePost(int postId, int currentUserid);
     void RemovePost(int postId, int currentUserid);
+    void DeletePost(int postId);
+    void UpdatePost(Post post);
 }

@@ -176,4 +176,14 @@ public partial class PostService : IPostService
     {
         _postRepository.RemovePost(postId, _currentUser);
     }
+
+    public void DeletePost(int postId)
+    {
+        _postRepository.DeletePost(postId);
+    }
+
+    public void UpdatePost(Post post)
+    {
+       _postRepository.UpdatePost(post);
+    }
 }

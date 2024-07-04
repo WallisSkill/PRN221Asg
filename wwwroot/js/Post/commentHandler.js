@@ -115,14 +115,15 @@ function newComment(event) {
 
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = value;
-                if (!commentsSection.querySelector("li")) {
-                    const li = document.createElement('li');
-                    commentsSection.querySelector("ul").appendChild(li);
-                }
+
+                const newCommentLi = document.createElement('li');
+
                 while (tempDiv.firstChild) {
-                    commentsSection.querySelector("li").appendChild(tempDiv.firstChild);
+                    newCommentLi.appendChild(tempDiv.firstChild);
                 }
 
+                // Thêm `li` mới vào cuối danh sách `ul`
+                commentsSection.querySelector("ul").appendChild(newCommentLi);
             }
         });
     event.currentTarget.value = '';

@@ -231,4 +231,35 @@ public partial class PostRepository : IPostRepository
         }
        
     }
+    public void DeletePost(int postId)
+    {
+        var post = _context.Posts.FirstOrDefault(x => x.PostId == postId);
+        var photo = _context.Photos.Where(x => x.PostId == postId).ToList();
+        var comment=_context.Comments.Where(x => x.PostId==postId).ToList();
+        var bookmark = _context.Bookmarks.Where(x => x.PostId == postId).ToList();
+        var post_like = _context.PostLikes.Where(x => x.PostId == postId).ToList();
+        foreach(var item in comment)
+        {
+            var comment_like = _context.CommentLikes.Where(x => x.CommentId == item.CommentId);
+            _context.CommentLikes.RemoveRange(comment_like);
+        }
+        _context.PostLikes.RemoveRange(post_like);
+        _context.Bookmarks.RemoveRange(bookmark);
+        _context.Comments.RemoveRange(comment);
+        _context.Photos.RemoveRange(photo);
+        _context.Posts.Remove(post);
+        _context.SaveChanges();
+    }
+
+    public void UpdatePost(Post post)
+    {
+        var p= _context.Posts.Find(post.PostId);
+        if(p!=null)
+        {
+            p.Caption = post.Caption;
+            _context.Posts.Update(p);
+            _context.SaveChanges();
+        }
+       
+    }
 }

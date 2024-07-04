@@ -40,11 +40,13 @@
     toggleClasses(document.querySelectorAll('#about h4'), 'text-white');
     ///////////////Longngu
     toggleClasses(document.querySelectorAll('.editprofile-address'), 'bg-dark', 'text-white');
-
+    toggleClasses(document.querySelectorAll('.ri-delete-bin-line'), 'text-white');
+    //toggleClasses(document.querySelectorAll('.a-layout'), 'bg-dark', 'text-white');
     //////////////HoangAnh
     toggleClasses(document.querySelectorAll('.ri-save-line'), 'text-white');
     toggleClasses(document.querySelectorAll('.ri-close-line'), 'text-white');
     toggleClasses(document.querySelectorAll('[id*="pass"]'), 'bg-dark', 'text-white');
+    toggleClasses(document.querySelectorAll('.dropdown-content-searchbox'), 'bg-dark');
     /////////////Hung
     ///postArrrow
     var arrowColor = isDarkMode ? "white" : "black";
