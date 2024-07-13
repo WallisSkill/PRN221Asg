@@ -1,133 +1,161 @@
 ﻿
 document.addEventListener('DOMContentLoaded', (event) => {
-    const optionPosts = document.querySelectorAll('.option-post');
+    const handlePostClick = (postId, iconElement) => {
+        if (iconElement.classList.contains('ri-save-line')) {
+            interactSave(postId);
+            iconElement.classList.remove('ri-save-line');
+            iconElement.classList.add('ri-close-line');
+            const dataElement = iconElement.closest('.option-post').querySelector('.data');
+            if (dataElement) {
+                dataElement.querySelector('h6').innerText = 'Remove Saved Post';
+                dataElement.querySelector('p').innerText = 'Remove this from your saved items';
+            }
+        } else if (iconElement.classList.contains('ri-close-line')) {
+            interactSave(postId, false);
+            if (window.location.href.includes("Saved")) {
+                iconElement.closest(".col-sm-12").remove();
+            }
+            iconElement.classList.remove('ri-close-line');
+            iconElement.classList.add('ri-save-line');
+            const dataElement = iconElement.closest('.option-post').querySelector('.data');
+            if (dataElement) {
+                dataElement.querySelector('h6').innerText = 'Save Post';
+                dataElement.querySelector('p').innerText = 'Add this to your saved items';
+            }
+        }
+    };
 
-    optionPosts.forEach(optionPost => {
-        const iconElement = optionPost.querySelector('i[data-post-id]');
-        if (iconElement) {
-            const postId = iconElement.getAttribute('data-post-id');
-            optionPost.addEventListener('click', () => {
-                if (iconElement.classList.contains('ri-save-line')) {
-                    interactSave(postId);
-                    iconElement.classList.remove('ri-save-line');
-                    iconElement.classList.add('ri-close-line');
-                    const dataElement = optionPost.querySelector('.data');
-                    if (dataElement) {
-                        dataElement.querySelector('h6').innerText = 'Remove Saved Post';
-                        dataElement.querySelector('p').innerText = 'Remove this from your saved items';
-                    }
-                } else if (iconElement.classList.contains('ri-close-line')) {
-                    interactSave(postId, false);
-                    if (window.location.href.includes("Saved")) {
-                        optionPost.closest(".col-sm-12").remove();
-                    }
-                    iconElement.classList.remove('ri-close-line');
-                    iconElement.classList.add('ri-save-line');
-                    const dataElement = optionPost.querySelector('.data');
-                    if (dataElement) {
-                        dataElement.querySelector('h6').innerText = 'Save Post';
-                        dataElement.querySelector('p').innerText = 'Add this to your saved items';
-                    }
-                }
-            });
+    document.addEventListener('click', (event) => {
+        const optionPost = event.target.closest('.option-post');
+        if (optionPost) {
+            const iconElement = optionPost.querySelector('i[data-post-id]');
+            if (iconElement) {
+                const postId = iconElement.getAttribute('data-post-id');
+                handlePostClick(postId, iconElement);
+            }
         }
     });
 });
 
-// Hàm save post
-function interactSave(postId, type = true) {
 
-    var formData = new FormData();
-    formData.append("PostId", postId);
-    formData.append("type", type);
-    var url = `/Saved`;
-    fetch(url, {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => {
+    // Hàm save post
+    function interactSave(postId, type = true) {
+
+        var formData = new FormData();
+        formData.append("PostId", postId);
+        formData.append("type", type);
+        var url = `/Saved`;
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                showToast(type ? "Save post successfully" : "Remove post successfully");
+            })
+    }
+
+
+    //Create New Post
+    $(document).ready(function () {
+        const fileInput = document.getElementById('fileInput');
+        let dataTransfer = new DataTransfer();
+
+        $('#fileInput').on('change', function (event) {
+            const files = event.target.files;
+            const preview = $('#imagePreview');
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgHTML = '<div class="post-image" data-file-name="' + file.name + '">' +
+                        '<img src="' + e.target.result + '" class="img-fluid rounded w-100">' +
+                        '<button type="button" class="delete-btn btn btn-danger btn-sm close-img"><i class="fa fa-close"></i></button>' +
+                        '</div>';
+                    preview.slick('slickAdd', imgHTML);
+                }
+                reader.readAsDataURL(file);
+                dataTransfer.items.add(file);
+            });
+
+            fileInput.files = dataTransfer.files;
+
+            if (!preview.hasClass('slick-initialized')) {
+                preview.slick({
+                    infinite: false
+                });
+            }
+        });
+
+        $('#imagePreview').on('click', '.delete-btn', function () {
+            const preview = $('#imagePreview');
+            const slideIndex = $(this).closest('.slick-slide').data('slick-index');
+            const fileName = $(this).closest('.post-image').data('file-name');
+
+            for (let i = 0; i < dataTransfer.items.length; i++) {
+                if (dataTransfer.items[i].getAsFile().name === fileName) {
+                    dataTransfer.items.remove(i);
+                    break;
+                }
+            }
+
+            fileInput.files = dataTransfer.files;
+
+            if (preview.slick('getSlick').slideCount === 1) {
+                preview.slick('unslick');
+                preview.empty();
+            } else {
+                preview.slick('slickRemove', slideIndex);
+
+                preview.find('.slick-slide').each(function (index) {
+                    $(this).attr('data-slick-index', index);
+                });
+
+                preview.slick('setPosition');
+            }
+        });
+    });
+
+
+    const form = document.getElementById('postForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(e.target);
+
+        try {
+            const response = await fetch('/Index', {
+                method: 'POST',
+                body: formData
+            });
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            showToast(type ? "Save post successfully" : "Remove post successfully");
-        })
-}
+
+            const responseData = await response.json();
 
 
-//Create New Post
-$(document).ready(function () {
-    $('#fileInput').on('change', function (event) {
-        var files = event.target.files;
-        var preview = $('#imagePreview');
+            // Clear the form fields
+            document.getElementById('caption').value = '';
+            $('#fileInput').val('');
+            $('#post_Caption').val('');
 
-        Array.from(files).forEach(file => {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var imgHTML = '<div class="post-image">' +
-                    '<img src="' + e.target.result + '" class="img-fluid rounded w-100">' +
-                    '<button type="button" class="delete-btn btn btn-danger btn-sm close-img"><i class="fa fa-close"></i></button>' +
-                    '</div>';
-                preview.slick('slickAdd', imgHTML); // Add to slick slider
-            }
-            reader.readAsDataURL(file);
-        });
+            // Clear the preview
+            $('#imagePreview').slick('unslick').empty();
 
-        // Re-initialize slick
-        if (!preview.hasClass('slick-initialized')) {
-            preview.slick({
+            // Add new post to the top of the post list
+            addNewPostToDOM(responseData);
+            $(".newpost").slick({
                 infinite: false
             });
+
+        } catch (error) {
+            console.error('Error posting data:', error);
         }
     });
-
-    // Remove slide on button click
-    $('#imagePreview').on('click', '.delete-btn', function () {
-        var preview = $('#imagePreview');
-        var slideIndex = $(this).closest('.slick-slide').data('slick-index');
-
-        if (preview.slick('getSlick').slideCount === 1) {
-            preview.slick('unslick');
-            preview.empty();
-        } else {
-            preview.slick('slickRemove', slideIndex);
-        }
-    });
-});
-
-const form = document.getElementById('postForm');
-form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    const formData = new FormData(e.target);
-
-    try {
-        // Send form data to the server using fetch
-        const response = await fetch('/Index', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const responseData = await response.json();
-
-        console.log('Post successful:', responseData);
-
-        // Clear the form fields
-        document.getElementById('caption').value = '';
-
-        // Add new post to the top of the post list
-        addNewPostToDOM(responseData);
-        $(".newpost").slick({
-            infinite: false
-        });
-
-    } catch (error) {
-        console.error('Error posting data:', error);
-    }
-});
 
 function addNewPostToDOM(data) {
     const postList = document.getElementById('postList');
@@ -274,13 +302,13 @@ function addNewPostToDOM(data) {
 
     postList.insertAdjacentHTML('afterbegin', newPostHtml);
     document.querySelector(".modal button.btn-secondary").click();
-
+}
     document.getElementById(`delete-post-${data.post.postId}`).addEventListener('click', function (event) {
         console.log(event);
  /*       console.log(event.closest(".col-sm-12"));*/
         deletePost(data.post.postId, event);
     });
-}
+
 function deletePost(postId, event) {
     const postElement = event.target.closest(".col-sm-12");
     e.preventDefault();
