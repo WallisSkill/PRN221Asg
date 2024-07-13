@@ -262,4 +262,9 @@ public partial class PostRepository : IPostRepository
         }
        
     }
+
+    public Post GetPostById(int postId)
+    {
+        return _context.Posts.FirstOrDefault(x => x.PostId == postId);
+    }
 }

@@ -28,7 +28,7 @@ namespace PRN221_Assignment.Pages
             ViewData["userFriends"] = a;
             ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
             ViewData["searchTerm"] = searchTerm;
-            ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
+            ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower().Where(x => x.Caption != null && x.Caption.ToLower().Contains(searchTerm.ToLower())).ToList();
             ViewData["listSaved"] = _postService.GetAllPostIdsaved();
             return RedirectToPage(new
             {
@@ -45,7 +45,7 @@ namespace PRN221_Assignment.Pages
                 ViewData["userFriends"] = _profileService.GetAllFriendRelatetionshipOfUser(_userResolver.GetUser());
                 ViewData["searchUser"] = _searchService.SearchUser(searchTerm.Trim());
                 ViewData["searchTerm"] = searchTerm;
-                ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
+                ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower().Where(x => x.Caption != null && x.Caption.ToLower().Contains(searchTerm.ToLower())).ToList();
                 ViewData["listSaved"] = _postService.GetAllPostIdsaved();
 
             }

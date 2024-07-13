@@ -1,0 +1,191 @@
+﻿@page
+@using System.Globalization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PRN221_Assignment.Data
+@using PRN221_Assignment.Models
+@{
+    ViewData["Title"] = "Edit Post";
+    var post = (Post)ViewBag.post;
+    var photo = (List<Photo>)ViewBag.photo;
+}
+@model EditPostModel
+<style>
+    .btn-img{
+        position:absolute;
+        margin-left:-39px;
+        margin-top: 15px;
+    }
+</style>
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-lg-12">
+                <div class="iq-edit-list-data">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <div class="header-title">
+                                        <h4 class="card-title">Update post</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form class="" method="post" enctype="multipart/form-data" id="postForm-update">
+                                        <!-- Hidden inputs for storing data -->
+                                        <input type="hidden" id="postId" value="@post.PostId">
+                                        
+                                        <div class="d-flex align-items-center">
+                                            <div class="user-img">
+                                                <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
+                                            </div>
+                                            <div id="caption" class="post-text ms-3 w-100">
+                                                <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;" value="@post.Caption" asp-for="post.Caption">
+                                                <input type="hidden" asp-for="post.PostId" value="@post.PostId">
+
+                                            </div>
+                                        </div>
+                                        <div id="imagePreview" class="newt">
+                                            @if (photo != null)
+                                            {
+                                                foreach (var p in photo)
+                                                {
+                                                    <div class="post-image">
+                                                        
+                                                        <img src="@p.PhotoUrl" class="img-fluid rounded w-100">
+                                                        <button type="button" class="delete-btn btn btn-danger btn-sm close-img"><i class="fa fa-close"></i></button>
+                                                        
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                        <hr>
+                                        <ul class="d-flex flex-wrap align-items-center list-inline m-0 p-0">
+                                            <li class="col-md-6 mb-3">
+                                                <div class="bg-soft-primary rounded p-2 pointer me-3" onclick="document.getElementById('fileInput').click()">
+                                                    <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo
+                                                </div>
+                                                <input type="file" id="fileInput" style="display: none;" name="listFile" accept="image/*" multiple>
+                                            </li>
+                                        </ul>
+                                        <hr>
+                                        <button class="btn btn-primary d-block w-100 mt-3 js-add-slide" id="postButton" onclick="document.getElementById('postForm-update').submit()">Post</button>
+                                        @* <input type="hidden" name="existingPhotoURLs" id="existingPhotoURLs"> *@
+                                        <input type="hidden" name="imageNames" id="existingPhoto" value="@string.Join("||", photo.Select(p => p.PhotoUrl))">
+                                       @* // <input type="file" id="uploadedFilesInput" name="uploadedFiles" multiple style="display:none;"> *@
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var uploadedFiles = []; // Mảng để lưu trữ các file đã chọn
+    //var existingPhoto = document.getElementById('existingPhoto').value.split('||');
+    $(document).ready(function () {
+        $('#fileInput').on('change', function (event) {
+            var files = event.target.files;
+            var preview = $('#imagePreview');
+
+            Array.from(files).forEach(file => {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgHTML = '<div class="post-image">' +
+                        '<img src="' + e.target.result + '" class="img-fluid rounded w-100">' +
+                        '<button type="button" class="delete-btn btn btn-danger btn-sm close-img"><i class="fa fa-close"></i></button>' +
+                        '</div>';
+                    preview.slick('slickAdd', imgHTML); // Add to slick slider
+                }
+                reader.readAsDataURL(file);
+                uploadedFiles.push(file);
+            });
+
+            // Re-initialize slick
+            if (!preview.hasClass('slick-initialized')) {
+                preview.slick({
+                    infinite: false
+                });
+            }
+        });
+
+    //     //Remove slide on button click
+        $('#imagePreview').on('click', '.delete-btn', function () {
+            var preview = $('#imagePreview');
+            var slideIndex = $(this).closest('.slick-slide').data('slick-index');
+            console.log("dfklghfdkjlg: "+slideIndex);
+            uploadedFiles.splice(slideIndex - document.getElementById('existingPhoto').value.split('||').length, 1);
+            deletePhoto(slideIndex);
+            console.log("1: "+uploadedFiles.length);
+            if (preview.slick('getSlick').slideCount === 1) {
+                preview.slick('unslick');
+                preview.empty();
+            } else {
+                preview.slick('slickRemove', slideIndex);
+            }
+
+        });
+    });
+
+    const form_update = document.getElementById('postForm-update');
+
+    form_update.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(e.target);
+        for (let i = 0; i < uploadedFiles.length; i++) {
+            formData.append('uploadedFiles', uploadedFiles[i]);
+        }
+        formData.append('imageNames', document.getElementById('existingPhoto').value);
+       
+        try {
+            // Send form data to the server using fetch
+            const response = await fetch('/EditPost', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const responseData = await response.json();
+
+            console.log('Post successful:', responseData);
+
+            // Clear the form fields
+            document.getElementById('caption').value = '';
+
+            // Add new post to the top of the post list
+            
+            $(".newpost").slick({
+                infinite: false
+            });
+
+        } catch (error) {
+            console.error('Error posting data:', error);
+        }
+    });
+
+    function deletePhoto(index) {
+        
+        var existingPhotoInput = document.getElementById('existingPhoto');
+        var existingPhotoUrls = existingPhotoInput.value.split('||');
+        if (index !== -1) {
+            existingPhotoUrls.splice(index, 1); // Xóa URL khỏi mảng
+            existingPhotoInput.value = existingPhotoUrls.join('||'); // Cập nhật giá trị biến hidden
+        }
+    }
+</script>
+
+
+
+
+
+

@@ -21,5 +21,10 @@ public partial class PhotoService : IPhotoService
     {
         _photoRepository.DeletePhoto(postId);
     }
+
+    public List<Photo> GetPhotosById(int postId)
+    {
+        return _photoRepository.GetPhotoById(postId);
+    }
 }
 

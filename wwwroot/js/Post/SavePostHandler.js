@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 // Hàm save post
-function interactSave(postId,type = true) {
+function interactSave(postId, type = true) {
 
     var formData = new FormData();
     formData.append("PostId", postId);
@@ -49,7 +49,7 @@ function interactSave(postId,type = true) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            showToast(type ? "Save post successfully" : "Remove post successfully");    
+            showToast(type ? "Save post successfully" : "Remove post successfully");
         })
 }
 
@@ -153,7 +153,7 @@ function addNewPostToDOM(data) {
                                                     <i class="ri-more-fill"></i>
                                                 </span>
                                                 <div class="dropdown-menu m-0 p-0">
-                                                    <a class="dropdown-item p-3 option-post clickable text-white bg-dark">
+                                                    <a class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
                                                         <div class="d-flex align-items-top">
                                                             <div class="h4">
                                                                     <i data-post-id="${data.post.postId}" class="ri-save-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
@@ -164,6 +164,33 @@ function addNewPostToDOM(data) {
                                                             </div>
                                                         </div>
                                                     </a>
+                                                    
+                                                <a id="delete-post-${data.post.postId}" class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
+                                                    <div class="d-flex">
+                                                        <div class="h4">
+                                                            <i class="ri-delete-bin-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
+                                                        </div>
+                                                        <div class="data ms-2">
+                                                            <h6 class="${body.classList.contains("bg-dark") ? 'text-white' : ''}">Delete Post</h6>
+                                                            <p class="mb-0">This post will be permanently deleted</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                                                               
+
+                                                                                                <form data-bs-toggle="modal" data-bs-target="#post-modal-update-@post.Id" action="javascript:void(0);">
+                                                                                                    <a class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
+                                                                                                        <div class="d-flex">
+                                                                                                            <div class="h4">
+                                                                                                                <i class="ri-delete-bin-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
+                                                                                                            </div>
+                                                                                                            <div class="data ms-2">
+                                                                                                                <h6 class="${body.classList.contains("bg-dark") ? 'text-white' : ''}">Update Post</h6>
+                                                                                                                <p class="mb-0">Update your post</p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </a>
+                                                                                                </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,7 +199,7 @@ function addNewPostToDOM(data) {
                             </div>
                         </div>
                         <div class="mt-3">
-                                <p>${data.post.caption}</p>
+                                <p>${data.post.caption ?? ""}</p>
                         </div>
                         <div class="user-post">
                             <div class="newt newpost">`;
@@ -247,4 +274,54 @@ function addNewPostToDOM(data) {
 
     postList.insertAdjacentHTML('afterbegin', newPostHtml);
     document.querySelector(".modal button.btn-secondary").click();
+
+    document.getElementById(`delete-post-${data.post.postId}`).addEventListener('click', function (event) {
+        console.log(event);
+ /*       console.log(event.closest(".col-sm-12"));*/
+        deletePost(data.post.postId, event);
+    });
 }
+function deletePost(postId, event) {
+    const postElement = event.target.closest(".col-sm-12");
+    e.preventDefault();
+    if (postElement) {
+        postElement.remove();
+    }
+    
+    var formData = new FormData();
+    formData.append("postId", postId);
+    fetch('/Index?handler=DeletePost', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete post');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                console.log('Post deleted successfully');
+            } else {
+                console.error('Failed to delete post:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const optionPosts = document.querySelectorAll('.option-post');
+
+    optionPosts.forEach(optionPost => {
+        const iconElement = optionPost.querySelector('i[data-post-id]');
+        if (iconElement) {
+            const postId = iconElement.getAttribute('data-post-id');
+            optionPost.addEventListener('click', (event) => {
+                deletePost(postId,event);
+            });
+        }
+    });
+});

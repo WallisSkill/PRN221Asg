@@ -27,5 +27,10 @@ namespace PRN221_Assignment.Repository;
         _context.RemoveRange(photos);
         _context.SaveChanges();
     }
+
+    public List<Photo> GetPhotoById(int postId)
+    {
+        return _context.Photos.Where(x => x.PostId == postId).ToList();
+    }
 }
 

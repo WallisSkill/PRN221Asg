@@ -144,6 +144,110 @@ public partial class IndexModel : PageModel
         };
 
         return new JsonResult(newPostData);
+        
+    }
+
+    public IActionResult OnPostDeletePostProfile(int postId)
+    {
+        try
+        {
+            _postService.DeletePost(postId);
+            return new JsonResult(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(new { success = false, error = ex.Message });
+        }
+
+    }
+    public IActionResult OnPostDeletePost(int postId)
+    {
+        try
+        {
+            _postService.DeletePost(postId);
+            return new JsonResult(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return new JsonResult(new { success = false, error = ex.Message });
+        }
+
+    }
+
+
+
+    public async Task<IActionResult> OnPostUpdatePostProfile(Post post, string imageNames, List<IFormFile> listFile)
+    {
+        if (listFile.Count != 0)
+        {
+            var listPhotoName = imageNames.Split('|');
+            var listNamekhongtrungfilename = new List<string>();
+
+            var fileNames = new List<string>(listFile.Select(f => f.FileName));
+
+            foreach (var name in fileNames)
+            {
+                foreach (var s in listPhotoName)
+                {
+
+                    if (!name.Contains(s.Split('/').Last()))
+                    {
+                        listNamekhongtrungfilename.Add(s.Split('/').Last());
+                    }
+                }
+            }
+            _photoService.DeletePhoto(post.PostId);
+
+            foreach (var file in listFile)
+            {
+                if (file.Length > 0)
+                {
+                    string fileExtension = Path.GetExtension(file.FileName);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", file.FileName);
+                    int index = 1;
+
+                    while (System.IO.File.Exists(filePath))
+                    {
+                        filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", fileNameWithoutExtension + "(" + index + ")" + fileExtension);
+                        index++;
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    listNamekhongtrungfilename.Add(Path.GetFileName(filePath));
+                }
+            }
+
+
+            foreach (string photoName in listNamekhongtrungfilename)
+            {
+                Photo photo = new Photo();
+                photo.PhotoUrl = "/Image/UploadPic/" + photoName;
+                photo.CreatedAt = DateTime.Now;
+                photo.PostId = post.PostId;
+                _photoService.AddPhoto(photo);
+            }
+        }
+        if (imageNames != null && listFile.Count == 0)
+        {
+            var listPhotoName = imageNames.Split('|');
+            _photoService.DeletePhoto(post.PostId);
+            foreach (string photoName in listPhotoName)
+            {
+                Photo photo = new Photo();
+                photo.PhotoUrl = photoName;
+                photo.CreatedAt = DateTime.Now;
+                photo.PostId = post.PostId;
+                _photoService.AddPhoto(photo);
+            }
+        }
+        _postService.UpdatePost(post);
+
+
+        return RedirectToPage("/Profile");
     }
 
 }

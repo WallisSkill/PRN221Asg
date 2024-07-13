@@ -7,5 +7,6 @@ namespace PRN221_Assignment.Services.Interface
     {
         void AddPhoto(Photo photo);
         void DeletePhoto(int postId);
+        List<Photo> GetPhotosById(int postId);
     }
 }
