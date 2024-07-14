@@ -21,7 +21,7 @@ public partial class IndexModel : PageModel
     private readonly IMessageService _messageService;
     private readonly IPostService _postService;
     private readonly IPhotoService _photoService;
- 
+
     public IActionResult OnGet()
     {
         ViewData["listFriend"] = _homePageService.GetAllFriendsOfUser();
@@ -32,27 +32,27 @@ public partial class IndexModel : PageModel
     }
     public IList<Message> Messages { get; set; }
     public IList<MessageData> MessagesData { get; set; }
-    public Post post {  get; set; } 
-    
+    public Post post { get; set; }
+
     //MessageChat
-    public async Task<IActionResult> OnGetGetMessagesAsync(string senderId,string receiverId,bool open = false)
+    public async Task<IActionResult> OnGetGetMessagesAsync(string senderId, string receiverId, bool open = false)
     {
         if (open)
         {
             await _messageService.UpdateStatusOfMessage(senderId, receiverId);
         }
-        Messages = await _messageService.GetMessagesForReceiverAsync(senderId,receiverId);
+        Messages = await _messageService.GetMessagesForReceiverAsync(senderId, receiverId);
 
         return new JsonResult(Messages);
     }
-    
+
     public async Task<IActionResult> OnGetGetMessagesNotiAsync()
     {
         MessagesData = await _homePageService.GetUserChatWith();
         return new JsonResult(MessagesData);
     }
-     
-    
+
+
     //RequestFriend
     public async Task<IActionResult> OnGetGetRequestsAsync()
     {
@@ -65,7 +65,7 @@ public partial class IndexModel : PageModel
 
         return new JsonResult(friends, options);
     }
-    
+
     public async Task<IActionResult> OnGetGetRequestsForNotificationAsync(int userid)
     {
         var friends = await _homePageService.GetAllFriendRequestUserOther(userid);
@@ -77,7 +77,7 @@ public partial class IndexModel : PageModel
 
         return new JsonResult(friends, options);
     }
-    
+
     public IActionResult OnPostInsertComment(Comment comment)
     {
         return new JsonResult(_postService.InsertComment(comment));
@@ -96,7 +96,7 @@ public partial class IndexModel : PageModel
     }
 
 
-    public async Task<IActionResult> OnPost(Post post, List<IFormFile> listfile)
+    public async Task<IActionResult> OnPostCreatePost(Post post, List<IFormFile> listfile)
     {
         List<string> listPhotoName = new List<string>();
         if (listfile != null)
@@ -126,7 +126,7 @@ public partial class IndexModel : PageModel
         }
 
         post.CreatedAt = DateTime.Now;
-       
+
         _postService.CreatePost(post);
 
         foreach (string photoName in listPhotoName)
@@ -144,110 +144,103 @@ public partial class IndexModel : PageModel
         };
 
         return new JsonResult(newPostData);
-        
-    }
-
-    public IActionResult OnPostDeletePostProfile(int postId)
-    {
-        try
-        {
-            _postService.DeletePost(postId);
-            return new JsonResult(new { success = true });
-        }
-        catch (Exception ex)
-        {
-            return new JsonResult(new { success = false, error = ex.Message });
-        }
 
     }
+
     public IActionResult OnPostDeletePost(int postId)
     {
-        try
+        var listphoto = _photoService.GetPhotosById(postId);
+
+        foreach (var photo in listphoto)
         {
-            _postService.DeletePost(postId);
-            return new JsonResult(new { success = true });
+            var photoName = photo.PhotoUrl.Split('/').Last();
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", photoName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
         }
-        catch (Exception ex)
-        {
-            return new JsonResult(new { success = false, error = ex.Message });
-        }
+        _postService.DeletePost(postId);
+        return new JsonResult(new { success = true });
+
+
 
     }
 
 
 
-    public async Task<IActionResult> OnPostUpdatePostProfile(Post post, string imageNames, List<IFormFile> listFile)
-    {
-        if (listFile.Count != 0)
-        {
-            var listPhotoName = imageNames.Split('|');
-            var listNamekhongtrungfilename = new List<string>();
+    //public async Task<IActionResult> OnPostUpdatePostProfile(Post post, string imageNames, List<IFormFile> listFile)
+    //{
+    //    if (listFile.Count != 0)
+    //    {
+    //        var listPhotoName = imageNames.Split('|');
+    //        var listNamekhongtrungfilename = new List<string>();
 
-            var fileNames = new List<string>(listFile.Select(f => f.FileName));
+    //        var fileNames = new List<string>(listFile.Select(f => f.FileName));
 
-            foreach (var name in fileNames)
-            {
-                foreach (var s in listPhotoName)
-                {
+    //        foreach (var name in fileNames)
+    //        {
+    //            foreach (var s in listPhotoName)
+    //            {
 
-                    if (!name.Contains(s.Split('/').Last()))
-                    {
-                        listNamekhongtrungfilename.Add(s.Split('/').Last());
-                    }
-                }
-            }
-            _photoService.DeletePhoto(post.PostId);
+    //                if (!name.Contains(s.Split('/').Last()))
+    //                {
+    //                    listNamekhongtrungfilename.Add(s.Split('/').Last());
+    //                }
+    //            }
+    //        }
+    //        _photoService.DeletePhoto(post.PostId);
 
-            foreach (var file in listFile)
-            {
-                if (file.Length > 0)
-                {
-                    string fileExtension = Path.GetExtension(file.FileName);
-                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", file.FileName);
-                    int index = 1;
+    //        foreach (var file in listFile)
+    //        {
+    //            if (file.Length > 0)
+    //            {
+    //                string fileExtension = Path.GetExtension(file.FileName);
+    //                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+    //                string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", file.FileName);
+    //                int index = 1;
 
-                    while (System.IO.File.Exists(filePath))
-                    {
-                        filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", fileNameWithoutExtension + "(" + index + ")" + fileExtension);
-                        index++;
-                    }
+    //                while (System.IO.File.Exists(filePath))
+    //                {
+    //                    filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Image/UploadPic", fileNameWithoutExtension + "(" + index + ")" + fileExtension);
+    //                    index++;
+    //                }
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-                    listNamekhongtrungfilename.Add(Path.GetFileName(filePath));
-                }
-            }
-
-
-            foreach (string photoName in listNamekhongtrungfilename)
-            {
-                Photo photo = new Photo();
-                photo.PhotoUrl = "/Image/UploadPic/" + photoName;
-                photo.CreatedAt = DateTime.Now;
-                photo.PostId = post.PostId;
-                _photoService.AddPhoto(photo);
-            }
-        }
-        if (imageNames != null && listFile.Count == 0)
-        {
-            var listPhotoName = imageNames.Split('|');
-            _photoService.DeletePhoto(post.PostId);
-            foreach (string photoName in listPhotoName)
-            {
-                Photo photo = new Photo();
-                photo.PhotoUrl = photoName;
-                photo.CreatedAt = DateTime.Now;
-                photo.PostId = post.PostId;
-                _photoService.AddPhoto(photo);
-            }
-        }
-        _postService.UpdatePost(post);
+    //                using (var stream = new FileStream(filePath, FileMode.Create))
+    //                {
+    //                    await file.CopyToAsync(stream);
+    //                }
+    //                listNamekhongtrungfilename.Add(Path.GetFileName(filePath));
+    //            }
+    //        }
 
 
-        return RedirectToPage("/Profile");
-    }
+    //        foreach (string photoName in listNamekhongtrungfilename)
+    //        {
+    //            Photo photo = new Photo();
+    //            photo.PhotoUrl = "/Image/UploadPic/" + photoName;
+    //            photo.CreatedAt = DateTime.Now;
+    //            photo.PostId = post.PostId;
+    //            _photoService.AddPhoto(photo);
+    //        }
+    //    }
+    //    if (imageNames != null && listFile.Count == 0)
+    //    {
+    //        var listPhotoName = imageNames.Split('|');
+    //        _photoService.DeletePhoto(post.PostId);
+    //        foreach (string photoName in listPhotoName)
+    //        {
+    //            Photo photo = new Photo();
+    //            photo.PhotoUrl = photoName;
+    //            photo.CreatedAt = DateTime.Now;
+    //            photo.PostId = post.PostId;
+    //            _photoService.AddPhoto(photo);
+    //        }
+    //    }
+    //    _postService.UpdatePost(post);
+
+
+    //    return RedirectToPage("/Profile");
+    //}
 
 }
