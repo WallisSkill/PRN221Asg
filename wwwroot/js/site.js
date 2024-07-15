@@ -38,39 +38,39 @@
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const dataItems = document.querySelectorAll('.data-item-post');
-    const showAllBtn = document.getElementById('show-all-btn-post');
-    const initialDisplayCount = 5;
+    const dataItemsPost = document.querySelectorAll('.data-item-post');
+    const showAllBtnPost = document.getElementById('show-all-btn-post');
+    const initialDisplayCountPost = 5;
 
-    if (dataItems.length <= initialDisplayCount) {
-        showAllBtn.style.display = 'none';
-        dataItems.forEach((item, index) => {
-            if (index < initialDisplayCount) {
+    if (dataItemsPost.length <= initialDisplayCountPost) {
+        showAllBtnPost.style.display = 'none';
+        dataItemsPost.forEach((item, index) => {
+            if (index < initialDisplayCountPost) {
                 item.classList.add('show-post');
             }
         });
     } else {
-        dataItems.forEach((item, index) => {
-            if (index < initialDisplayCount) {
+        dataItemsPost.forEach((item, index) => {
+            if (index < initialDisplayCountPost) {
                 item.classList.add('show-post');
             }
         });
 
-        showAllBtn.addEventListener('click', function () {
-            const isShowingAll = Array.from(dataItems).every(item => item.classList.contains('show-post'));
+        showAllBtnPost.addEventListener('click', function () {
+            const isShowingAll = Array.from(dataItemsPost).every(item => item.classList.contains('show-post'));
 
             if (isShowingAll) {
-                dataItems.forEach((item, index) => {
-                    if (index >= initialDisplayCount) {
+                dataItemsPost.forEach((item, index) => {
+                    if (index >= initialDisplayCountPost) {
                         item.classList.remove('show-post');
                     }
                 });
-                showAllBtn.textContent = 'See all';
+                showAllBtnPost.textContent = 'See all';
             } else {
-                dataItems.forEach(item => {
+                dataItemsPost.forEach(item => {
                     item.classList.add('show-post');
                 });
-                showAllBtn.textContent = 'Minimize';
+                showAllBtnPost.textContent = 'Minimize';
             }
         });
     }

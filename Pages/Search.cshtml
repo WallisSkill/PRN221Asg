@@ -293,7 +293,7 @@
                     <div id="postList">
                         @if (listPost.Count > 0)
                         {
-                            foreach (var post in listPost.Where(x => x.Caption != null && x.Caption.ToLower().Contains(searchTerm.ToLower())))
+                            foreach (var post in listPost)
                             {
                                 <div class="col-sm-12 data-item-post">
                                     <div class="card card-block card-stretch card-height ">
@@ -489,16 +489,16 @@
                         }
                         else
                         {
-                            @* <div class="col-sm-12">
+                            <div class="col-sm-12" id="no-post-message">
                                 <div class="card card-block card-stretch card-height">
                                     <div class="card-body" style="display: flex;padding-bottom: 0;margin: auto;align-items: center;height: 400px;font-size: 5mm;">
                                         <div class="user-post-data">
-                                            No post display, Add more friends to view more
+                                            No posts match your search.
                                         </div>
                                     </div>
                                 </div>
-                            </div> *@
-                            <div class="col-sm-12" id="no-post-message">
+                            </div>
+                            @* <div class="col-sm-12" id="no-post-message">
                                 <div class="card card-block card-stretch ">
                                     <div class="card-body" style="display: flex;margin: auto;align-items: center;font-size: 5mm;">
                                         <div class="user-post-data">
@@ -506,7 +506,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> *@
                         }
                         <button id="show-all-btn-post" class="btn btn-soft-primary" style="width:100%; font-weight:bold">
                             See all

@@ -41,7 +41,7 @@
     ///////////////Longngu
     toggleClasses(document.querySelectorAll('.editprofile-address'), 'bg-dark', 'text-white');
     toggleClasses(document.querySelectorAll('.ri-delete-bin-line'), 'text-white');
-    //toggleClasses(document.querySelectorAll('.a-layout'), 'bg-dark', 'text-white');
+    toggleClasses(document.querySelectorAll('.ri-pencil-line'), 'text-white');
     //////////////HoangAnh
     toggleClasses(document.querySelectorAll('.ri-save-line'), 'text-white');
     toggleClasses(document.querySelectorAll('.ri-close-line'), 'text-white');

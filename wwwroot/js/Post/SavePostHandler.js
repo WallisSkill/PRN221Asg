@@ -1,41 +1,45 @@
 ﻿
 document.addEventListener('DOMContentLoaded', (event) => {
-    const optionPosts = document.querySelectorAll('.option-post');
+    const handlePostClick = (postId, iconElement) => {
+        if (iconElement.classList.contains('ri-save-line')) {
+            interactSave(postId);
+            iconElement.classList.remove('ri-save-line');
+            iconElement.classList.add('ri-close-line');
+            const dataElement = iconElement.closest('.option-post').querySelector('.data');
+            if (dataElement) {
+                dataElement.querySelector('h6').innerText = 'Remove Saved Post';
+                dataElement.querySelector('p').innerText = 'Remove this from your saved items';
+            }
+        } else if (iconElement.classList.contains('ri-close-line')) {
+            interactSave(postId, false);
+            if (window.location.href.includes("Saved")) {
+                iconElement.closest(".col-sm-12").remove();
+            }
+            iconElement.classList.remove('ri-close-line');
+            iconElement.classList.add('ri-save-line');
+            const dataElement = iconElement.closest('.option-post').querySelector('.data');
+            if (dataElement) {
+                dataElement.querySelector('h6').innerText = 'Save Post';
+                dataElement.querySelector('p').innerText = 'Add this to your saved items';
+            }
+        }
+    };
 
-    optionPosts.forEach(optionPost => {
-        const iconElement = optionPost.querySelector('i[data-post-id]');
-        if (iconElement) {
-            const postId = iconElement.getAttribute('data-post-id');
-            optionPost.addEventListener('click', () => {
-                if (iconElement.classList.contains('ri-save-line')) {
-                    interactSave(postId);
-                    iconElement.classList.remove('ri-save-line');
-                    iconElement.classList.add('ri-close-line');
-                    const dataElement = optionPost.querySelector('.data');
-                    if (dataElement) {
-                        dataElement.querySelector('h6').innerText = 'Remove Saved Post';
-                        dataElement.querySelector('p').innerText = 'Remove this from your saved items';
-                    }
-                } else if (iconElement.classList.contains('ri-close-line')) {
-                    interactSave(postId, false);
-                    if (window.location.href.includes("Saved")) {
-                        optionPost.closest(".col-sm-12").remove();
-                    }
-                    iconElement.classList.remove('ri-close-line');
-                    iconElement.classList.add('ri-save-line');
-                    const dataElement = optionPost.querySelector('.data');
-                    if (dataElement) {
-                        dataElement.querySelector('h6').innerText = 'Save Post';
-                        dataElement.querySelector('p').innerText = 'Add this to your saved items';
-                    }
-                }
-            });
+    document.addEventListener('click', (event) => {
+        const optionPost = event.target.closest('.option-post');
+        if (optionPost) {
+            const iconElement = optionPost.querySelector('i[data-post-id]');
+            if (iconElement) {
+                const postId = iconElement.getAttribute('data-post-id');
+                handlePostClick(postId, iconElement);
+            }
         }
     });
 });
 
+
 // Hàm save post
-function interactSave(postId,type = true) {
+function interactSave(postId, type = true) {
 
     var formData = new FormData();
     formData.append("PostId", postId);
@@ -49,30 +53,35 @@ function interactSave(postId,type = true) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            showToast(type ? "Save post successfully" : "Remove post successfully");    
+            showToast(type ? "Save post successfully" : "Remove post successfully");
         })
 }
 
 
 //Create New Post
 $(document).ready(function () {
+    const fileInput = document.getElementById('fileInput');
+    let dataTransfer = new DataTransfer();
+
     $('#fileInput').on('change', function (event) {
-        var files = event.target.files;
-        var preview = $('#imagePreview');
+        const files = event.target.files;
+        const preview = $('#imagePreview');
 
         Array.from(files).forEach(file => {
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function (e) {
-                var imgHTML = '<div class="post-image">' +
+                const imgHTML = '<div class="post-image" data-file-name="' + file.name + '">' +
                     '<img src="' + e.target.result + '" class="img-fluid rounded w-100">' +
                     '<button type="button" class="delete-btn btn btn-danger btn-sm close-img"><i class="fa fa-close"></i></button>' +
                     '</div>';
-                preview.slick('slickAdd', imgHTML); // Add to slick slider
+                preview.slick('slickAdd', imgHTML);
             }
             reader.readAsDataURL(file);
+            dataTransfer.items.add(file);
         });
 
-        // Re-initialize slick
+        fileInput.files = dataTransfer.files;
+
         if (!preview.hasClass('slick-initialized')) {
             preview.slick({
                 infinite: false
@@ -80,19 +89,37 @@ $(document).ready(function () {
         }
     });
 
-    // Remove slide on button click
     $('#imagePreview').on('click', '.delete-btn', function () {
-        var preview = $('#imagePreview');
-        var slideIndex = $(this).closest('.slick-slide').data('slick-index');
+        const preview = $('#imagePreview');
+        const slideIndex = $(this).closest('.slick-slide').data('slick-index');
+        const fileName = $(this).closest('.post-image').data('file-name');
 
+        for (let i = 0; i < dataTransfer.items.length; i++) {
+            if (dataTransfer.items[i].getAsFile().name === fileName) {
+                dataTransfer.items.remove(i);
+                break;
+            }
+        }
+
+        fileInput.files = dataTransfer.files;
+        if (document.getElementById('existingPhoto') != null) {
+            deletePhoto(slideIndex);
+        }
         if (preview.slick('getSlick').slideCount === 1) {
             preview.slick('unslick');
             preview.empty();
         } else {
             preview.slick('slickRemove', slideIndex);
+
+            preview.find('.slick-slide').each(function (index) {
+                $(this).attr('data-slick-index', index);
+            });
+
+            preview.slick('setPosition');
         }
     });
 });
+
 
 const form = document.getElementById('postForm');
 form.addEventListener('submit', async (e) => {
@@ -101,8 +128,7 @@ form.addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
 
     try {
-        // Send form data to the server using fetch
-        const response = await fetch('/Index', {
+        const response = await fetch('/Index?handler=CreatePost', {
             method: 'POST',
             body: formData
         });
@@ -113,10 +139,14 @@ form.addEventListener('submit', async (e) => {
 
         const responseData = await response.json();
 
-        console.log('Post successful:', responseData);
 
         // Clear the form fields
         document.getElementById('caption').value = '';
+        $('#fileInput').val('');
+        $('#post_Caption').val('');
+
+        // Clear the preview
+        $('#imagePreview').slick('unslick').empty();
 
         // Add new post to the top of the post list
         addNewPostToDOM(responseData);
@@ -153,7 +183,7 @@ function addNewPostToDOM(data) {
                                                     <i class="ri-more-fill"></i>
                                                 </span>
                                                 <div class="dropdown-menu m-0 p-0">
-                                                    <a class="dropdown-item p-3 option-post clickable text-white bg-dark">
+                                                    <a class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
                                                         <div class="d-flex align-items-top">
                                                             <div class="h4">
                                                                     <i data-post-id="${data.post.postId}" class="ri-save-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
@@ -164,6 +194,36 @@ function addNewPostToDOM(data) {
                                                             </div>
                                                         </div>
                                                     </a>
+                                                  
+                                                    <form method="get" asp-page="/EditPost" id="editPost-${data.post.postId}">
+                                                                                                <input type="hidden" name="PostId" value="${data.post.postId}" />
+                                                                                                    <a class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
+                                                                                                        <div class="d-flex">
+                                                                                                            <div class="h4">
+                                                                                                                <i class="ri-pencil-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
+                                                                                                            </div>
+                                                                                                            <div class="data ms-2">
+                                                                                                                <h6 class="${body.classList.contains("bg-dark") ? 'text-white' : ''}">Update Post</h6>
+                                                                                                                <p class="mb-0">Update your post</p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </a>
+                                                                                                </form>
+                                                    
+                                                <a id="delete-post-${data.post.postId}" class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
+                                                    <div class="d-flex">
+                                                        <div class="h4">
+                                                            <i class="ri-delete-bin-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
+                                                        </div>
+                                                        <div class="data ms-2">
+                                                            <h6 class="${body.classList.contains("bg-dark") ? 'text-white' : ''}">Delete Post</h6>
+                                                            <p class="mb-0">This post will be permanently deleted</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                                                               
+
+                                                                                                
                                                 </div>
                                             </div>
                                         </div>
@@ -172,7 +232,7 @@ function addNewPostToDOM(data) {
                             </div>
                         </div>
                         <div class="mt-3">
-                                <p>${data.post.caption}</p>
+                                <p>${data.post.caption ?? ""}</p>
                         </div>
                         <div class="user-post">
                             <div class="newt newpost">`;
@@ -247,4 +307,105 @@ function addNewPostToDOM(data) {
 
     postList.insertAdjacentHTML('afterbegin', newPostHtml);
     document.querySelector(".modal button.btn-secondary").click();
+
+    document.getElementById(`delete-post-${data.post.postId}`).addEventListener('click', function (event) {
+        console.log(event);
+        /*       console.log(event.closest(".col-sm-12"));*/
+        deletePost(data.post.postId, event);
+    });
+
+    document.getElementById(`editPost-${data.post.postId}`).addEventListener('click', function (event) {
+        window.location.href = "/EditPost?PostId=" + data.post.postId ;
+    });
+}
+function deletePost(postId, event) {
+    const postElement = event.target.closest(".col-sm-12");
+    event.preventDefault();
+    if (postElement) {
+        postElement.remove();
+    }
+
+    var formData = new FormData();
+    formData.append("postId", postId);
+    fetch('/Index?handler=DeletePost', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete post');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                console.log('Post deleted successfully');
+            } else {
+                console.error('Failed to delete post:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const optionPosts = document.querySelectorAll('.option-post');
+
+    optionPosts.forEach(optionPost => {
+        const iconElement = optionPost.querySelector('i[data-post-id]');
+        if (iconElement) {
+            const postId = iconElement.getAttribute('data-post-id');
+            optionPost.addEventListener('click', (event) => {
+                deletePost(postId, event);
+            });
+        }
+    });
+});
+
+const form_update = document.getElementById('postForm-update');
+
+form_update.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(e.target);
+    // formData.append('imageNames', document.getElementById('existingPhoto').value);
+
+    try {
+        // Send form data to the server using fetch
+        const response = await fetch('/EditPost', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json();
+
+        console.log('Post successful:', responseData);
+
+        // Clear the form fields
+        document.getElementById('caption').value = '';
+
+        // Add new post to the top of the post list
+
+        $(".newpost").slick({
+            infinite: false
+        });
+
+    } catch (error) {
+        console.error('Error posting data:', error);
+    }
+});
+
+function deletePhoto(index) {
+
+    var existingPhotoInput = document.getElementById('existingPhoto');
+    var existingPhotoUrls = existingPhotoInput.value.split('||');
+    if (index !== -1) {
+        existingPhotoUrls.splice(index, 1); // Xóa URL khỏi mảng
+        existingPhotoInput.value = existingPhotoUrls.join('||'); // Cập nhật giá trị biến hidden
+    }
 }

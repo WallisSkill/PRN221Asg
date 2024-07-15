@@ -227,7 +227,7 @@
                                 </form>
                             </div>
                             <hr>
-                            <ul class=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
+                            @* <ul class=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
                                 <li class="me-3 mb-md-0 mb-2">
                                     <a href="#" class="btn btn-soft-primary">
                                         <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid me-2"> Photo/Video
@@ -261,7 +261,7 @@
                                         </div>
                                     </button>
                                 </li>
-                            </ul>
+                            </ul> *@
                         </div>
                         <div class="modal fade" id="post-modal" tabindex="-1" aria-labelledby="post-modalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-fullscreen-sm-down">
@@ -345,6 +345,37 @@
                                                                                     <h6>Remove Saved Post</h6>
                                                                                     <p class="mb-0">Remove this from your saved items</p>
                                                                                 </div>
+                                                                            }
+                                                                            @if (post.User.UserId.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                                                                            {
+                                                                                <form id="deletePostForm" method="post" asp-page-handler="DeletePost">
+                                                                                    <a class="dropdown-item p-3 option-post clickable" onclick="document.getElementById('deletePostForm').submit()">
+                                                                                        <div class="d-flex">
+                                                                                            <div class="h4">
+                                                                                                <i class="ri-delete-bin-line"></i>
+                                                                                            </div>
+                                                                                            <div class="data ms-2">
+                                                                                                <h6>Delete Post</h6>
+                                                                                                <p class="mb-0">This post will be permanently deleted</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <input name="postId" type="hidden" value="@post.Id">
+                                                                                    </a>
+                                                                                </form>
+
+                                                                                <form data-bs-toggle="modal" data-bs-target="#post-modal-update-@post.Id" action="javascript:void(0);">
+                                                                                    <a class="dropdown-item p-3 option-post clickable">
+                                                                                        <div class="d-flex">
+                                                                                            <div class="h4">
+                                                                                                <i class="ri-delete-bin-line"></i>
+                                                                                            </div>
+                                                                                            <div class="data ms-2">
+                                                                                                <h6>Update Post</h6>
+                                                                                                <p class="mb-0">Update your post</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </a>
+                                                                                </form>
                                                                             }
                                                                         </div>
                                                                     </a>

@@ -294,4 +294,9 @@ public partial class PostRepository : IPostRepository
         _context.Set<CommentLike>().Remove(cmtLike);
         _context.SaveChanges();
     }
+
+    public Post GetPostById(int postId)
+    {
+        return _context.Posts.FirstOrDefault(x => x.PostId == postId);
+    }
 }

@@ -8,5 +8,7 @@ namespace PRN221_Assignment.Repository.Interface
         void AddPhoto(Photo photo);
 
         void DeletePhoto(int postId);
+
+        List<Photo> GetPhotoById(int postId);
     }
 }

@@ -89,8 +89,9 @@
                                             </div>
                                         </div>
                                         <input type="hidden"  asp-for="user.UserId">
+                                        <input type="hidden"  asp-for="user.Username">
                                         <button type="submit" class="btn btn-primary me-2">Submit</button>
-                                        <button type="reset" class="btn bg-soft-danger">Cancle</button>
+                                        <button onclick="redirectToProfile();" class="btn bg-soft-danger">Cancel</button>
                                     </form>
                                 </div>
                             </div>

@@ -214,26 +214,26 @@
                                                         }
                                                     </li>
                                                     <li class="text-center option-follow" data-user-id="@user.UserId">
-                                                    @if (isFollow)
-                                                    {     
+                                                        @if (isFollow)
+                                                        {
                                                             <div class="dropdown">
                                                                 <span class="btn btn-primary me-2 dropdown-toggle" role="button" id="followedButton" data-bs-toggle="dropdown" aria-expanded="true">
                                                                     <i class="ri-user-follow-line me-1 text-white"></i>Followed
                                                                 </span>
                                                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="followedButton">
-                                                                    <a  class="dropdown-item" id="unfollowAction">Unfollow</a>
+                                                                    <a class="dropdown-item" id="unfollowAction">Unfollow</a>
                                                                 </div>
-                                                            </div>       
-                                                    }
-                                                    else
-                                                    {
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
                                                             <div>
-                                                                <div  class="btn btn-primary me-2" role="button" id="followButton">
+                                                                <div class="btn btn-primary me-2" role="button" id="followButton">
                                                                     <i class="ri-add-line me-1 text-white"></i>Follow
                                                                 </div>
                                                             </div>
 
-                                                    }
+                                                        }
                                                     </li>
 
                                                     <li class="text-center">
@@ -359,7 +359,7 @@
                                                             </form>
                                                         </div>
                                                         <hr>
-                                                        <ul class=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
+                                                        @* <ul class=" post-opt-block d-flex list-inline m-0 p-0 flex-wrap">
                                                             <li class="me-3 mb-md-0 mb-2">
                                                                 <a href="#" class="btn btn-soft-primary">
                                                                     <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid me-2"> Photo/Video
@@ -393,7 +393,7 @@
                                                                     </div>
                                                                 </button>
                                                             </li>
-                                                        </ul>
+                                                        </ul> *@
                                                     </div>
                                                     <div class="modal fade" id="post-modal" tabindex="-1" aria-labelledby="post-modalLabel" aria-hidden="true">
                                                         <div class="modal-dialog modal-fullscreen-sm-down">
@@ -430,55 +430,14 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div id="postList">
+
                                                 @if (listPost.Count > 0)
                                                 {
                                                     foreach (var post in listPost)
                                                     {
-                                                        var photoUrlsJson = "[" + string.Join(",", post.PhotoURL.Select(url => "\"" + url + "\"")) + "]";
-                                                        <div id="post-modal-data" class="card card-block card-stretch card-height">
-
-                                                            <div class="modal fade" id="post-modal-update-@post.Id" tabindex="-1" aria-labelledby="post-modalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-fullscreen-sm-down">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="post-modalLabel">Update Post</h5>
-                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ri-close-fill"></i></button>
-                                                                        </div>
-                                                                        <form class="modal-body modal-body-scrollable" method="post" enctype="multipart/form-data" id="postForm-@post.Id">
-                                                                            <div class="d-flex align-items-center">
-                                                                                <div class="user-img">
-                                                                                    <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
-                                                                                </div>
-                                                                                <div id="caption" class="post-text ms-3 w-100">
-                                                                                    <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;" asp-for="@post.Caption">
-                                                                                    <input type="hidden" asp-for="@post.Id" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div id="imagePreview-@post.Id" class="newt" data-post-id="@post.Id"></div>
-                                                                            
-                                                                            <hr>
-                                                                            <ul class="d-flex flex-wrap align-items-center list-inline m-0 p-0">
-                                                                                <li class="col-md-6 mb-3">
-                                                                                    <div class="bg-soft-primary rounded p-2 pointer me-3" onclick="document.getElementById('fileInput-@post.Id').click()">
-                                                                                        <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo
-                                                                                    </div>
-                                                                                    <input type="file" id="fileInput-@post.Id" style="display: none;" asp-for="@post.PhotoURL" name="listfile" accept="image/*" multiple>
-                                                                                </li>
-                                                                            </ul>
-                                                                            <hr>
-                                                                            <button class="btn btn-primary d-block w-100 mt-3 js-add-slide" onclick="updatePost('@post.Id')">Update</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-
-
-
-
-                                                        </div>
-                                                        <div class="col-sm-12">
+                                                        <div class="col-sm-12" id="post-@post.Id">
                                                             <div class="card card-block card-stretch card-height">
                                                                 <div class="card-body" id="card-body-@post.Id" style="padding-bottom: 0">
                                                                     <div class="user-post-data">
@@ -524,26 +483,13 @@
                                                                                                         }
                                                                                                     </div>
                                                                                                 </a>
-                                                                                                <form id="deletePostForm" action="javascript:void(0);">
-                                                                                                    <a class="dropdown-item p-3 option-post clickable" onclick="deletePost('@post.Id')">
-                                                                                                        <div class="d-flex">
-                                                                                                            <div class="h4">
-                                                                                                                <i class="ri-delete-bin-line"></i>
-                                                                                                            </div>
-                                                                                                            <div class="data ms-2">
-                                                                                                                <h6>Delete Post</h6>
-                                                                                                                <p class="mb-0">This post will be permanently deleted</p>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                        <input name="postId" type="hidden" value="@post.Id">
-                                                                                                    </a>
-                                                                                                </form>
 
-                                                                                                <form data-bs-toggle="modal" data-bs-target="#post-modal-update-@post.Id" data-image-urls='@photoUrlsJson' action="javascript:void(0);">
-                                                                                                    <a class="dropdown-item p-3 option-post clickable" onclick="showImagesInModal('@post.Id', JSON.parse(this.parentNode.getAttribute('data-image-urls')))">
+                                                                                                <form method="get" asp-page="/EditPost" id="editPost-@post.Id">
+                                                                                                    <input type="hidden" name="PostId" value="@post.Id" />
+                                                                                                    <a class="dropdown-item p-3 option-post clickable" onclick="document.getElementById('editPost-@post.Id').submit();">
                                                                                                         <div class="d-flex">
                                                                                                             <div class="h4">
-                                                                                                                <i class="ri-delete-bin-line"></i>
+                                                                                                                <i class="ri-pencil-line"></i>
                                                                                                             </div>
                                                                                                             <div class="data ms-2">
                                                                                                                 <h6>Update Post</h6>
@@ -553,6 +499,18 @@
                                                                                                     </a>
                                                                                                 </form>
 
+                                                                                                <a class="dropdown-item p-3 option-post clickable">
+                                                                                                    <div class="d-flex">
+                                                                                                        <div class="h4">
+                                                                                                            <i data-post-id="@post.Id" class="ri-delete-bin-line"></i>
+                                                                                                        </div>
+                                                                                                        <div class="data ms-2">
+                                                                                                            <h6>Delete Post</h6>
+                                                                                                            <p class="mb-0">This post will be permanently deleted</p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </a>
+                                                                                                
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -1304,233 +1262,6 @@
         }
     }
     //Friend request
-
-
-    function deletePost(postId) {
-        fetch('/Profile?handler=DeletePost&postId=' + postId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Xóa bài post khỏi giao diện
-                    document.getElementById(`card-body-${postId}`).style.display = 'none';
-                    // Hoặc có thể ẩn modal nếu đang mở
-                    $('#post-modal-update-' + postId).modal('hide');
-                } else {
-                    console.error('Failed to delete post:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting post:', error);
-            });
-    }
-
-
-
-
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function (element) {
-    //         element.addEventListener('click', function () {
-    //             const imageUrls = JSON.parse(this.getAttribute('data-image-urls'));
-    //             const modalId = this.getAttribute('data-bs-target');
-    //             const modal = document.querySelector(modalId);
-    //             const imgContainer = modal.querySelector(`#imagePreview-${modalId.split('-').pop()}`);
-    //             // imgContainer.innerHTML = ''; // Clear existing images
-
-    //             // imageUrls.forEach((url, index) => {
-    //             //     const imgDiv = document.createElement('div');
-    //             //     imgDiv.classList.add('post-image');
-    //             //     imgDiv.innerHTML = `
-    //             //         <img src="${url}" alt="post-image" class="img-fluid rounded w-100">
-    //             //         <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${modalId}', ${index})">Remove</button>
-    //             //     `;
-    //             //     imgContainer.appendChild(imgDiv);
-    //             // });
-
-    //             // const fileInput = modal.querySelector(`#fileInput-${modalId.split('-').pop()}`);
-    //             // fileInput.addEventListener('change', function () {
-    //             //     handleFileSelect(this, imgContainer);
-    //             // });
-    //             const filePaths = [];
-
-    //             // Lấy các ảnh đã có trong container và thêm vào filePaths
-    //             const existingImages = imageContainer.querySelectorAll('.image-item img');
-    //             existingImages.forEach(img => {
-    //                 filePaths.push(img.src);
-    //                 //existingImages.style.display = 'none';
-    //                 createImageItem(img.src); // Tạo item ảnh với nút xóa
-    //             });
-
-    //             document.getElementById('fileInput').addEventListener('change', function (event) {
-    //                 const files = event.target.files;
-
-    //                 Array.from(files).forEach(file => {
-    //                     const reader = new FileReader();
-    //                     reader.onload = function (e) {
-    //                         const imgSrc = e.target.result;
-    //                         filePaths.push(imgSrc);
-    //                         createImageItem(imgSrc); // Tạo item ảnh với nút xóa
-    //                         // updateFilePaths();
-    //                     };
-    //                     reader.readAsDataURL(file);
-    //                 });
-    //             });
-    //         });
-    //     });
-    // });
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     const imageContainer = document.getElementById('imageContainer');
-    //     //const filePathsTextArea = document.getElementById('filePathsTextArea');
-
-    //     // Lưu trữ danh sách đường dẫn ảnh
-    //     const filePaths = [];
-
-    //     // Lấy các ảnh đã có trong container và thêm vào filePaths
-    //     const existingImages = imageContainer.querySelectorAll('.image-item img');
-    //     existingImages.forEach(img => {
-    //         filePaths.push(img.src);
-    //         existingImages.style.display = 'none';
-    //         createImageItem(img.src); // Tạo item ảnh với nút xóa
-    //     });
-
-    //     document.getElementById('imageInput').addEventListener('change', function (event) {
-    //         const files = event.target.files;
-
-    //         Array.from(files).forEach(file => {
-    //             const reader = new FileReader();
-    //             reader.onload = function (e) {
-    //                 const imgSrc = e.target.result;
-    //                 filePaths.push(imgSrc);
-    //                 createImageItem(imgSrc); // Tạo item ảnh với nút xóa
-    //                 updateFilePaths();
-    //             };
-    //             reader.readAsDataURL(file);
-    //         });
-    //     });
-    // function createImageItem(imgSrc) {
-    //     const imgElement = document.createElement('div');
-    //     imgElement.classList.add('image-item');
-    //     const img = document.createElement('img');
-    //     img.src = imgSrc;
-    //     img.style.maxWidth = '150px';
-    //     imgElement.appendChild(img);
-
-    //     // Thêm nút xóa ảnh
-    //     const deleteBtn = document.createElement('button');
-    //     deleteBtn.classList.add('delete-btn');
-    //     deleteBtn.textContent = 'Xóa';
-    //     deleteBtn.addEventListener('click', function () {
-    //         // Xóa ảnh và cập nhật danh sách đường dẫn ảnh
-    //         imgElement.remove();
-    //         const index = filePaths.indexOf(imgSrc);
-    //         if (index !== -1) {
-    //             filePaths.splice(index, 1);
-    //             updateFilePaths();
-    //         }
-    //     });
-    //     imgElement.appendChild(deleteBtn);
-
-    //     imageContainer.appendChild(imgElement);
-    // }
-
-
-    function showImagesInModal(postId, photoUrls) {
-        const imagePreviewDiv = document.getElementById(`imagePreview-${postId}`);
-        imagePreviewDiv.innerHTML = '';
-        photoUrls.forEach(url => {
-            const imgElement = document.createElement('img');
-            imgElement.src = url;
-            imgElement.className = 'img-fluid rounded w-100 mb-2';
-            imagePreviewDiv.appendChild(imgElement);
-        });
-    }
-
-
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     const imageContainer = document.getElementById('imagePreview-' + imageContainer.dataset.postId);
-    //     //const filePathsTextArea = document.getElementById('filePathsTextArea');
-    //     //const postId = 123; // Thay postId bằng giá trị thực tế của postId
-
-    //     // Lưu trữ danh sách đường dẫn ảnh
-    //     const filePaths = [];
-
-    //     // Lấy các ảnh đã có trong container và thêm vào filePaths
-    //     const existingImages = imageContainer.querySelectorAll('img');
-    //     existingImages.forEach(img => {
-    //         filePaths.push(img.src);
-    //         img.style.display = 'none'; // Ẩn ảnh đã có trong container
-    //         createImageItem(img.src, postId); // Tạo item ảnh với nút xóa và truyền postId
-    //     });
-
-    //     document.getElementById('fileInput-' + imageContainer.dataset.postId).addEventListener('change', function (event) {
-    //         const files = event.target.files;
-
-    //         Array.from(files).forEach(file => {
-    //             const reader = new FileReader();
-    //             reader.onload = function (e) {
-    //                 const imgSrc = e.target.result;
-    //                 filePaths.push(imgSrc);
-    //                 createImageItem(imgSrc, postId); // Tạo item ảnh với nút xóa và truyền postId
-    //                 //updateFilePaths();
-    //             };
-    //             reader.readAsDataURL(file);
-    //         });
-    //     });
-
-    //     function createImageItem(imgSrc, postId) {
-    //         const imgElement = document.createElement('div');
-    //         imgElement.classList.add('image-item');
-    //         const img = document.createElement('img');
-    //         img.src = imgSrc;
-    //         img.style.maxWidth = '150px';
-    //         imgElement.appendChild(img);
-
-    //         // Thêm nút xóa ảnh
-    //         const deleteBtn = document.createElement('button');
-    //         deleteBtn.classList.add('delete-btn');
-    //         deleteBtn.textContent = 'Xóa';
-    //         deleteBtn.addEventListener('click', function () {
-    //             // Xóa ảnh và cập nhật danh sách đường dẫn ảnh
-    //             imgElement.remove();
-    //             const index = filePaths.indexOf(imgSrc);
-    //             if (index !== -1) {
-    //                 filePaths.splice(index, 1);
-    //                 updateFilePaths();
-    //             }
-    //         });
-    //         imgElement.appendChild(deleteBtn);
-
-    //         // Ví dụ: Thêm postId vào data attribute của imgElement
-    //         imgElement.setAttribute('data-post-id', postId);
-
-    //         imageContainer.appendChild(imgElement);
-    //     }
-
-    function updatePost(postId) {
-        const form = document.querySelector(`#postForm-${postId}`);
-        const formData = new FormData(form);
-
-        fetch('/Profile?handler=UpdatePost', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Handle success (e.g., close modal, update UI)
-                } else {
-                    // Handle error
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-
 </script>
 <script src="js/Profile/FollowHandler.js"></script>
 </html>

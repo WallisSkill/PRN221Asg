@@ -23,6 +23,7 @@ public interface IPostRepository
     void RemovePost(int postId, int currentUserid);
     void DeletePost(int postId);
     void UpdatePost(Post post);
+    Post GetPostById(int postId);
     CommentLike GetCmtLike(int cmtId, int currentUser);
     void UpdateCmtLike(int cmtId, int currentUser, int emotionId);
     void InsertCmtLike(int cmtId, int currentUser, int emotionId);

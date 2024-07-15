@@ -1,0 +1,86 @@
+﻿@page
+@using System.Globalization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PRN221_Assignment.Data
+@using PRN221_Assignment.Models
+@{
+    ViewData["Title"] = "Edit Post";
+    var post = (Post)ViewBag.post;
+    var photo = (List<Photo>)ViewBag.photo;
+}
+@model EditPostModel
+<div id="content-page" class="content-page">
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-lg-12">
+                <div class="iq-edit-list-data">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <div class="header-title">
+                                        <h4 class="card-title">Update post</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form class="" method="post" enctype="multipart/form-data" id="postForm-update">
+                                        <!-- Hidden inputs for storing data -->
+                                        
+                                        
+                                        <div class="d-flex align-items-center">
+                                            <div class="user-img">
+                                                <img src="@User.FindFirstValue("profile_picture")" alt="userimg" class="avatar-60 rounded-circle img-fluid">
+                                            </div>
+                                            <div id="caption" class="post-text ms-3 w-100">
+                                                <input type="text" class="form-control rounded" placeholder="Write something here..." style="border:none;" value="@post.Caption" asp-for="post.Caption">
+                                                <input type="hidden" asp-for="post.PostId" value="@post.PostId">
+
+                                            </div>
+                                        </div>
+                                        <div id="imagePreview" class="newt">
+                                            @if (photo != null)
+                                            {
+                                                foreach (var p in photo)
+                                                {
+                                                    <div class="post-image">
+                                                        
+                                                        <img src="@p.PhotoUrl" class="img-fluid rounded w-100">
+                                                        <button type="button" class="delete-btn btn btn-danger btn-sm close-img"><i class="fa fa-close"></i></button>
+                                                        
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                        <hr>
+                                        <ul class="d-flex flex-wrap align-items-center list-inline m-0 p-0">
+                                            <li class="col-md-6 mb-3">
+                                                <div class="bg-soft-primary rounded p-2 pointer me-3" onclick="document.getElementById('fileInput').click()">
+                                                    <img src="~/assets/images/small/07.png" alt="icon" class="img-fluid"> Photo
+                                                </div>
+                                                <input type="file" id="fileInput" style="display: none;" name="listFile" accept="image/*" multiple>
+                                            </li>
+                                        </ul>
+                                        <hr>
+                                        <button class="btn btn-primary d-block w-100 mt-3 js-add-slide" id="postButton">Update post</button>
+                                        @* <input type="hidden" name="existingPhotoURLs" id="existingPhotoURLs"> *@
+                                        <input type="hidden" name="imageNames" id="existingPhoto" value="@string.Join("||", photo.Select(p => p.PhotoUrl))">
+                                       @* // <input type="file" id="uploadedFilesInput" name="uploadedFiles" multiple style="display:none;"> *@
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

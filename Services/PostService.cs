@@ -220,4 +220,9 @@ public partial class PostService : IPostService
     {
         _postRepository.UpdatePost(post);
     }
+
+    public Post GetPostById(int postId)
+    {
+       return _postRepository.GetPostById(postId);
+    }
 }

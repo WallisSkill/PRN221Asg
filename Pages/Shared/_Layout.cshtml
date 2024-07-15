@@ -793,7 +793,7 @@
     }
 
     function redirectToProfile(userId) {
-        window.location.href = '/Profile?Id=' + userId;
+        window.location.href = userId ? '/Profile?Id=' + userId : '/Profile';
     }
 
 
