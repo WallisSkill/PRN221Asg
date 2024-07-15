@@ -29,9 +29,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const optionPost = event.target.closest('.option-post');
         if (optionPost) {
             const iconElement = optionPost.querySelector('i[data-post-id]');
-            if (iconElement) {
+            if (iconElement.classList.contains("ri-save-line") || iconElement.classList.contains("ri-close-line")) {
                 const postId = iconElement.getAttribute('data-post-id');
                 handlePostClick(postId, iconElement);
+            }
+            if (iconElement.classList.contains("ri-delete-bin-line")) {
+                const postId = iconElement.getAttribute('data-post-id');
+                deletePost(postId, event);
             }
         }
     });
@@ -196,7 +200,9 @@ form.addEventListener('submit', async (e) => {
 
         // Add new post to the top of the post list
         addNewPostToDOM(responseData);
-
+        $(".newpost").slick({
+            infinite: false
+        });
         // Ensure the fileInput is cleared
         let fileInput = document.getElementById('fileInput');
         dataTransfer = new DataTransfer();
@@ -207,9 +213,7 @@ form.addEventListener('submit', async (e) => {
         console.log(fileInput.files);
 
         // Reinitialize the slick slider
-        $(".newpost").slick({
-            infinite: false
-        });
+        
 
     } catch (error) {
         console.error('Error posting data:', error);
@@ -229,13 +233,13 @@ function addNewPostToDOM(data) {
                                 <div class="w-100">
                                     <div class="d-flex justify-content-between">
                                         <div class="">
-                                                <h5 class="mb-0 d-inline-block text-white">${CURRENT_USER_NAME}</h5>
+                                                <h5 class="mb-0 d-inline-block ${body.classList.contains("bg-dark") ? 'text-white' : ''}">${CURRENT_USER_NAME}</h5>
                                                 <span class="mb-0 d-inline-block ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Add New Post</span>
                                             <p class="mb-0 text-primary">just now</p>
                                         </div>
-                                        <div class="card-post-toolbar bg-dark text-white">
+                                        <div class="card-post-toolbar ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
                                             <div class="dropdown">
-                                                <span class="dropdown-toggle text-white" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                <span class="dropdown-toggle ${body.classList.contains("bg-dark") ? 'text-white' : ''}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                     <i class="ri-more-fill"></i>
                                                 </span>
                                                 <div class="dropdown-menu m-0 p-0">
@@ -266,10 +270,10 @@ function addNewPostToDOM(data) {
                                                                                                     </a>
                                                                                                 </form>
                                                     
-                                                <a id="delete-post-${data.post.postId}" class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
+                                                <a class="dropdown-item p-3 option-post clickable ${body.classList.contains("bg-dark") ? 'text-white bg-dark' : ''}">
                                                     <div class="d-flex">
                                                         <div class="h4">
-                                                            <i class="ri-delete-bin-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
+                                                            <i data-post-id="${data.post.postId}" class="ri-delete-bin-line ${body.classList.contains("bg-dark") ? 'text-white' : ''}"></i>
                                                         </div>
                                                         <div class="data ms-2">
                                                             <h6 class="${body.classList.contains("bg-dark") ? 'text-white' : ''}">Delete Post</h6>
@@ -364,11 +368,6 @@ function addNewPostToDOM(data) {
     postList.insertAdjacentHTML('afterbegin', newPostHtml);
     document.querySelector(".modal button.btn-secondary").click();
 
-    document.getElementById(`delete-post-${data.post.postId}`).addEventListener('click', function (event) {
-        console.log(event);
-        /*       console.log(event.closest(".col-sm-12"));*/
-        deletePost(data.post.postId, event);
-    });
 
     document.getElementById(`editPost-${data.post.postId}`).addEventListener('click', function (event) {
         window.location.href = "/EditPost?PostId=" + data.post.postId ;
@@ -396,6 +395,7 @@ function deletePost(postId, event) {
         .then(data => {
             if (data.success) {
                 console.log('Post deleted successfully');
+                showToast("Delete post successfully");
             } else {
                 console.error('Failed to delete post:', data.error);
             }
@@ -404,20 +404,6 @@ function deletePost(postId, event) {
             console.error('Error:', error);
         });
 }
-
-document.addEventListener('DOMContentLoaded', (event) => {
-    const optionPosts = document.querySelectorAll('.option-post');
-
-    optionPosts.forEach(optionPost => {
-        const iconElement = optionPost.querySelector('i[data-post-id]');
-        if (iconElement) {
-            const postId = iconElement.getAttribute('data-post-id');
-            optionPost.addEventListener('click', (event) => {
-                deletePost(postId, event);
-            });
-        }
-    });
-});
 
 const form_update = document.getElementById('postForm-update');
 

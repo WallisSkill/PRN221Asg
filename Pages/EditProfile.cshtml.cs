@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace PRN221_Assignment.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     [RequiredArgsConstructor]
     public partial class EditProfileModel : PageModel
     {
@@ -56,6 +56,7 @@ namespace PRN221_Assignment.Pages
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, "User"),
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("profile_picture", user.ProfilePhotoUrl ?? "./assets/images/user/null.png")
             };

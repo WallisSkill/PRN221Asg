@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace PRN221_Assignment.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     [RequiredArgsConstructor]
     public partial class SearchModel : PageModel
     {

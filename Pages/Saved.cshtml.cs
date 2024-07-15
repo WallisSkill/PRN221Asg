@@ -7,7 +7,7 @@ using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     [RequiredArgsConstructor]
     public partial class SavedModel : PageModel
     {

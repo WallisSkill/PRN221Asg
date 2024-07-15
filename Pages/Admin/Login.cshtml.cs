@@ -2,19 +2,19 @@ using Lombok.NET;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PRN221_Assignment.Models;
+using PRN221_Assignment.ExtenModel;
 using PRN221_Assignment.Services.Interface;
 using System.Security.Claims;
 
 namespace PRN221_Assignment.Pages
 {
     [RequiredArgsConstructor]
-    public partial class LoginModel : PageModel
+    public partial class LoginAdminModel : PageModel
     {
         [BindProperty]
-        public User user { get; set; } = default!;
+        public ExtenModel.Admin? User { get; set; } = default!;
         private readonly ILoginService _loginService;
-        private readonly ILogger<LoginModel> _logger;
+        private readonly ILogger<LoginAdminModel> _logger;
         public string error;
 
         public void OnGet()
@@ -23,20 +23,16 @@ namespace PRN221_Assignment.Pages
         }
         public IActionResult OnPost()
         {
-            var userLogin = _loginService.ExistUser(user.Username, user.Password);
+            var userLogin = _loginService.ExistUserAdmin(User.Username, User.Key);
 
             if (userLogin != null)
             {
                 List<Claim> listClaim = new List<Claim>()
             {
-                new Claim(ClaimTypes.GivenName, userLogin.Fullname),
                 new Claim(ClaimTypes.Name, userLogin.Username),
-                new Claim(ClaimTypes.NameIdentifier, userLogin.UserId.ToString()),
-                new Claim(ClaimTypes.Email, userLogin.Email),
-                new Claim("UserId", userLogin.UserId.ToString()),
-                new Claim(ClaimTypes.Role, "User"),
-                new Claim("profile_picture", userLogin.ProfilePhotoUrl ?? "./assets/images/user/null.png")
-            };
+                new Claim(ClaimTypes.NameIdentifier, userLogin.Id),
+                new Claim(ClaimTypes.Role, "Admin"),
+                 };
                 ClaimsIdentity ci = new ClaimsIdentity(listClaim, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
                 ClaimsPrincipal cp = new ClaimsPrincipal(ci);
                 HttpContext.SignInAsync(cp);
