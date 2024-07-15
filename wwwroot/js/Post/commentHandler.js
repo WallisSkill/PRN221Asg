@@ -163,6 +163,73 @@ function getColorOfEmotion(emotionURL) {
             return "#eaa823";
     }
 }
+function HandleLikeCmt(cmtId, emotionId, event) {
+    $.ajax({
+        type: "post",
+        url: `/Index?handler=HandleLikeCmt`,
+        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+        data: {
+            cmtId: cmtId,
+            emotionId: emotionId
+        },
+        dataType: "json",
+        success: function (data) {
+            UpdateLikeCmt(data, cmtId);
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    });
+    event.stopPropagation();
+}
+function UpdateLikeCmt(data, cmtId) {
+    var likeCmt = document.getElementById("like-cmt-" + cmtId);
+    var likeDisplayElement = `<span style="color: #777d74 !important">Like</span>`;
+    var userLike = _.find(data.$values, function (obj) {
+        if (obj.User.UserId == CURRENT_USER_ID) {
+            return true;
+        }
+    });
+
+    if (typeof (userLike) != `undefined`) {
+        likeDisplayElement = `<span style="color: ${getColorOfEmotion(userLike.EmotionURL)} !important"> ${userLike.EmotionURL.split('/').pop().replace(".png", "")}</span>`;
+    }
+    likeCmt.innerHTML = likeDisplayElement;
+
+    var likeOfCmt = document.getElementById("emotion-cmt-" + cmtId);
+    var likeCmtData = ``;
+    if (data?.$values.length) {
+        var dataGrouped = _.groupBy(data.$values, likeData => likeData.EmotionURL);
+        var dataOrder = _.orderBy(dataGrouped, 'length', ['desc']);
+        var dataTake3 = _.take(dataOrder, 3);
+        likeCmtData += `<div class='like-block position-relative d-flex align-items-center' style='background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 10px'>
+                        <div class='d-flex align-items-center' style='padding-left: 10px'>`;
+        _.forEach(dataTake3, function (value) {
+            var dataValue = _.first(value);
+            likeCmtData += `<div class='total-like-block'>
+                            <div class='dropdown'>
+                            <span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'>`;
+            likeCmtData += `<img src = '${dataValue.EmotionURL}' class='nofirst-icon' style='border: 2px solid white;'/> </span>`;
+            likeCmtData += `<div class='dropdown-menu' style='background-color: rgba(60, 60, 60, 0.7)'>`;
+            _.forEach(value, function (like) {
+                likeCmtData += `<div onclick='redirectToProfile(${like.User.UserId})' class='clickable' style='color: white; padding-left: 10px;'>${like.User.Fullname}</div>`;
+            });
+            likeCmtData += `</div ></div ></div > `;
+        });
+        likeCmtData += `<div class='total-like-block ms-2 me-3'>
+                        <div class='dropdown'>
+                        <span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button' style='color: black !important'>
+                        ${data.$values.length}
+                        </span>
+                        <div class='dropdown-menu'>`;
+        _.forEach(data.$values, function (like) {
+            likeCmtData += `<div class="dropdown-item">${like.User.Fullname}</div>`
+        });
+        likeCmtData += `</div ></div ></div ></div ></div >`;
+    }
+    likeOfCmt.innerHTML = likeCmtData;
+
+}
 function UpdateLikeData(data, postId) {
     var likeOfPost = document.getElementById("like-post-" + postId);
     var likePostData = ``;
@@ -210,7 +277,7 @@ function UpdateLikeData(data, postId) {
             Like
         </span>`
     } else {
-        likeDisplayElement += ` <span class="dropdown-toggle ${body.classList.contains('bg-dark') ? 'text-white' : ''}" style="color: ${getColorOfEmotion(userLike.EmotionURL)}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+        likeDisplayElement += ` <span class="dropdown-toggle ${body.classList.contains('bg-dark') ? 'text-white' : ''}" style="color: ${getColorOfEmotion(userLike.EmotionURL)} !important" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
                                                             <img src="${userLike.EmotionURL}" style="margin-top: -5px"></img>
                                                             ${userLike.EmotionURL.split('/').pop().replace(".png", "")}
                                                         </span>`
@@ -271,3 +338,12 @@ window.onload = (event) => {
         }
     });
 };
+
+function DisplayIcon(cmtId) {
+    var icon = document.getElementById("icon-del-cmt-" + cmtId);
+    icon.hidden = false;
+}
+function HideIcon(cmtId) {
+    var icon = document.getElementById("icon-del-cmt-" + cmtId);
+    icon.hidden = true;
+}

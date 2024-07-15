@@ -573,7 +573,15 @@ button.toast-close-button {
     border: 2px solid gray;
 }
 
+.emotion-comment {
+    position: absolute;
+    display: inline-block;
+    right: -50px;
+    bottom: -5px;
+}
+
 .comment-content {
+    position: relative;
     background-color: #f0f0f0;
     border-radius: 10px;
     padding: 10px;
@@ -726,14 +734,19 @@ body.bg-dark .nofirst-icon {
             background-color: gray;
         }
 
-        .dropdown-content-searchbox a:hover h5 {
+            .dropdown-content-searchbox a:hover h5 {
                 color: white !important;
-         }
+            }
 
-        .dropdown-content-searchbox a:hover h6 {
+            .dropdown-content-searchbox a:hover h6 {
                 color: white !important;
-        }
+            }
 
     .dropdown-content-searchbox.show {
         display: block;
+    }
+    .delete-cmt{
+        display: flex;
+        margin-left: 20px;
+        align-items: center;
     }

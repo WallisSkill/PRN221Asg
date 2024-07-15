@@ -19,7 +19,7 @@ public partial class PostService : IPostService
     }
     public void CreatePost(Post post)
     {
-       _postRepository.CreatePost(post);
+        _postRepository.CreatePost(post);
     }
 
     private List<int> GetAllFriendAndFollowerId()
@@ -30,10 +30,10 @@ public partial class PostService : IPostService
         return listFollowerId.Distinct().ToList();
     }
 
-    public List<PostData> GetAllPostOfFriendAndFollower(int Id =0)
+    public List<PostData> GetAllPostOfFriendAndFollower(int Id = 0)
     {
         var listUsers = new List<int>();
-        if(Id > 0)
+        if (Id > 0)
         {
             listUsers.Add(Id);
         }
@@ -111,12 +111,46 @@ public partial class PostService : IPostService
         return likeDataOfPost;
     }
 
+    public List<LikeData> GetLikeDataOfCmt(int cmtId, int emotionId)
+    {
+        HandleLikeCmt(cmtId, emotionId);
+        var likeDataOfCmt = _postRepository.GetAllCommentsLike(new List<int> { cmtId });
+        return likeDataOfCmt;
+    }
+
+    private void HandleLikeCmt(int cmtId, int emotionId)
+    {
+        var cmtLike = _postRepository.GetCmtLike(cmtId, _currentUser);
+        if (cmtLike == null)
+        {
+            if (emotionId == 0)
+            {
+                _postRepository.InsertCmtLike(cmtId, _currentUser, 1);
+            }
+            else
+            {
+                _postRepository.InsertCmtLike(cmtId, _currentUser, emotionId);
+            }
+        }
+        else
+        {
+            if (emotionId == 0)
+            {
+                _postRepository.DeleteCmtLike(cmtId, _currentUser);
+            }
+            else
+            {
+                _postRepository.UpdateCmtLike(cmtId, _currentUser, emotionId);
+            }
+        }
+    }
+
     private void HandleLikePost(int postId, int emotionId, bool deleteStatus)
     {
         var postLike = _postRepository.GetPostLike(postId, _currentUser);
         if (postLike != null)
         {
-            if(deleteStatus)
+            if (deleteStatus)
             {
                 _postRepository.DeletePostLike(postId, _currentUser);
             }
@@ -169,7 +203,7 @@ public partial class PostService : IPostService
 
     public void SavePost(int postId)
     {
-        _postRepository.SavePost(postId,_currentUser);
+        _postRepository.SavePost(postId, _currentUser);
     }
 
     public void RemovePost(int postId)
@@ -184,6 +218,6 @@ public partial class PostService : IPostService
 
     public void UpdatePost(Post post)
     {
-       _postRepository.UpdatePost(post);
+        _postRepository.UpdatePost(post);
     }
 }

@@ -95,6 +95,16 @@ public partial class IndexModel : PageModel
         return new JsonResult(listPostLike, options);
     }
 
+    public IActionResult OnPostHandleLikeCmt(int cmtId, int emotionId)
+    {
+
+        var listCmtLike = _postService.GetLikeDataOfCmt(cmtId, emotionId);
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
+        return new JsonResult(listCmtLike, options);
+    }
 
     public async Task<IActionResult> OnPost(Post post, List<IFormFile> listfile)
     {

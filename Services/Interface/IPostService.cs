@@ -15,4 +15,5 @@ public interface IPostService
     void RemovePost(int postId);
     void DeletePost(int postId);
     void UpdatePost(Post post);
+    List<LikeData> GetLikeDataOfCmt(int cmtId, int emotionId);
 }
