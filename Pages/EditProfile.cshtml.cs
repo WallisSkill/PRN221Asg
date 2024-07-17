@@ -19,6 +19,9 @@ namespace PRN221_Assignment.Pages
 
         [BindProperty]
         public User? user { get; set; }
+
+        [BindProperty]
+        public string error { get; set; }
         public IActionResult OnGet()
         {
             user = _profileService.GetUserInfo(userResolverService.GetUser());
@@ -27,19 +30,21 @@ namespace PRN221_Assignment.Pages
 
         public async Task<IActionResult> OnPostAsync(User user, IFormFile profilePhoto)
         {
-            if (profilePhoto != null && profilePhoto.Length > 0)
-            {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePhoto.FileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+        
+                if (profilePhoto != null && profilePhoto.Length > 0)
                 {
-                    await profilePhoto.CopyToAsync(stream);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", profilePhoto.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await profilePhoto.CopyToAsync(stream);
+                    }
+
+                    user.ProfilePhotoUrl = "./uploads/" + profilePhoto.FileName;
                 }
 
-                user.ProfilePhotoUrl = "./uploads/" + profilePhoto.FileName;
-            }
-
-            _profileService.EditProfile(user);
-            await UpdateUserClaims(user);
+                _profileService.EditProfile(user);
+                await UpdateUserClaims(user);
+            
             return RedirectToPage("/Profile");
         }
 
@@ -60,6 +65,28 @@ namespace PRN221_Assignment.Pages
 
             await HttpContext.SignInAsync(principal);
         }
+
+        public IActionResult OnPostUpdatePass(string cpass, string npass, string vpass)
+        {
+            var userid = userResolverService.GetUser();
+            var user = _profileService.GetUserInfo(userResolverService.GetUser());
+            if(user.Password != cpass)
+            {
+                error = "Current password is wrong";
+                return Page();
+            }
+            if(npass != vpass)
+            {
+				error = "Verify password is not matched";
+				return Page();
+			}
+
+			user.Password = npass;
+			
+			_profileService.resetPassword(user);
+			user = _profileService.GetUserInfo(userResolverService.GetUser());
+			return RedirectToPage("/Profile");
+		}
     }
 
 }

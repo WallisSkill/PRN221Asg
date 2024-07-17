@@ -104,19 +104,20 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    <form method="post" asp-page-handler="UpdatePass">
+                                        @Model.error
                                         <div class="form-group">
                                             <label for="cpass" class="form-label">Current Password:</label>
                                             <a href="#" class="float-end">Forgot Password</a>
-                                            <input type="Password" class="form-control" id="cpass" value="">
+                                            <input type="Password" class="form-control" name="cpass" value="">
                                         </div>
                                         <div class="form-group">
                                             <label for="npass" class="form-label">New Password:</label>
-                                            <input type="Password" class="form-control" id="npass" value="">
+                                            <input type="Password" class="form-control" name="npass" value="">
                                         </div>
                                         <div class="form-group">
                                             <label for="vpass" class="form-label">Verify Password:</label>
-                                            <input type="Password" class="form-control" id="vpass" value="">
+                                            <input type="Password" class="form-control" name="vpass" value="">
                                         </div>
                                         <button type="submit" class="btn btn-primary me-2">Submit</button>
                                         <button type="reset" class="btn bg-soft-danger">Cancle</button>

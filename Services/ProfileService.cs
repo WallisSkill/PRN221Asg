@@ -88,4 +88,9 @@ public partial class ProfileService : IProfileService
     {
         return _profileRepository.GetCountNumberFollowing(id);
     }
+
+	public void resetPassword(User user)
+	{
+        _profileRepository.resetPassword(user);
+	}
 }

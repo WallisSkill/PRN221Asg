@@ -95,4 +95,11 @@ public partial class ProfileRepository : IProfileRepository
     {
         return _context.Set<Follow>().Where(x => x.FollowerId == id).Count();
     }
+
+	public void resetPassword(User user)
+	{
+		User user1 = _context.Users.Where(x=> x.UserId==user.UserId).FirstOrDefault();
+        user1.Password = user.Password;
+        _context.SaveChanges();
+	}
 }

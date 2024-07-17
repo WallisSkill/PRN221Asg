@@ -15,4 +15,5 @@ public interface IProfileRepository
     void UnFollow(int v, int id);
     int? GetCountNumberFollower(int id);
     int? GetCountNumberFollowing(int id);
+	void resetPassword(User user);
 }
