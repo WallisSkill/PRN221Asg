@@ -127,7 +127,7 @@ public partial class PostRepository : IPostRepository
     public PostLike GetPostLike(int postId, int currentUser)
     {
         var query = _context.Set<PostLike>().FirstOrDefault(x => x.PostId == postId && currentUser == x.UserId);
-        return query; 
+        return query;
     }
 
     public void UpdatePostLike(int postId, int currentUser, int emotionId)
@@ -156,7 +156,7 @@ public partial class PostRepository : IPostRepository
         _context.SaveChanges();
     }
 
-    public List<PostData> GetAllPostSaved(List<int> listPosId,int currentUserId)
+    public List<PostData> GetAllPostSaved(List<int> listPosId, int currentUserId)
     {
         var query = from T1 in _context.Set<Post>()
                     where listPosId.Contains(T1.PostId)
@@ -229,16 +229,16 @@ public partial class PostRepository : IPostRepository
             _context.Remove(post);
             _context.SaveChanges();
         }
-       
+
     }
     public void DeletePost(int postId)
     {
         var post = _context.Posts.FirstOrDefault(x => x.PostId == postId);
         var photo = _context.Photos.Where(x => x.PostId == postId).ToList();
-        var comment=_context.Comments.Where(x => x.PostId==postId).ToList();
+        var comment = _context.Comments.Where(x => x.PostId == postId).ToList();
         var bookmark = _context.Bookmarks.Where(x => x.PostId == postId).ToList();
         var post_like = _context.PostLikes.Where(x => x.PostId == postId).ToList();
-        foreach(var item in comment)
+        foreach (var item in comment)
         {
             var comment_like = _context.CommentLikes.Where(x => x.CommentId == item.CommentId);
             _context.CommentLikes.RemoveRange(comment_like);
@@ -253,14 +253,14 @@ public partial class PostRepository : IPostRepository
 
     public void UpdatePost(Post post)
     {
-        var p= _context.Posts.Find(post.PostId);
-        if(p!=null)
+        var p = _context.Posts.Find(post.PostId);
+        if (p != null)
         {
             p.Caption = post.Caption;
             _context.Posts.Update(p);
             _context.SaveChanges();
         }
-       
+
     }
 
     public CommentLike GetCmtLike(int cmtId, int currentUser)
@@ -298,5 +298,19 @@ public partial class PostRepository : IPostRepository
     public Post GetPostById(int postId)
     {
         return _context.Posts.FirstOrDefault(x => x.PostId == postId);
+    }
+
+    public void RemoveComment(int cmdId)
+    {
+        var comments = _context.Comments.Where(x => x.ParentId == cmdId).ToList();
+        foreach (var item in comments)
+        {
+            RemoveComment(item.CommentId);
+        }
+        var cmtLike = _context.CommentLikes.Where(x => x.CommentId == cmdId).ToList();
+        _context.CommentLikes.RemoveRange(cmtLike);
+        var cmt = _context.Comments.FirstOrDefault(x => x.CommentId == cmdId);
+        _context.Comments.Remove(cmt);
+        _context.SaveChanges();
     }
 }

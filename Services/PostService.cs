@@ -225,4 +225,9 @@ public partial class PostService : IPostService
     {
        return _postRepository.GetPostById(postId);
     }
+
+    public void RemoveComment(int cmdId)
+    {
+        _postRepository.RemoveComment(cmdId);
+    }
 }

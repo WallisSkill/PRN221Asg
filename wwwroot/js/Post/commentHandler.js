@@ -70,8 +70,8 @@ function newComment(event) {
                 const value = `
                  <ul>
                     <ul>
-                        <li>
-                            <div class="comment" onmouseover=\"DisplayIcon('${commentId}', '${data.UserId}')\" onmouseout=\"HideIcon('${commentId}')\">
+                        <li id='comment-${commentId}'>
+                            <div class="comment" onmouseover=\"DisplayIcon('${commentId}', '${CURRENT_USER_ID}')\" onmouseout=\"HideIcon('${commentId}')\">
                                  <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
                                  <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
                                     <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
@@ -97,7 +97,24 @@ function newComment(event) {
                                     <div class='emotion-comment' id='emotion-cmt-${commentId}'>
                                     </div>
                                 </div>
-                                <div class='delete-cmt' id='icon-del-cmt-${commentId}' hidden><i class='ri-more-fill'></i></div>
+                                                                <div class='card-post-toolbar d-flex align-items-center'>
+                                <div class='delete-cmt dropdown clickable' id='icon-del-cmt-${commentId}' hidden>
+                                    <span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'><i class='ri-more-fill'></i></span>
+                                    <div class='dropdown-menu m-0 p-0'>
+                                        <a class='dropdown-item p-3' onclick=\"RemoveComment('${commentId}')\">
+                                            <div class='d-flex align-items-top'>
+                                                <div class='h4'>
+                                                    <i class='ri-close-line'></i>
+                                                </div>
+                                                <div class='data ms-2'>
+                                                    <h6>Delete this comment</h6>
+                                                    <p class='mb-0'>Delete your comment from this post</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                         </li>
                     </ul>
@@ -115,7 +132,7 @@ function newComment(event) {
             }
             else {
                 const value = `
-                    <div class="comment" onmouseover=\"DisplayIcon('${commentId}', '${data.UserId}')\" onmouseout=\"HideIcon('${commentId}')\">
+                    <div class="comment" onmouseover=\"DisplayIcon('${commentId}', '${CURRENT_USER_ID}')\" onmouseout=\"HideIcon('${commentId}')\">
                                         <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
                                             <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
                                                 <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
@@ -141,7 +158,24 @@ function newComment(event) {
                                     <div class='emotion-comment' id='emotion-cmt-${commentId}'>
                                     </div>
                                 </div>
-                                <div class='delete-cmt' id='icon-del-cmt-${commentId}' hidden><i class='ri-more-fill'></i></div>
+                                <div class='card-post-toolbar d-flex align-items-center'>
+                                <div class='delete-cmt dropdown clickable' id='icon-del-cmt-${commentId}' hidden>
+                                    <span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'><i class='ri-more-fill'></i></span>
+                                    <div class='dropdown-menu m-0 p-0'>
+                                        <a class='dropdown-item p-3' onclick=\"RemoveComment('${commentId}')\">
+                                            <div class='d-flex align-items-top'>
+                                                <div class='h4'>
+                                                    <i class='ri-close-line'></i>
+                                                </div>
+                                                <div class='data ms-2'>
+                                                    <h6>Delete this comment</h6>
+                                                    <p class='mb-0'>Delete your comment from this post</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
             `;
 
@@ -149,6 +183,7 @@ function newComment(event) {
                 tempDiv.innerHTML = value;
 
                 const newCommentLi = document.createElement('li');
+                newCommentLi.id = 'comment-' + commentId;
 
                 while (tempDiv.firstChild) {
                     newCommentLi.appendChild(tempDiv.firstChild);
@@ -386,4 +421,24 @@ function DisplayIcon(cmtId, userId) {
 function HideIcon(cmtId) {
     var icon = document.getElementById("icon-del-cmt-" + cmtId);
     icon.hidden = true;
+}
+
+function RemoveComment(cmtId) {
+    $.ajax({
+        type: "post",
+        url: `/Index?handler=RemoveComment`,
+        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+        data: {
+            cmtId: cmtId
+        },
+        dataType: "json",
+        success: function (data) {
+            var cmt = document.getElementById("comment-" + cmtId);
+            cmt.innerHTML = '';
+        },
+        error: function (error) {
+            console.log(error.responseText);
+        }
+    });
+
 }

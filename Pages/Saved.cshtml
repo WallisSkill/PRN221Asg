@@ -137,7 +137,24 @@
             html.Append("</div>");
             html.Append("</div>");
 
-            html.AppendFormat("<div class='delete-cmt' id='icon-del-cmt-{0}' hidden><i class='ri-more-fill'></i></div>", comment.CommentId);
+            html.Append("<div class='card-post-toolbar d-flex align-items-center'>");
+            html.AppendFormat("<div class='delete-cmt dropdown clickable' id='icon-del-cmt-{0}' hidden>", comment.CommentId);
+            html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'><i class='ri-more-fill'></i></span>");
+            html.Append("<div class='dropdown-menu m-0 p-0'>");
+            html.AppendFormat("<a class='dropdown-item p-3' onclick=\"RemoveComment('{0}')\">", comment.CommentId);
+            html.Append("<div class='d-flex align-items-top'>");
+            html.Append("<div class='h4'>");
+            html.Append("<i class='ri-close-line'></i>");
+            html.Append("</div>");
+            html.Append("<div class='data ms-2'>");
+            html.Append("<h6>Delete this comment</h6>");
+            html.Append("<p class='mb-0'>Delete your comment from this post</p>");
+            html.Append("</div>");
+            html.Append("</div>");
+            html.Append("</a>");
+            html.Append("</div>");
+            html.Append("</div>");
+            html.Append("</div>");
             html.Append("</div>");
 
             if (comment.ListComment != null && comment.ListComment.Any())
