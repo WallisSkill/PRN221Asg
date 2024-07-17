@@ -6,10 +6,13 @@ namespace PRN221_Assignment.Pages.Account
 {
     public class AccessDeniedModel : PageModel
     {
-        public async void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            await HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
-
+            if (User.IsInRole("Admin")){
+                //await HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToPage("/Admin/Login");
+            }
+            return RedirectToPage("/Login");
         }
     }
 }

@@ -25,13 +25,13 @@ namespace PRN221_Assignment.Repository
         }
 
         private List<Admin>? GetAdmins() {
-            string filePath = "Admin.json"; // Đường dẫn tới file Admin.json
+            string filePath = "AdminJson/Admin.json"; // Đường dẫn tới file Admin.json
 
             // Đọc nội dung file Admin.json
             string json = File.ReadAllText(filePath);
-
+            var adminData = JsonConvert.DeserializeObject<AdminData>(json);
             // Parse JSON thành danh sách các đối tượng Admin
-            return JsonConvert.DeserializeObject<List<Admin>>(json);
+            return adminData.Admins;
         }
     }
 }

@@ -6,7 +6,7 @@ using PRN221_Assignment.ExtenModel;
 using PRN221_Assignment.Services.Interface;
 using System.Security.Claims;
 
-namespace PRN221_Assignment.Pages
+namespace PRN221_Assignment.Pages.Admin
 {
     [RequiredArgsConstructor]
     public partial class LoginAdminModel : PageModel
@@ -32,11 +32,13 @@ namespace PRN221_Assignment.Pages
                 new Claim(ClaimTypes.Name, userLogin.Username),
                 new Claim(ClaimTypes.NameIdentifier, userLogin.Id),
                 new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(ClaimTypes.GivenName, userLogin.Id),
+                new Claim("profile_picture","./assets/images/user/null.png")
                  };
                 ClaimsIdentity ci = new ClaimsIdentity(listClaim, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
                 ClaimsPrincipal cp = new ClaimsPrincipal(ci);
                 HttpContext.SignInAsync(cp);
-                return RedirectToPage("/Index");
+                return RedirectToPage("/Admin/HomePage");
             }
             error = "Username or password is incorrect!";
             return Page();

@@ -1,0 +1,406 @@
+@page
+@using System.Globalization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PRN221_Assignment.Data
+@using PRN221_Assignment.Models
+@model ProfileAdmin
+@{
+
+    var listPost = (List<PostData>)ViewBag.listPost;
+    ViewData["Title"] = "ADMIN";
+    var friends = (List<UserProfile>)ViewBag.friends;
+    var userfriends = (List<Friend>)ViewBag.userFriends;
+
+    string GetColorOfEmotion(string emotionURL)
+    {
+        var emotion = emotionURL.Split('/').Last().Replace(".png", "");
+        switch (emotion)
+        {
+            case "Like":
+                return "#0861f2";
+            case "Love":
+                return "#e73b54";
+            case "Angry":
+                return "#dd6b0e";
+            default:
+                return "#eaa823";
+        }
+    }
+
+    string GetTimeToNow(DateTime time)
+    {
+        var now = DateTime.Now;
+        var timespan = now - time;
+
+        if (timespan.TotalMinutes < 1)
+        {
+            return "just now";
+        }
+
+        if (timespan.TotalHours < 1)
+        {
+            int minutes = (int)timespan.TotalMinutes;
+            return minutes == 1 ? "1 minute" : $"{minutes} minutes";
+        }
+
+        if (timespan.TotalDays < 1)
+        {
+            int hours = (int)timespan.TotalHours;
+            return hours == 1 ? "1 hour" : $"{hours} hours";
+        }
+
+        if (timespan.TotalDays < 7)
+        {
+            int days = (int)timespan.TotalDays;
+            return days == 1 ? "1 day" : $"{days} days";
+        }
+
+        if (timespan.TotalDays < 365)
+        {
+            int weeks = (int)(timespan.TotalDays / 7);
+            return weeks == 1 ? "1 week" : $"{weeks} weeks";
+        }
+
+        int years = now.Year - time.Year;
+        return years == 1 ? "1 year" : $"{years} years";
+    }
+}
+@functions {
+    IHtmlContent RenderComments(List<CommentData> comments)
+    {
+        var html = new System.Text.StringBuilder();
+        html.Append("<ul>");
+        foreach (var comment in comments)
+        {
+            html.Append("<li>");
+            html.Append("<div class='comment'>");
+            html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
+            html.Append("<div class='comment-content'>");
+            html.AppendFormat("<span class='user-name'>{0}</span>", comment.User.Fullname);
+            html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
+            html.Append("<div>");
+            html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
+            html.AppendFormat("<span class='comment-actions'>Like ({0})</span>", comment.CmtLikes.Count);
+            html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}',event)\">Reply</span>", comment.CommentId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
+            html.Append("</div></div></div>");
+
+            if (comment.ListComment != null && comment.ListComment.Any())
+            {
+                html.Append("<ul>");
+                html.Append(RenderComments(comment.ListComment).ToString());
+                html.Append("</ul>");
+            }
+
+            html.Append("</li>");
+        }
+
+        html.Append("</ul>");
+        return new HtmlString(html.ToString());
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+    <div>
+        <div id="content-page" class="content-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <h3 class="card-header text-center font-weight-bold text-uppercase py-4">
+                                Post
+                            </h3>
+
+                        </div>
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="user-tabing">
+                                    <ul class="nav nav-pills d-flex align-items-center justify-content-center profile-feed-items p-0 m-0">
+                                        <li class="nav-item col-12 col-sm-6 p-0">
+                                            <a class="nav-link active" href="#pills-timeline-tab" data-bs-toggle="pill" data-bs-target="#timeline" role="button">Post</a>
+                                        </li>
+@*                                         <li class="nav-item col-12 col-sm-3 p-0">
+                                            <a class="nav-link" href="#pills-about-tab" data-bs-toggle="pill" data-bs-target="#about" role="button">About</a>
+                                        </li> *@
+                                        <li class="nav-item col-12 col-sm-6 p-0">
+                                            <a class="nav-link" href="#pills-friends-tab" data-bs-toggle="pill" data-bs-target="#friends" role="button">User</a>
+                                        </li>
+                                        @* <li class="nav-item col-12 col-sm-3 p-0">
+                                            <a class="nav-link" href="#pills-photos-tab" data-bs-toggle="pill" data-bs-target="#photos" role="button">Photos</a>
+                                        </li> *@
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="timeline" role="tabpanel">
+                                <div class="card-body p-0">
+                                    <div class="row">
+                                        <div class="col-lg-12 row m-0 p-0" style="display:flow">
+
+                                            <div id="postList">
+
+                                                @if (listPost.Count > 0)
+                                                {
+                                                    foreach (var post in listPost)
+                                                    {
+                                                        <div class="col-sm-12" id="post-@post.Id">
+                                                            <div class="card card-block card-stretch card-height">
+                                                                <div class="card-body" id="card-body-@post.Id" style="padding-bottom: 0">
+                                                                    <div class="user-post-data">
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <div class="me-3">
+                                                                                <img class="rounded-circle avatar-60 img-fluid" src=".@post.User.ProfilePhotoUrl" alt="img">
+                                                                            </div>
+                                                                            <div class="w-100">
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div class="">
+                                                                                        <h5 class="mb-0 d-inline-block clickable" onclick="redirectToProfile(@post.User.UserId)">@post.User.Fullname</h5>
+                                                                                        <span class="mb-0 d-inline-block">Add New Post</span>
+                                                                                        <p class="mb-0 text-primary">@GetTimeToNow(post.Time)</p>
+                                                                                    </div>
+                                                                                    <div class="card-post-toolbar">
+                                                                                        <div class="dropdown">
+                                                                                            <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                                <i class="ri-more-fill"></i>
+                                                                                            </span>
+                                                                                            <div class="dropdown-menu m-0 p-0">
+                                                                                                <a class="dropdown-item p-3 option-post clickable">
+                                                                                                    <div class="d-flex">
+                                                                                                        <div class="h4">
+                                                                                                            <i data-post-id="@post.Id" class="ri-delete-bin-line"></i>
+                                                                                                        </div>
+                                                                                                        <div class="data ms-2">
+                                                                                                            <h6>Delete Post</h6>
+                                                                                                            <p class="mb-0">This post will be permanently deleted</p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </a>
+                                                                                                
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div class="mt-3">
+                                                                        <p>@post.Caption</p>
+                                                                    </div>
+                                                                    <div class="user-post">
+                                                                        <div class="newt">
+                                                                            @foreach (var url in post.PhotoURL)
+                                                                            {
+                                                                                if (!string.IsNullOrEmpty(url))
+                                                                                {
+                                                                                    <div class="post-image">
+
+                                                                                        <img src="@url" alt="post-image" class="img-fluid rounded w-100">
+
+                                                                                    </div>
+                                                                                }
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="comment-area mt-3">
+                                                                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                                                                            <div class="like-block position-relative d-flex align-items-center">
+                                                                                <div class="d-flex align-items-center" id="like-post-@post.Id">
+                                                                                    @if (post.ListLike.Count > 0)
+                                                                                    {
+                                                                                        @foreach (var item in post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
+                                                                                        {
+                                                                                            <div class="total-like-block">
+                                                                                                <div class="dropdown">
+                                                                                                    <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                                        <img src='@item.Key' @(item != post.ListLike.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3).First() ? "class=nofirst-icon" : "") />
+                                                                                                    </span>
+                                                                                                    <div class="dropdown-menu" style="background-color: rgba(60, 60, 60, 0.7)">
+                                                                                                        @foreach (var like in item)
+                                                                                                        {
+                                                                                                            <div class="clickable" style="color: white; padding-left: 10px;">@like.User.Fullname</div>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        }
+                                                                                        <div class="total-like-block ms-2 me-3">
+                                                                                            <div class="dropdown">
+                                                                                                <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                                    @post.ListLike.Count
+                                                                                                </span>
+                                                                                                <div class="dropdown-menu">
+                                                                                                    @foreach (var like in post.ListLike)
+                                                                                                    {
+                                                                                                        <div class="dropdown-item">@like.User.Fullname</div>
+                                                                                                    }
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+
+                                                                            @if (post.ListComments.Any())
+                                                                            {
+                                                                                <div class="share-block d-flex align-items-center feather-icon mt-2 mt-md-0">
+                                                                                    <div class="dropdown">
+                                                                                        <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">
+                                                                                            @post.countComment Comments
+                                                                                        </span>
+                                                                                        <div class="dropdown-menu">
+                                                                                            @foreach (var cmt in post.ListCommentsTotal.DistinctBy(x => x.User.UserId))
+                                                                                            {
+                                                                                                <a class="dropdown-item">@cmt.User.Fullname</a>
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                        <hr style="margin-bottom: 0">
+                                                                       
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <div class="card card-block card-stretch card-height">
+                                                        <div class="card-body" style="display: flex;padding-bottom: 0;margin: auto;align-items: center;height: 400px;font-size: 5mm;">
+                                                            <div class="user-post-data">
+                                                                No post display, wait for a post have bad content
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="friends" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div style="display: flex">
+                                            <h2>User</h2>
+                                            <span>@friends.Count()</span>
+                                        </div>
+                                        <div class="friend-list-tab mt-2">
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade active show" id="all-friends" role="tabpanel">
+                                                    <div class="card-body p-0">
+                                                        <div class="row">
+                                                            @foreach (var friend in friends)
+                                                            {
+                                                                <div class="col-md-6 col-lg-6 mb-3">
+                                                                    <div class="iq-friendlist-block">
+                                                                        <div class="d-flex align-items-center justify-content-between">
+                                                                            <div class="d-flex align-items-center">
+                                                                                <a href="#">
+                                                                                    <img src=".@friend.User.ProfilePhotoUrl" alt="profile-img" class="img-fluid profile-img2">
+                                                                                </a>
+                                                                                <div class="friend-info ms-3">
+                                                                                    <h5 id="@friend.User.UserId" class="clickable" onclick="redirectToProfile(this.id)">@friend.User.Fullname</h5>
+                                                                                    <p class="mb-0">@friend.Count friends</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="card-header-toolbar d-flex align-items-center option-lock">
+
+                                                                                    @if (userfriends.FirstOrDefault(x => x.User1Id == friend.User.UserId || x.User2Id == friend.User.UserId) == null)
+                                                                                    {
+                                                                                    <span data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="btn btn-primary me-2 toggle-lock" role="button">
+                                                                                            <i class="ri-lock-unlock-line me-1"></i>Unlocked
+                                                                                        </span>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                    <span data-user-id="@friend.User.UserId" data-user-name="@friend.User.Fullname" class="btn btn-primary me-2 toggle-lock" role="button">
+                                                                                            <i class="ri-lock-2-line me-1"></i>Locked
+                                                                                        </span>
+                                                                                    }
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* <div class="col-sm-12 text-center"> *@
+                    @*     <img src="../assets/images/page-img/page-load-loader.gif" alt="loader" style="height: 100px;"> *@
+                    @* </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const body = document.body;
+        const navLinks = document.querySelectorAll('.nav-link');
+        function updateTextWhiteClass() {
+            const isDarkMode = body.classList.contains('bg-dark');
+            navLinks.forEach(function (navLink) {
+                if (navLink.classList.contains('active') && isDarkMode) {
+                    navLink.classList.add('text-white');
+                } else {
+                    navLink.classList.remove('text-white');
+                }
+            });
+        }
+
+        updateTextWhiteClass();
+
+        const observer = new MutationObserver(function (mutationsList) {
+            mutationsList.forEach(function (mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    updateTextWhiteClass();
+                }
+            });
+        });
+
+        observer.observe(body, { attributes: true });
+
+        function toggleActiveState(navLink) {
+            updateTextWhiteClass();
+        }
+
+        navLinks.forEach(function (navLink) {
+            navLink.addEventListener('click', function () {
+                toggleActiveState(this);
+            });
+        });
+    });
+
+    function changePage(target) {
+        const tab = document.querySelector(`a[data-bs-target="${target}"]`);
+        if (tab) {
+            tab.click();
+        } else {
+        }
+    }
+    //Friend request
+</script>
+</html>
