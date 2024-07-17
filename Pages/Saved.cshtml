@@ -11,21 +11,6 @@
     var listPost = (List<PostData>)ViewBag.listPost;
     var upComing = (List<User>)ViewBag.upComingBirthdayFriend;
     var listSaved = (List<int>)ViewBag.listSaved;
-    string CalculateDay(DateTime? dob)
-    {
-        var birthday = (DateTime)dob;
-        var birthdayThisYear = new DateTime(DateTime.Now.Year, birthday.Month, birthday.Day);
-        var differ = (birthdayThisYear.Date - DateTime.Now.Date).Days;
-        if (differ == 0)
-        {
-            return "Today";
-        }
-        if (differ == 1)
-        {
-            return "Tomorow";
-        }
-        return differ + " days after";
-    }
     string GetTimeToNow(DateTime time)
     {
         var now = DateTime.Now;
@@ -78,9 +63,7 @@
                 return "#eaa823";
         }
     }
-}
 
-@functions {
     IHtmlContent RenderComments(List<CommentData> comments)
     {
         var html = new System.Text.StringBuilder();
@@ -88,16 +71,74 @@
         foreach (var comment in comments)
         {
             html.Append("<li>");
-            html.Append("<div class='comment'>");
+            html.AppendFormat("<div class='comment' onmouseover=\"DisplayIcon('{0}', '{1}')\" onmouseout=\"HideIcon('{0}')\">", comment.CommentId, comment.User.UserId);
             html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
             html.Append("<div class='comment-content'>");
             html.AppendFormat("<span onclick='redirectToProfile({1})' class='user-name clickable'>{0}</span>", comment.User.Fullname, comment.User.UserId);
             html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
-            html.Append("<div>");
+            html.Append("<div class='d-flex' style='align-items: center'>");
             html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
-            html.AppendFormat("<span class='comment-actions'>Like ({0})</span>", comment.CmtLikes.Count);
+            html.Append("<div class='like-data' style='padding: 0 10px 0 10px'>");
+            html.Append("<div class='dropdown d-flex' style='justify-content: center;'>");
+            var cmtLike = comment.CmtLikes.FirstOrDefault(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            if (cmtLike != null)
+            {
+                html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" style='color: {1} !important' aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>{2}</span>", comment.CommentId, GetColorOfEmotion(cmtLike.EmotionURL), cmtLike.EmotionURL.Split('/').Last().Replace(".png", ""));
+            }
+            else
+            {
+                html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>Like</span>", comment.CommentId);
+            }
+            html.AppendFormat("<div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px; display: flex'>" +
+                                "<a class='ms-2 icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '1', event)\"><img src='/Image/Emoji/like.png' class='img-fluid' ></a>" +
+                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '2', event)\"><img src='/Image/Emoji/love.png' class='img-fluid' ></a>" +
+                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '3', event)\"><img src='/Image/Emoji/care.png' class='img-fluid' ></a>" +
+                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '4', event)\"><img src='/Image/Emoji/haha.png' class='img-fluid' ></a>" +
+                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '5', event)\"><img src='/Image/Emoji/wow.png' class='img-fluid' ></a>" +
+                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '6', event)\"><img src='/Image/Emoji/sad.png' class='img-fluid' ></a>" +
+                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '7', event)\"><img src='/Image/Emoji/angry.png' class='img-fluid' ></a>" +
+                        "</div>", comment.CommentId
+                        );
+            html.Append("</div>");
+            html.Append("</div>");
             html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}',event)\">Reply</span>", comment.CommentId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
-            html.Append("</div></div></div>");
+            html.Append("</div>");
+            html.AppendFormat("<div class='emotion-comment' id='emotion-cmt-{0}'>", comment.CommentId);
+            if (comment.CmtLikes.Count > 0)
+            {
+                html.Append("<div class='like-block position-relative d-flex align-items-center' style='background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 10px'>");
+                html.Append("<div class='d-flex align-items-center' style='padding-left: 10px'>");
+                foreach (var item in comment.CmtLikes.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
+                {
+                    html.Append("<div class='total-like-block'>");
+                    html.Append("<div class='dropdown'>");
+                    html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'>");
+                    html.AppendFormat("<img src = '{0}' class='nofirst-icon' style='border: 2px solid white;'/>", item.Key);
+                    html.Append("</span>");
+                    html.Append("<div class='dropdown-menu' style='background-color: rgba(60, 60, 60, 0.7)'>");
+                    foreach (var like in item)
+                    {
+                        html.AppendFormat("<div onclick='redirectToProfile({0})' class='clickable' style='color: white; padding-left: 10px;'>{1}</div>", like.User.UserId, like.User.Fullname);
+                    }
+                    html.Append("</div></div></div>");
+                }
+                html.Append("<div class='total-like-block ms-2 me-3'>");
+                html.Append("<div class='dropdown'>");
+                html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button' style='color: black !important'>{0}</span>", comment.CmtLikes.Count);
+                html.Append("<div class='dropdown-menu'>");
+                foreach (var like in comment.CmtLikes)
+                {
+                    html.AppendFormat("<div class='dropdown-item'>{0}</div>", like.User.Fullname);
+                }
+                html.Append("</div></div></div>");
+                html.Append("</div></div>");
+
+            }
+            html.Append("</div>");
+            html.Append("</div>");
+
+            html.AppendFormat("<div class='delete-cmt' id='icon-del-cmt-{0}' hidden><i class='ri-more-fill'></i></div>", comment.CommentId);
+            html.Append("</div>");
 
             if (comment.ListComment != null && comment.ListComment.Any())
             {
@@ -112,7 +153,7 @@
         html.Append("</ul>");
         return new HtmlString(html.ToString());
     }
-    }
+}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
     .comments-section {
@@ -235,8 +276,8 @@
                                                                             <i class="ri-more-fill"></i>
                                                                         </span>
                                                                         <div class="dropdown-menu m-0 p-0">
-                                                                            <a class="dropdown-item p-3 option-post clickable">
-                                                                                <div class="d-flex align-items-top">
+                                                                            <a class='dropdown-item p-3 option-post clickable'>
+                                                                                <div class='d-flex align-items-top'>
                                                                                     @if (!listSaved.Contains(post.Id))
                                                                                     {
                                                                                         <div class="h4">
@@ -249,12 +290,12 @@
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        <div class="h4">
-                                                                                            <i data-post-id="@post.Id" class="ri-close-line"></i>
+                                                                                        <div class='h4'>
+                                                                                            <i data-post-id='@post.Id' class='ri-close-line'></i>
                                                                                         </div>
-                                                                                        <div class="data ms-2">
+                                                                                        <div class='data ms-2'>
                                                                                             <h6>Remove Saved Post</h6>
-                                                                                            <p class="mb-0">Remove this from your saved items</p>
+                                                                                            <p class='mb-0'>Remove this from your saved items</p>
                                                                                         </div>
                                                                                     }
                                                                                 </div>

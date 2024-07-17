@@ -88,7 +88,7 @@
             foreach (var comment in comments)
             {
                 html.Append("<li>");
-                html.AppendFormat("<div class='comment' onmouseover=\"DisplayIcon('{0}')\" onmouseout=\"HideIcon('{0}')\">", comment.CommentId);
+                html.AppendFormat("<div class='comment' onmouseover=\"DisplayIcon('{0}', '{1}')\" onmouseout=\"HideIcon('{0}')\">", comment.CommentId, comment.User.UserId);
                 html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
                 html.Append("<div class='comment-content'>");
                 html.AppendFormat("<span onclick='redirectToProfile({1})' class='user-name clickable'>{0}</span>", comment.User.Fullname, comment.User.UserId);
@@ -106,7 +106,7 @@
                 {
                     html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>Like</span>", comment.CommentId);
                 }
-                html.AppendFormat("<div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px'>" +
+                html.AppendFormat("<div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px; display: flex'>" +
                                     "<a class='ms-2 icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '1', event)\"><img src='/Image/Emoji/like.png' class='img-fluid' ></a>" +
                                     "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '2', event)\"><img src='/Image/Emoji/love.png' class='img-fluid' ></a>" +
                                     "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '3', event)\"><img src='/Image/Emoji/care.png' class='img-fluid' ></a>" +
@@ -154,7 +154,22 @@
                 html.Append("</div>");
                 html.Append("</div>");
 
-                html.AppendFormat("<div class='delete-cmt' id='icon-del-cmt-{0}' hidden><i class='ri-more-fill'></i></div>", comment.CommentId);
+                html.AppendFormat("<div class='delete-cmt dropdown' id='icon-del-cmt-{0}' hidden>", comment.CommentId);
+                html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'><i class='ri-more-fill'></i></span>");
+                html.Append("<div class='dropdown-menu m-0 p-0'>");
+                html.Append("<a class='dropdown-item p-3 option-post'>");
+                html.Append("<div class='d-flex align-items-top'>");
+                html.Append("<div class='h4'>");
+                html.Append("<i class='ri-close-line'></i>");
+                html.Append("</div>");
+                html.Append("<div class='data ms-2'>");
+                html.Append("<h6>Delete this comment</h6>");
+                html.Append("<p class='mb-0'>Delete your comment from this post</p>");
+                html.Append("</div>");
+                html.Append("</div>");
+                html.Append("</a>");
+                html.Append("</div>");
+                html.Append("</div>");
                 html.Append("</div>");
 
 

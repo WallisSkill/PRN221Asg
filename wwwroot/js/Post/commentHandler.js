@@ -71,17 +71,33 @@ function newComment(event) {
                  <ul>
                     <ul>
                         <li>
-                            <div class="comment">
-                                    <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
-                                    <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
-                                            <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
-                                        <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${commentText}</span>
-                                    <div>
-                                                     <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
-                                            <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Like (0)</span>
-                                                 <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('${commentId}','${CURRENT_USER_NAME}','${commentText.length > 50 ? commentText.substring(0, 50) + '...' : commentText}','${postId}', event)">Reply</span>
+                            <div class="comment" onmouseover=\"DisplayIcon('${commentId}', '${data.UserId}')\" onmouseout=\"HideIcon('${commentId}')\">
+                                 <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
+                                 <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
+                                    <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
+                                    <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${commentText}</span>
+                                    <div class='d-flex' style='align-items: center'>
+                                        <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
+                                        <div class='like-data' style='padding: 0 10px 0 10px'>
+                                            <div class='dropdown d-flex' style='justify-content: center;'>
+                                                <span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('${commentId}', '0', event)\" aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-${commentId}'>Like</span>
+                                                <div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px; display: flex'>
+                                                    <a class='ms-2 icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '1', event)\"><img src='/Image/Emoji/like.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '2', event)\"><img src='/Image/Emoji/love.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '3', event)\"><img src='/Image/Emoji/care.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '4', event)\"><img src='/Image/Emoji/haha.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '5', event)\"><img src='/Image/Emoji/wow.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '6', event)\"><img src='/Image/Emoji/sad.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '7', event)\"><img src='/Image/Emoji/angry.png' class='img-fluid' ></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('${commentId}','${CURRENT_USER_NAME}','${commentText.length > 50 ? commentText.substring(0, 50) + '...' : commentText}','${postId}', event)">Reply</span>
+                                    </div>
+                                    <div class='emotion-comment' id='emotion-cmt-${commentId}'>
                                     </div>
                                 </div>
+                                <div class='delete-cmt' id='icon-del-cmt-${commentId}' hidden><i class='ri-more-fill'></i></div>
                             </div>
                         </li>
                     </ul>
@@ -99,18 +115,34 @@ function newComment(event) {
             }
             else {
                 const value = `
-                    <div class="comment">
+                    <div class="comment" onmouseover=\"DisplayIcon('${commentId}', '${data.UserId}')\" onmouseout=\"HideIcon('${commentId}')\">
                                         <img src="${CURRENT_USER_IMAGE}" alt="img-user" class="avatar">
                                             <div class="comment-content ${body.classList.contains('bg-dark') ? 'comment-content-dark' : ''}">
                                                 <span onclick="redirectToProfile(${CURRENT_USER_ID})"  class="clickable user-name ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${CURRENT_USER_NAME}</span>
                                             <span class="comment-text ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${commentText}</span>
-                                        <div>
-                                                         <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
-                                                <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}">Like (0)</span>
-                                                     <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('${commentId}','${CURRENT_USER_NAME}','${commentText.length > 50 ? commentText.substring(0, 50) + '...' : commentText}','${postId}', event)">Reply</span>
+                                        <div class='d-flex' style='align-items: center'>
+                                        <span class= "comment-time ${body.classList.contains('bg-dark') ? 'text-white' : ''}" > ${formattedDateTime} </span>
+                                        <div class='like-data' style='padding: 0 10px 0 10px'>
+                                            <div class='dropdown d-flex' style='justify-content: center;'>
+                                                <span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('${commentId}', '0', event)\" aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-${commentId}'>Like</span>
+                                                <div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px; display: flex'>
+                                                    <a class='ms-2 icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '1', event)\"><img src='/Image/Emoji/like.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '2', event)\"><img src='/Image/Emoji/love.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '3', event)\"><img src='/Image/Emoji/care.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '4', event)\"><img src='/Image/Emoji/haha.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '5', event)\"><img src='/Image/Emoji/wow.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '6', event)\"><img src='/Image/Emoji/sad.png' class='img-fluid' ></a>
+                                                    <a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('${commentId}', '7', event)\"><img src='/Image/Emoji/angry.png' class='img-fluid' ></a>
+                                               </div>
+                                            </div>
                                         </div>
+                                        <span class="comment-actions ${body.classList.contains('bg-dark') ? 'text-white' : ''}" onclick="ReplyTo('${commentId}','${CURRENT_USER_NAME}','${commentText.length > 50 ? commentText.substring(0, 50) + '...' : commentText}','${postId}', event)">Reply</span>
                                     </div>
-                  </div>
+                                    <div class='emotion-comment' id='emotion-cmt-${commentId}'>
+                                    </div>
+                                </div>
+                                <div class='delete-cmt' id='icon-del-cmt-${commentId}' hidden><i class='ri-more-fill'></i></div>
+                            </div>
             `;
 
                 const tempDiv = document.createElement('div');
@@ -123,7 +155,13 @@ function newComment(event) {
                 }
 
                 // Thêm `li` mới vào cuối danh sách `ul`
-                commentsSection.querySelector("ul").appendChild(newCommentLi);
+                let ul = commentsSection.querySelector("ul");
+
+                if (!ul) {
+                    ul = document.createElement("ul");
+                    commentsSection.appendChild(ul);
+                }
+                ul.appendChild(newCommentLi);
             }
         });
     event.currentTarget.value = '';
@@ -339,9 +377,11 @@ window.onload = (event) => {
     });
 };
 
-function DisplayIcon(cmtId) {
-    var icon = document.getElementById("icon-del-cmt-" + cmtId);
-    icon.hidden = false;
+function DisplayIcon(cmtId, userId) {
+    if (userId == CURRENT_USER_ID) {
+        var icon = document.getElementById("icon-del-cmt-" + cmtId);
+        icon.hidden = false;
+    }
 }
 function HideIcon(cmtId) {
     var icon = document.getElementById("icon-del-cmt-" + cmtId);
