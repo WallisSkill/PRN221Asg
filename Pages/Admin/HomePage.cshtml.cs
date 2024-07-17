@@ -8,6 +8,7 @@ using PRN221_Assignment.Services.Interface;
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace PRN221_Assignment.Pages.Admin;
 
@@ -30,12 +31,12 @@ public partial class ProfileAdmin : PageModel
     public IActionResult OnGet()
     {
         var posts = _postService.GetAllPostOfFriendAndFollower(-1);
-        var badwords = _adminService.GetAllBadWords();
+        var badwords = new HashSet<string>(_adminService.GetAllBadWords(), StringComparer.OrdinalIgnoreCase);
 
         var badWordPosts = posts.Where(post =>
-                            !string.IsNullOrEmpty(post.Caption) &&
-                            badwords.Any(badword => post.Caption.IndexOf(badword, StringComparison.OrdinalIgnoreCase) >= 0))
-                            .ToList();
+            !string.IsNullOrEmpty(post.Caption) &&
+            badwords.Any(badword => Regex.IsMatch(post.Caption, $@"\b{Regex.Escape(badword)}\b", RegexOptions.IgnoreCase)))
+            .ToList();
 
         ViewData["listPost"] = badWordPosts;
 
