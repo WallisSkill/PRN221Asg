@@ -28,4 +28,5 @@ public interface IPostRepository
     void UpdateCmtLike(int cmtId, int currentUser, int emotionId);
     void InsertCmtLike(int cmtId, int currentUser, int emotionId);
     void DeleteCmtLike(int cmtId, int currentUser);
+    public void RemoveComment(int cmdId);
 }

@@ -17,4 +17,6 @@ public interface IPostService
     void UpdatePost(Post post);
     List<LikeData> GetLikeDataOfCmt(int cmtId, int emotionId);
     Post GetPostById(int postId);
+    public void RemoveComment(int cmdId);
+
 }

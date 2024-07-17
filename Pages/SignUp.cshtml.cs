@@ -23,7 +23,7 @@ namespace PRN221_Assignment.Pages
         public IActionResult OnPost()
         {
             user.Gender = int.Parse(Request.Form["gender"]);
-            user.Dob = new DateTime(int.Parse(Request.Form["year"]), int.Parse(Request.Form["month"]), int.Parse(Request.Form["day"]));
+            user.Dob = new DateTime(int.Parse(Request.Form["year"]), int.Parse(Request.Form["month"]) + 1, int.Parse(Request.Form["day"]));
             if (_signupService.CheckEmailExist(user.Email))
             {
                 error = "Email is exist!";
