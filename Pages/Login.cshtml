@@ -72,6 +72,8 @@
                         <div class="sign-in-from">
                             <h1 class="mb-0">Sign in</h1>
                             <form class="mt-4" method="post">
+                                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+
                                 <div class="form-group">
                                     <label class="form-label" for="exampleInputEmail1">Username</label>
                                     <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter username" required>

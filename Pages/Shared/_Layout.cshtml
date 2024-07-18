@@ -109,16 +109,6 @@
                                     <i class="las la-home"></i><span>HomePage</span>
                                 </a>
                             </li>
-                            <li class="">
-                                <a href="/Profile" class=" ">
-                                    <i class="las la-user"></i><span>Profile</span>
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="/Saved" class=" ">
-                                    <i class="las la-bookmark"></i><span>Saved</span>
-                                </a>
-                            </li>
                             }
                             @* <li class=" ">
                             <a href="~/app/todo.html" class=" ">
@@ -413,11 +403,21 @@
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav  ms-auto navbar-list">
+                                 @if (User.FindFirstValue(ClaimTypes.Role).Equals("User")) {
                                 <li>
                                     <a href="~/" class="  d-flex align-items-center">
                                         <i class="ri-home-line"></i>
                                     </a>
                                 </li>
+                                 }
+                                @if (User.FindFirstValue(ClaimTypes.Role).Equals("Admin"))
+                                {
+                                    <li>
+                                        <a href="/Admin/HomePage" class="  d-flex align-items-center">
+                                            <i class="ri-home-line"></i>
+                                        </a>
+                                    </li>
+                                }
                                 @if (User.FindFirstValue(ClaimTypes.Role).Equals("User"))
                                 {
                                     <li onclick="fetchFriendRequests()" class="nav-item dropdown">

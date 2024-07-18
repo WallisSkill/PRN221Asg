@@ -19,11 +19,14 @@ namespace PRN221_Assignment.Pages
         private readonly IUserResolverService _userResolver;
         public string error;
 
-        public void OnGet()
+        [BindProperty]
+        public string ReturnUrl { get; set; }
+        public void OnGet(string returnUrl = "Index")
         {
+            ReturnUrl = returnUrl;
             HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
         }
-        public IActionResult OnPost()
+        public IActionResult OnPost(string returnUrl)
         {
             var userLogin = _loginService.ExistUser(user.Username, user.Password);
             var blocked = _adminService.GetBlockedAccount();
@@ -51,7 +54,7 @@ namespace PRN221_Assignment.Pages
                     isBlocked = true;
                     return Page();
                 }
-                return RedirectToPage("/Index");
+                return RedirectToPage(returnUrl);
             }
             
             return Page();
