@@ -10,6 +10,7 @@
     var listFriend = (List<User>)ViewBag.listFriend;
     var listPost = (List<PostData>)ViewBag.listPost;
     var upComing = (List<User>)ViewBag.upComingBirthdayFriend;
+    var suggestFriend = (List<User>)ViewBag.suggestFriend;
     var listSaved = (List<int>)ViewBag.listSaved;
     string CalculateDay(DateTime? dob)
     {
@@ -573,6 +574,29 @@
                                     <div class="stories-data ms-3">
                                         <h5>@user.Fullname</h5>
                                         <p class="mb-0">@CalculateDay(user.Dob)</p>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Suggest friend</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="media-story list-inline m-0 p-0">
+                            @foreach (var user in ViewBag.suggestFriend)
+                            {
+                                <li class="d-flex mb-4 align-items-center">
+                                    <img src="@user.ProfilePhotoUrl" alt="story-img" class="rounded-circle img-fluid">
+                                    <div class="stories-data ms-3">
+                                        <h5 class="clickable" onclick="redirectToProfile(@user.UserId)">@user.Fullname</h5>
+                                        <span data-user-id="@user.UserId" data-user-name="@user.Fullname" class="btn btn-primary me-2 add-friend" id="dropdownMenuButton01" role="button">
+                                            <i class="ri-add-line me-1 text-white"></i>Add Friend
+                                        </span>
                                     </div>
                                 </li>
                             }

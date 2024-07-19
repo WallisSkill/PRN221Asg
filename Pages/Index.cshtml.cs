@@ -21,6 +21,8 @@ public partial class IndexModel : PageModel
     private readonly IMessageService _messageService;
     private readonly IPostService _postService;
     private readonly IPhotoService _photoService;
+    private readonly IFriendService _friendService;
+
 
     public IActionResult OnGet()
     {
@@ -28,6 +30,7 @@ public partial class IndexModel : PageModel
         ViewData["upComingBirthdayFriend"] = _homePageService.GetUpComingBirthdayFriends();
         ViewData["listPost"] = _postService.GetAllPostOfFriendAndFollower();
         ViewData["listSaved"] = _postService.GetAllPostIdsaved();
+        ViewData["suggestFriend"] = _friendService.GetSuggestfriend();
         return Page();
     }
     public IList<Message> Messages { get; set; }
