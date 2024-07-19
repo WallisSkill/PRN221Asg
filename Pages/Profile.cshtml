@@ -420,6 +420,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-8 row m-0 p-0" style="display:flow">
+                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(user.UserId.ToString())){
                                             <div class="col-sm-12">
                                                 <div id="post-modal-data" class="card card-block card-stretch card-height">
                                                     <div class="card-header d-flex justify-content-between">
@@ -508,7 +509,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-
+                                            }
                                             <div id="postList">
 
                                                 @if (listPost.Count > 0)
