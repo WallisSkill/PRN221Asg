@@ -1,8 +1,10 @@
 ﻿using DependencyInjectionAutomatic.Service;
 using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
+using PRN221_Assignment.Repository;
 using PRN221_Assignment.Repository.Interface;
 using PRN221_Assignment.Services.Interface;
+using System.Runtime.InteropServices;
 
 
 
@@ -14,14 +16,16 @@ namespace PRN221_Assignment.Services
     {
         private readonly IFriendRepository _friendRepository;
         private readonly IMessageRepository _messageRepository;
+        private readonly IPostRepository _postRepository;
         private readonly int _currentUserId;
 
         public HomePageService(IFriendRepository friendRepository, IUserResolverService userResolver,
-            IMessageRepository messageRepository)
+            IMessageRepository messageRepository, IPostRepository postRepository)
         {
             _friendRepository = friendRepository;
             _currentUserId = userResolver.GetUser();
             _messageRepository = messageRepository;
+            _postRepository = postRepository;
         }
 
         public List<User> GetAllFriendsOfUser()
@@ -87,6 +91,25 @@ namespace PRN221_Assignment.Services
             return listFriends;
         }
 
+        public async Task<IList<PostData>> GetAllPostOfFriendNoti(int userid)
+        {
+            var friends = _friendRepository.GetAllFriendRelationshipsOfUser(userid, true);
+            var listFriendId = new List<int>();
+
+            foreach (var item in friends)
+            {
+                if (item.User1Id == (userid == -1 ? _currentUserId : userid))
+                {
+                    listFriendId.Add(item.User2Id);
+                }
+                else
+                {
+                    listFriendId.Add(item.User1Id);
+                }
+            }
+            var postList = _postRepository.GetAllPostAsync(listFriendId);
+            return await postList;
+        }
 
         public List<User> GetUpComingBirthdayFriends()
         {

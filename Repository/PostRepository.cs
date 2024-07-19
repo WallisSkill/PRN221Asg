@@ -1,10 +1,9 @@
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
-using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
-using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Repository;
 
@@ -96,6 +95,7 @@ public partial class PostRepository : IPostRepository
                         ConnectId = T1.CommentId,
                         User = T2,
                         EmotionURL = T3.EmotionUrl,
+                        createDate = T1.CreatedAt
                     };
         return query.ToList();
     }
@@ -113,6 +113,7 @@ public partial class PostRepository : IPostRepository
                         ConnectId = T1.PostId,
                         User = T2,
                         EmotionURL = T3.EmotionUrl,
+                        createDate = T1.CreatedAt
                     };
         return query.ToList();
     }
@@ -317,5 +318,71 @@ public partial class PostRepository : IPostRepository
         var cmt = _context.Comments.FirstOrDefault(x => x.CommentId == cmdId);
         _context.Comments.Remove(cmt);
         _context.SaveChanges();
+    }
+
+    public Comment? getCommentById(int v)
+    {
+        return _context.Set<Comment>().Where(x => x.CommentId == v).FirstOrDefault();
+    }
+
+    public List<CommentData> GetAllCommentsOfUsers(int currentUser)
+    {
+        var query = from T1 in _context.Set<Comment>()
+                    where T1.UserId == currentUser
+                    from T2 in _context.Set<User>()
+                    where T1.UserId == T2.UserId
+                    select new CommentData()
+                    {
+                        PostId = T1.PostId,
+                        CommentId = T1.CommentId,
+                        User = T2,
+                        Comment = T1.CommentText,
+                        Time = (DateTime)T1.CreatedAt,
+                        CmtParent = (int)T1.ParentId,
+                        CmtLikes = new List<LikeData>(),
+                    };
+        return query.ToList();
+    }
+
+    public async Task<Post> GetPostAsyncById(int postId)
+    {
+        return await _context.Posts.FirstOrDefaultAsync(x => x.PostId == postId);
+    }
+
+    public async Task<IList<PostData>> GetAllPostAsync(List<int> listFriendId)
+    {
+        DateTime fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+        var query = from T1 in _context.Set<Post>()
+                    where listFriendId.Contains(T1.UserId)
+                    from T2 in _context.Set<User>()
+                    where T2.UserId == T1.UserId
+                    join T3 in _context.Set<Photo>()
+                    on T1.PostId equals T3.PostId into photos
+                    from T3 in photos.DefaultIfEmpty() // Left join
+                    group new { T1, T3 } by new { T1.PostId, T2.UserId, T2.Fullname, T2.ProfilePhotoUrl, T2.Dob, T1.Caption } into g
+                    orderby g.Max(x => x.T1.CreatedAt) descending
+                    select new PostData()
+                    {
+                        Id = g.Key.PostId,
+                        User = new User()
+                        {
+                            UserId = g.Key.UserId,
+                            Fullname = g.Key.Fullname,
+                            ProfilePhotoUrl = g.Key.ProfilePhotoUrl,
+                            Dob = g.Key.Dob,
+                        },
+                        Caption = g.Key.Caption,
+                        PhotoURL = g.Select(x => x.T3 != null ? x.T3.PhotoUrl : null).ToList(),
+                        Time = (DateTime)g.Max(x => x.T1.CreatedAt),
+                        ListComments = new List<CommentData>(),
+                        ListLike = new List<LikeData>(),
+                    };
+        return await query.Where(x => x.Time >= fiveMinutesAgo).ToListAsync();
+    }
+
+    public CommentLike GetCommentLike(int v1, int v2)
+    {
+        var query = _context.Set<CommentLike>().FirstOrDefault(x => x.CommentId == v1 && v2 == x.UserId);
+        return query;
     }
 }

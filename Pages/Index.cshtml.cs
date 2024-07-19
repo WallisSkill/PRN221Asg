@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 using Lombok.NET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Services.Interface;
@@ -72,13 +74,61 @@ public partial class IndexModel : PageModel
     public async Task<IActionResult> OnGetGetRequestsForNotificationAsync(int userid)
     {
         var friends = await _homePageService.GetAllFriendRequestUserOther(userid);
-
-        var options = new JsonSerializerOptions
+        var posts = await _homePageService.GetAllPostOfFriendNoti(userid);
+        var postLikes = await _postService.GetAllPostLikeNoti();
+        #region CommentLikes
+        var commentLikes = await _postService.GetAllCommentLikesNoti();
+        var commentsAll = await _postService.GetAllComments();
+        var postsAll = _postService.GetAllPost();
+        var commentWithUserIds = (from cl in commentLikes
+                                 join c in commentsAll on cl.ConnectId equals c.CommentId
+                                 join p in postsAll on c.PostId equals p.Id
+                                 select new
+                                 {
+                                     CommentLike = cl,
+                                     p.User.UserId
+                                 }).ToList();
+        #endregion
+        var comment = await _postService.GetAllCommentNoti();
+        #region CommentReplies
+        var commentReplies = await _postService.GetAllCommentReplyNoti();
+        var postIds = commentReplies.Select(cr => cr.PostId).Distinct().ToList();
+        
+        var postsDictionary = new Dictionary<int, Post>();
+        foreach (var postId in postIds)
         {
-            ReferenceHandler = ReferenceHandler.Preserve
-        };
+            var post = await _postService.GetPostAsyncById(postId); 
+            if (post != null)
+            {
+                postsDictionary[postId] = post;
+            }
+        }
 
-        return new JsonResult(friends, options);
+        var commentRepliesWithPosts = commentReplies.Select(cr =>
+        {
+            var post = postsDictionary.ContainsKey(cr.PostId) ? postsDictionary[cr.PostId] : null;
+            return new
+            {
+                CommentReply = cr,
+                post.UserId
+            };
+        }).ToList();
+        #endregion
+        var result = new
+        {
+            Friends = friends,
+            Posts = posts,
+            PostLikes = postLikes,
+            CommentLikes = commentWithUserIds,
+            Comments = comment,
+            CommentReplies = commentRepliesWithPosts
+        };
+        var options = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        };
+        var json = JsonConvert.SerializeObject(result, options);
+        return Content(json, "application/json");
     }
 
     public IActionResult OnPostInsertComment(Comment comment)

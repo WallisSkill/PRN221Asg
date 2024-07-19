@@ -26,7 +26,7 @@ public partial class Profile : PageModel
         set => _id = value;
     }
     public Post post { get; set; }
-    public IActionResult OnGet()
+    public IActionResult OnGet(int postId = 0,int commentId = 0)
     {
         if (Id == 0) return RedirectToPage("/Index");
         ViewData["User"] = _profileService.GetUserInfo(Id);
@@ -42,6 +42,15 @@ public partial class Profile : PageModel
         ViewData["isFollow"] = _profileService.CheckIsFollow(_userResolver.GetUser(), Id);
         ViewData["following"] = _profileService.GetCountNumberfollowing(Id);
         ViewData["follower"] = _profileService.GetCountNumberFollower(Id);
+        if(postId != 0)
+        {
+            ViewData["postId"] = postId;
+        }
+
+        if (commentId != 0)
+        {
+            ViewData["commentId"] = commentId;
+        }
         return Page();
     }
 

@@ -7,5 +7,6 @@ namespace PRN221_Assignment.Data
         public int ConnectId { get; set; }
         public User User { get; set; }
         public string EmotionURL { get; set; }
+        public DateTime? createDate { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
+using Microsoft.Extensions.Hosting;
 using PRN221_Assignment.Data;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
@@ -10,12 +11,14 @@ namespace PRN221_Assignment.Services;
 public partial class PostService : IPostService
 {
     private readonly IPostRepository _postRepository;
+    private readonly ISignUpRepository _signUpRepository;
     private readonly int _currentUser;
 
-    public PostService(IPostRepository postRepository, IUserResolverService userResolverService)
+    public PostService(IPostRepository postRepository, ISignUpRepository signUpRepository, IUserResolverService userResolverService)
     {
         _postRepository = postRepository;
         _currentUser = userResolverService.GetUser();
+        _signUpRepository = signUpRepository;
     }
     public void CreatePost(Post post)
     {
@@ -240,5 +243,86 @@ public partial class PostService : IPostService
     public void RemoveComment(int cmdId)
     {
         _postRepository.RemoveComment(cmdId);
+    }
+
+    public async Task<IList<LikeData>> GetAllPostLikeNoti()
+    {
+        DateTime fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+        var post = GetAllPostOfFriendAndFollower(_currentUser);
+        var postLikes = _postRepository.GetAllPostsLike(
+            post.Select(x=> x.Id)
+            .ToList()
+            ).Where(x => x.createDate >= fiveMinutesAgo && x.User.UserId != _currentUser)
+        .ToList();
+        return await Task.FromResult(postLikes);
+    }
+
+    public async Task<IList<CommentData>> GetAllCommentNoti()
+    {
+        DateTime fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+        var post = GetAllPostOfFriendAndFollower(_currentUser);
+        var comments = _postRepository.GetAllComments(
+            post.Select(x => x.Id)
+            .ToList()
+            ).Where(x => x.Time >= fiveMinutesAgo && x.CmtParent == 0 && x.User.UserId != _currentUser)
+            .ToList();
+        return await Task.FromResult(comments);
+    }
+
+    public async Task<IList<CommentData>> GetAllCommentReplyNoti()
+    {
+        DateTime fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+
+        List<int> allUser = _signUpRepository.GetUsers().Select(x => x.UserId).ToList();
+        var post = _postRepository.GetAllPost(allUser);
+
+        var commentOfUsers = _postRepository.GetAllCommentsOfUsers(_currentUser);
+
+        var postIds = post.Select(p => p.Id).ToList();
+        var allComments = _postRepository.GetAllComments(postIds);
+
+        var commentReplies = allComments
+            .Where(x => x.Time >= fiveMinutesAgo &&
+                        x.CmtParent > 0 &&
+                        commentOfUsers
+                            .Select(y => y.CommentId)
+                            .Contains(x.CmtParent) &&
+                        x.User.UserId != _currentUser)
+            .ToList();
+
+        return await Task.FromResult(commentReplies);
+    }
+
+
+
+
+
+
+    public async Task<Post> GetPostAsyncById(int postId)
+    {
+        return await _postRepository.GetPostAsyncById(postId);
+    }
+
+    public async Task<IList<LikeData>> GetAllCommentLikesNoti()
+    {
+        DateTime fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+        var comments= _postRepository.GetAllCommentsOfUsers(_currentUser).ToList();
+        var likedComments = _postRepository.GetAllCommentsLike(
+            comments.Select(
+                x => x.CommentId)
+            .ToList()).Where(x => x.createDate > fiveMinutesAgo).ToList();
+        return await Task.FromResult(likedComments);
+    }
+
+    public async Task<IList<CommentData>> GetAllComments()
+    {
+        var comments = _postRepository.GetAllCommentsOfUsers(_currentUser).ToList();
+        return await Task.FromResult(comments); ;
+    }
+
+    public List<PostData> GetAllPost()
+    {
+        List<int> allUser = _signUpRepository.GetUsers().Select(x => x.UserId).ToList();
+        return _postRepository.GetAllPost(allUser);
     }
 }

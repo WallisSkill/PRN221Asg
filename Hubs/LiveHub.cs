@@ -1,9 +1,8 @@
 using System.Collections.Concurrent;
 using System.Security.Claims;
-using System.Text;
-using DependencyInjectionAutomatic.Service;
 using Lombok.NET;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
 using PRN221_Assignment.Models;
 using PRN221_Assignment.Repository.Interface;
 
@@ -15,6 +14,7 @@ public partial class LiveHub : Hub
     private readonly IFriendRepository _friendRepository;
     private readonly IMessageRepository _messageRepository;
     private readonly IProfileRepository _profileRepository;
+    private readonly IPostRepository _postRepository;
     public async Task SendMessage(string senderId, string receiverId, string message)
     {
         try
@@ -53,10 +53,85 @@ public partial class LiveHub : Hub
     {
         _friendRepository.CancelFriendRequest(Int32.Parse(userId),Int32.Parse(friendUserId));
     }
-    
-    
+    public async Task NewPost(string userId, string name)
+    {
+        List<Friend> friends = _friendRepository.GetAllFriendRelationshipsOfUser(Int32.Parse(userId), true);
+        var listFriendId = new List<string>();
+
+        foreach (var item in friends)
+        {
+            if (item.User1Id == (Int32.Parse(userId)))
+            {
+                listFriendId.Add(item.User2Id.ToString());
+            }
+            else
+            {
+                listFriendId.Add(item.User1Id.ToString());
+            }
+        }
+        
+        await Clients.Users(listFriendId).SendAsync("NewNoti", userId, 1, name);
+    }
+
+    public async Task NewLike(string userId, string name, string postId)
+    {
+        Post post = _postRepository.GetPostById(int.Parse(postId));
+        if (int.Parse(userId) != post.UserId)
+        {
+            if (_postRepository.GetPostLike(int.Parse(postId), int.Parse(userId)) != null)
+            {
+                await Clients.User(post.UserId.ToString()).SendAsync("NewNoti", userId, 2, name);
+            }
+        }
+    }
+
+    public async Task NewLikeCMT(string userId, string name, string commentId)
+    {
+        Comment comment = _postRepository.getCommentById(int.Parse(commentId));
+        if (int.Parse(userId) != comment.UserId)
+        {
+            if (_postRepository.GetCommentLike(int.Parse(commentId), int.Parse(userId)) != null)
+            {
+                await Clients.User(comment.UserId.ToString()).SendAsync("NewNoti", userId, 5, name);
+            }
+        }
+    }
+
+    public async Task NewComment(string userId, string name, int commentId)
+    {
+        Comment? comment = _postRepository.getCommentById(commentId);
+
+        if (comment != null)
+        {
+            Post post = _postRepository.GetPostById(comment.PostId);
+
+            int parentId = (comment.ParentId != null ? (int)comment.ParentId : 0);
+
+            if (parentId != 0)
+            {
+                Comment? commentReply = _postRepository.getCommentById(parentId);
+
+                if (commentReply != null)
+                {
+                    if (!userId.Equals(commentReply.UserId.ToString()))
+                    {
+                        await Clients.User(commentReply.UserId.ToString()).SendAsync("NewNoti", userId, 4, name);
+                    }
+                }
+            }
+            else
+            {
+                if (!userId.Equals(post.UserId.ToString()))
+                {
+                    await Clients.User(post.UserId.ToString()).SendAsync("NewNoti", userId, 3, name);
+                }
+            }
+        }
+
+    }
+
     //status online
-    
+
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private static ConcurrentDictionary<string, string> _users = new();
 

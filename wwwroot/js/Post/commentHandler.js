@@ -198,6 +198,8 @@ function newComment(event) {
                 }
                 ul.appendChild(newCommentLi);
             }
+            connection.invoke("NewComment", CURRENT_USER_ID, CURRENT_USER_NAME,commentId)
+                .catch(err => console.error(err.toString()));
         });
     event.currentTarget.value = '';
     ReplyTo('-1', '0', '0', event.currentTarget.id);
@@ -216,6 +218,8 @@ function HandleLike(postId, emotionId, deleteStatus, event) {
         dataType: "json",
         success: function (data) {
             UpdateLikeData(data, postId);
+                connection.invoke("NewLike", CURRENT_USER_ID, CURRENT_USER_NAME, postId)
+                    .catch(err => console.error(err.toString()));
         },
         error: function (error) {
             console.log(error.responseText);
@@ -248,6 +252,8 @@ function HandleLikeCmt(cmtId, emotionId, event) {
         dataType: "json",
         success: function (data) {
             UpdateLikeCmt(data, cmtId);
+            connection.invoke("NewLikeCMT", CURRENT_USER_ID, CURRENT_USER_NAME, cmtId)
+                .catch(err => console.error(err.toString()));
         },
         error: function (error) {
             console.log(error.responseText);

@@ -18,5 +18,11 @@ public interface IPostService
     List<LikeData> GetLikeDataOfCmt(int cmtId, int emotionId);
     Post GetPostById(int postId);
     public void RemoveComment(int cmdId);
-
+    Task<IList<LikeData>> GetAllPostLikeNoti();
+    Task<IList<CommentData>> GetAllCommentNoti();
+    Task<IList<CommentData>> GetAllCommentReplyNoti();
+    Task<Post> GetPostAsyncById(int postId);
+    Task<IList<LikeData>> GetAllCommentLikesNoti();
+    Task<IList<CommentData>> GetAllComments();
+    List<PostData> GetAllPost();
 }

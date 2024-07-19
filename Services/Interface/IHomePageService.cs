@@ -12,6 +12,6 @@ namespace PRN221_Assignment.Services.Interface
         Task<IList<UserFriend>> GetAllFriendRequestUserOther(int userId);
         List<User> GetUpComingBirthdayFriends();
         Task<IList<MessageData>> GetUserChatWith();
-        
+        Task<IList<PostData>> GetAllPostOfFriendNoti(int userid);
     }
 }

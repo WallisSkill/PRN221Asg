@@ -54,6 +54,7 @@ namespace PRN221_Assignment.Pages
                     isBlocked = true;
                     return Page();
                 }
+                if (returnUrl.Equals("/")) returnUrl = "/Index";
                 return RedirectToPage(returnUrl);
             }
             

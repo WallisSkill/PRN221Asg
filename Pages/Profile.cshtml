@@ -79,106 +79,110 @@
     IHtmlContent RenderComments(List<CommentData> comments)
     {
         var html = new System.Text.StringBuilder();
-        html.Append("<ul>");
-        foreach (var comment in comments)
+        if (comments.Count > 0)
         {
-            html.Append("<li>");
-            html.AppendFormat("<div class='comment' onmouseover=\"DisplayIcon('{0}', '{1}')\" onmouseout=\"HideIcon('{0}')\">", comment.CommentId, comment.User.UserId);
-            html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
-            html.Append("<div class='comment-content'>");
-            html.AppendFormat("<span class='user-name'>{0}</span>", comment.User.Fullname);
-            html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
-            html.Append("<div class='d-flex' style='align-items: center'>");
-            html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
-            html.Append("<div class='like-data' style='padding: 0 10px 0 10px'>");
-            html.Append("<div class='dropdown d-flex' style='justify-content: center;'>");
-            var cmtLike = comment.CmtLikes.FirstOrDefault(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
-            if (cmtLike != null)
+            html.Append("<ul>");
+            foreach (var comment in comments)
             {
-                html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" style='color: {1} !important' aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>{2}</span>", comment.CommentId, GetColorOfEmotion(cmtLike.EmotionURL), cmtLike.EmotionURL.Split('/').Last().Replace(".png", ""));
-            }
-            else
-            {
-                html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>Like</span>", comment.CommentId);
-            }
-            html.AppendFormat("<div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px; display: flex'>" +
-                                "<a class='ms-2 icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '1', event)\"><img src='/Image/Emoji/like.png' class='img-fluid' ></a>" +
-                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '2', event)\"><img src='/Image/Emoji/love.png' class='img-fluid' ></a>" +
-                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '3', event)\"><img src='/Image/Emoji/care.png' class='img-fluid' ></a>" +
-                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '4', event)\"><img src='/Image/Emoji/haha.png' class='img-fluid' ></a>" +
-                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '5', event)\"><img src='/Image/Emoji/wow.png' class='img-fluid' ></a>" +
-                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '6', event)\"><img src='/Image/Emoji/sad.png' class='img-fluid' ></a>" +
-                                "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '7', event)\"><img src='/Image/Emoji/angry.png' class='img-fluid' ></a>" +
-                        "</div>", comment.CommentId
-                        );
-            html.Append("</div>");
-            html.Append("</div>");
-            html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}',event)\">Reply</span>", comment.CommentId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
-            html.Append("</div>");
-            html.AppendFormat("<div class='emotion-comment' id='emotion-cmt-{0}'>", comment.CommentId);
-            if (comment.CmtLikes.Count > 0)
-            {
-                html.Append("<div class='like-block position-relative d-flex align-items-center' style='background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 10px'>");
-                html.Append("<div class='d-flex align-items-center' style='padding-left: 10px'>");
-                foreach (var item in comment.CmtLikes.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
+                html.AppendFormat("<li id='comment-{0}'>", comment.CommentId);
+                html.AppendFormat("<div class='comment' onmouseover=\"DisplayIcon('{0}', '{1}')\" onmouseout=\"HideIcon('{0}')\">", comment.CommentId, comment.User.UserId);
+                html.AppendFormat("<img src='{0}' alt='{1}' class='avatar' />", comment.User.ProfilePhotoUrl, "img-user");
+                html.Append("<div class='comment-content'>");
+                html.AppendFormat("<span onclick='redirectToProfile({1})' class='user-name clickable'>{0}</span>", comment.User.Fullname, comment.User.UserId);
+                html.AppendFormat("<span class='comment-text'>{0}</span>", comment.Comment);
+                html.Append("<div class='d-flex' style='align-items: center'>");
+                html.AppendFormat("<span class='comment-time'>{0}</span>", comment.Time.ToString("g"));
+                html.Append("<div class='like-data' style='padding: 0 10px 0 10px'>");
+                html.Append("<div class='dropdown d-flex' style='justify-content: center;'>");
+                var cmtLike = comment.CmtLikes.FirstOrDefault(x => x.User.UserId == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+                if (cmtLike != null)
                 {
-                    html.Append("<div class='total-like-block'>");
-                    html.Append("<div class='dropdown'>");
-                    html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'>");
-                    html.AppendFormat("<img src = '{0}' class='nofirst-icon' style='border: 2px solid white;'/>", item.Key);
-                    html.Append("</span>");
-                    html.Append("<div class='dropdown-menu' style='background-color: rgba(60, 60, 60, 0.7)'>");
-                    foreach (var like in item)
+                    html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" style='color: {1} !important' aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>{2}</span>", comment.CommentId, GetColorOfEmotion(cmtLike.EmotionURL), cmtLike.EmotionURL.Split('/').Last().Replace(".png", ""));
+                }
+                else
+                {
+                    html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' onclick=\"HandleLikeCmt('{0}', '0', event)\" aria-haspopup='true' aria-expanded='false' role='button' id='like-cmt-{0}'>Like</span>", comment.CommentId);
+                }
+                html.AppendFormat("<div class='dropdown-menu py-2' style='border-radius: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 222px; display: flex'>" +
+                                    "<a class='ms-2 icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '1', event)\"><img src='/Image/Emoji/like.png' class='img-fluid' ></a>" +
+                                    "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '2', event)\"><img src='/Image/Emoji/love.png' class='img-fluid' ></a>" +
+                                    "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '3', event)\"><img src='/Image/Emoji/care.png' class='img-fluid' ></a>" +
+                                    "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '4', event)\"><img src='/Image/Emoji/haha.png' class='img-fluid' ></a>" +
+                                    "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '5', event)\"><img src='/Image/Emoji/wow.png' class='img-fluid' ></a>" +
+                                    "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '6', event)\"><img src='/Image/Emoji/sad.png' class='img-fluid' ></a>" +
+                                    "<a class='icon me-2' data-bs-toggle='tooltip' data-bs-placement='top' onclick=\"HandleLikeCmt('{0}', '7', event)\"><img src='/Image/Emoji/angry.png' class='img-fluid' ></a>" +
+                            "</div>", comment.CommentId
+                            );
+                html.Append("</div>");
+                html.Append("</div>");
+                html.AppendFormat("<span class='comment-actions' onclick=\"ReplyTo('{0}','{1}','{2}','{3}',event)\">Reply</span>", comment.CommentId, comment.User.Fullname, comment.Comment.Length > 50 ? comment.Comment.Substring(0, 50) + " ..." : comment.Comment, comment.PostId);
+                html.Append("</div>");
+                html.AppendFormat("<div class='emotion-comment' id='emotion-cmt-{0}'>", comment.CommentId);
+                if (comment.CmtLikes.Count > 0)
+                {
+                    html.Append("<div class='like-block position-relative d-flex align-items-center' style='background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 10px'>");
+                    html.Append("<div class='d-flex align-items-center' style='padding-left: 10px'>");
+                    foreach (var item in comment.CmtLikes.GroupBy(x => x.EmotionURL).OrderByDescending(x => x.Count()).Take(3))
                     {
-                        html.AppendFormat("<div onclick='redirectToProfile({0})' class='clickable' style='color: white; padding-left: 10px;'>{1}</div>", like.User.UserId, like.User.Fullname);
+                        html.Append("<div class='total-like-block'>");
+                        html.Append("<div class='dropdown'>");
+                        html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'>");
+                        html.AppendFormat("<img src = '{0}' class='nofirst-icon' style='border: 2px solid white;'/>", item.Key);
+                        html.Append("</span>");
+                        html.Append("<div class='dropdown-menu' style='background-color: rgba(60, 60, 60, 0.7)'>");
+                        foreach (var like in item)
+                        {
+                            html.AppendFormat("<div onclick='redirectToProfile({0})' class='clickable' style='color: white; padding-left: 10px;'>{1}</div>", like.User.UserId, like.User.Fullname);
+                        }
+                        html.Append("</div></div></div>");
+                    }
+                    html.Append("<div class='total-like-block ms-2 me-3'>");
+                    html.Append("<div class='dropdown'>");
+                    html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button' style='color: black !important'>{0}</span>", comment.CmtLikes.Count);
+                    html.Append("<div class='dropdown-menu'>");
+                    foreach (var like in comment.CmtLikes)
+                    {
+                        html.AppendFormat("<div class='dropdown-item'>{0}</div>", like.User.Fullname);
                     }
                     html.Append("</div></div></div>");
+                    html.Append("</div></div>");
+
                 }
-                html.Append("<div class='total-like-block ms-2 me-3'>");
-                html.Append("<div class='dropdown'>");
-                html.AppendFormat("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button' style='color: black !important'>{0}</span>", comment.CmtLikes.Count);
-                html.Append("<div class='dropdown-menu'>");
-                foreach (var like in comment.CmtLikes)
+                html.Append("</div>");
+                html.Append("</div>");
+
+                html.Append("<div class='card-post-toolbar d-flex align-items-center'>");
+                html.AppendFormat("<div class='delete-cmt dropdown clickable' id='icon-del-cmt-{0}' hidden>", comment.CommentId);
+                html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'><i class='ri-more-fill'></i></span>");
+                html.Append("<div class='dropdown-menu m-0 p-0'>");
+                html.AppendFormat("<a class='dropdown-item p-3' onclick=\"RemoveComment('{0}')\">", comment.CommentId);
+                html.Append("<div class='d-flex align-items-top'>");
+                html.Append("<div class='h4'>");
+                html.Append("<i class='ri-close-line'></i>");
+                html.Append("</div>");
+                html.Append("<div class='data ms-2'>");
+                html.Append("<h6>Delete this comment</h6>");
+                html.Append("<p class='mb-0'>Delete your comment from this post</p>");
+                html.Append("</div>");
+                html.Append("</div>");
+                html.Append("</a>");
+                html.Append("</div>");
+                html.Append("</div>");
+                html.Append("</div>");
+                html.Append("</div>");
+
+
+                if (comment.ListComment != null && comment.ListComment.Any())
                 {
-                    html.AppendFormat("<div class='dropdown-item'>{0}</div>", like.User.Fullname);
+                    html.Append("<ul>");
+                    html.Append(RenderComments(comment.ListComment).ToString());
+                    html.Append("</ul>");
                 }
-                html.Append("</div></div></div>");
-                html.Append("</div></div>");
 
-            }
-            html.Append("</div>");
-            html.Append("</div>");
-
-            html.Append("<div class='card-post-toolbar d-flex align-items-center'>");
-            html.AppendFormat("<div class='delete-cmt dropdown clickable' id='icon-del-cmt-{0}' hidden>", comment.CommentId);
-            html.Append("<span class='dropdown-toggle' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false' role='button'><i class='ri-more-fill'></i></span>");
-            html.Append("<div class='dropdown-menu m-0 p-0'>");
-            html.AppendFormat("<a class='dropdown-item p-3' onclick=\"RemoveComment('{0}')\">", comment.CommentId);
-            html.Append("<div class='d-flex align-items-top'>");
-            html.Append("<div class='h4'>");
-            html.Append("<i class='ri-close-line'></i>");
-            html.Append("</div>");
-            html.Append("<div class='data ms-2'>");
-            html.Append("<h6>Delete this comment</h6>");
-            html.Append("<p class='mb-0'>Delete your comment from this post</p>");
-            html.Append("</div>");
-            html.Append("</div>");
-            html.Append("</a>");
-            html.Append("</div>");
-            html.Append("</div>");
-            html.Append("</div>");
-            html.Append("</div>");
-
-            if (comment.ListComment != null && comment.ListComment.Any())
-            {
-                html.Append("<ul>");
-                html.Append(RenderComments(comment.ListComment).ToString());
-                html.Append("</ul>");
+                html.Append("</li>");
             }
 
-            html.Append("</li>");
         }
-
         html.Append("</ul>");
         return new HtmlString(html.ToString());
     }
@@ -1338,4 +1342,61 @@
     //Friend request
 </script>
 <script src="js/Profile/FollowHandler.js"></script>
+@section Scripts {
+    <script>
+        window.addEventListener("load", function () {
+            var postId = @Html.Raw(ViewData["postId"] ?? "null");
+            var commentId = @Html.Raw(ViewData["commentId"] ?? "null");
+
+            function isElementInViewport(el) {
+                var rect = el.getBoundingClientRect();
+                return (
+                    rect.top >= 0 &&
+                    rect.left >= 0 &&
+                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+            }
+
+            function scrollToElementAndHighlight(element) {
+                if (element) {
+                    function handleScroll() {
+                        if (isElementInViewport(element)) {
+                            element.classList.add('flash');
+                            setTimeout(function () {
+                                element.classList.remove('flash');
+                            }, 1000);
+
+                            window.removeEventListener('scroll', handleScroll);
+                        }
+                    }
+
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'nearest'
+                    });
+
+                    window.addEventListener('scroll', handleScroll);
+                }
+            }
+
+            if (postId) {
+                var postElement = document.getElementById('post-' + postId);
+                scrollToElementAndHighlight(postElement);
+            }
+
+
+            if (commentId) {
+                var commentElement = document.getElementById('comment-' + commentId);
+                if (commentElement) {
+                    var container = commentElement.closest('.comments-section').parentElement;
+                    container.hidden = false;
+                    scrollToElementAndHighlight(commentElement);
+                }
+            }
+        });
+    </script>
+}
+
 </html>

@@ -30,4 +30,9 @@ public interface IPostRepository
     void DeleteCmtLike(int cmtId, int currentUser);
     List<int> GetAllUserId();
     public void RemoveComment(int cmdId);
+    Comment? getCommentById(int v);
+    List<CommentData> GetAllCommentsOfUsers(int currentUser);
+    Task<Post> GetPostAsyncById(int postId);
+    Task<IList<PostData>> GetAllPostAsync(List<int> listFriendId);
+    CommentLike GetCommentLike(int v1, int v2);
 }

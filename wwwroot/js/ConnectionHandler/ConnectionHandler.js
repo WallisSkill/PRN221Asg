@@ -22,40 +22,245 @@ function showToast(message, icon = 'success', userid) {
 
 
 ///Other
-async function fetchFriendRequestOtherNoti(userId = CURRENT_USER_ID) {
+function getUserFromData(dataArray, userObj) {
+    if (userObj && userObj.UserId) {
+        return userObj;
+    } else if (userObj && userObj.$ref) {
+        return dataArray.find(item => item.User && item.User.$id === userObj.$ref)?.User;
+    }
+    return null;
+}
 
+function getUserFromDataReply(dataArray, userObj) {
+    if (userObj && userObj.UserId) {
+        return userObj;
+    } else if (userObj && userObj.$ref) {
+        return dataArray.find(item => item.CommentReply.User && item.CommentReply.User.$id === userObj.$ref)?.User;
+    }
+    return null;
+}
+
+//fetch Notifications
+async function fetchFriendRequestOtherNoti(userId = CURRENT_USER_ID) {
     const response = await fetch(`/Index?handler=GetRequestsForNotification&&userid=${userId}`);
-    const friendRequests = await response.json();
+    const data = await response.json();
+    //data
+    const friendRequests = data.Friends;
+    const posts = data.Posts;
+    const postLikes = data.PostLikes;
+    const commentLikes = data.CommentLikes;
+    const comments = data.Comments;
+    const commentReplies = data.CommentReplies;
+    //
     const container = document.querySelector('.noti-list');
-    container.innerHTML = ''; // Clear existing content
-    const count = friendRequests.$values.length;
-    document.querySelector(".noti-noti").style.display = '';
-    friendRequests.$values.forEach(request => {
-        const requestDiv = document.createElement('a');
-        requestDiv.href = `/Profile?Id=${request.User.UserId}`;
-        requestDiv.className = "iq-sub-card";
-        requestDiv.innerHTML = `
-                            <div class="d-flex align-items-center">
-                                <div class="">
-                                    <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
-                                </div>
-                                <div class="ms-3 w-100">
-                                    <h6 class="mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="errortext mb-0 ${body.classList.contains('bg-dark') ? 'text-white' : ''}">accepted your friend request</p>
-                                        <small class="float-right font-size-12">${getTimeFromMessage(request.CreatedTime)}</small>
-                                    </div>
-                                </div>
+    container.innerHTML = ''; 
+
+    const notifications = [];
+/////////////////////
+    friendRequests.forEach(request => {
+        notifications.push({
+            type: 'friendRequest',
+            time: new Date(request.CreatedTime),
+            data: request
+        });
+    });
+
+    posts.forEach(post => {
+        notifications.push({
+            type: 'post',
+            time: new Date(post.Time),
+            data: post
+        });
+    });
+
+    postLikes.forEach(like => {
+        notifications.push({
+            type: 'postLike',
+            time: new Date(like.createDate),
+            data: like
+        });
+    });
+
+    commentLikes.forEach(like => {
+        notifications.push({
+            type: 'commentLike',
+            time: new Date(like.CommentLike.createDate),
+            data: like
+        });
+    });
+
+    comments.forEach(comment => {
+        notifications.push({
+            type: 'comment',
+            time: new Date(comment.Time),
+            data: comment
+        });
+    });
+
+    commentReplies.forEach(reply => {
+        notifications.push({
+            type: 'commentReply',
+            time: new Date(reply.CommentReply.Time),
+            data: reply
+        });
+    });
+////////////////////
+    notifications.sort((a, b) => b.time - a.time);
+
+    notifications.forEach(notification => {
+        if (notification.type === 'friendRequest') {
+            const request = notification.data;
+            const requestDiv = document.createElement('a');
+            requestDiv.href = `/Profile?Id=${request.User.UserId}`;
+            requestDiv.className = "iq-sub-card";
+            requestDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <img class="avatar-40 rounded" src="${request.User.ProfilePhotoUrl}" alt="">
+                    </div>
+                    <div class="ms-3 w-100">
+                        <h6 class="mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${request.User.Fullname}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="errortext mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">accepted your friend request</p>
+                            <small class="float-right font-size-12">${getTimeFromMessage(request.CreatedTime)}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(requestDiv);
+        }
+        else if (notification.type === 'post') {
+            const post = notification.data;
+            const postDiv = document.createElement('a');
+            postDiv.href = `/Profile?Id=${post.User.UserId}&&postId=${post.Id}`;
+            postDiv.className = "iq-sub-card";
+            postDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <img class="avatar-40 rounded" src="${post.User.ProfilePhotoUrl}" alt="">
+                    </div>
+                    <div class="ms-3 w-100">
+                        <h6 class="mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${post.User.Fullname}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="errortext mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${post.Caption != null ? 'Add new Post' : 'Add new Picture'}</p>
+                            <small class="float-right font-size-12">${getTimeFromMessage(post.Time)}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(postDiv);
+        }
+        else if (notification.type === 'postLike') {
+            const like = notification.data;
+
+            let user;
+
+            if (like.User && like.User.UserId) {
+                user = like.User;
+            }
+            else if (like.User && like.User.$ref) {
+                user = postLikes.find(pl => pl.User && pl.User.$id === like.User.$ref)?.User;
+            }
+
+            const likeDiv = document.createElement('a');
+            likeDiv.href = `/Profile?Id=${CURRENT_USER_ID}&&postId=${like.ConnectId}`;
+            likeDiv.className = "iq-sub-card";
+            likeDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <img class="avatar-40 rounded" src="${user.ProfilePhotoUrl}" alt="">
+                    </div>
+                    <div class="ms-3 w-100">
+                        <h6 class="mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${user.Fullname}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="errortext mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}"> react your post</p>
+                            <small class="float-right font-size-12">${getTimeFromMessage(like.createDate)}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(likeDiv);
+        }
+        else if (notification.type === 'comment') {
+            const comment = notification.data;
+            let user = getUserFromData(comments, comment.User) ?? getUserFromDataReply(commentReplies, comment.User);
+
+            if (user) {
+                const commentDiv = document.createElement('a');
+                commentDiv.href = `/Profile?Id=${CURRENT_USER_ID}&&commentId=${comment.CommentId}`;
+                commentDiv.className = "iq-sub-card";
+                commentDiv.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <div class="">
+                            <img class="avatar-40 rounded" src="${user.ProfilePhotoUrl}" alt="">
+                        </div>
+                        <div class="ms-3 w-100">
+                            <h6 class="mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${user.Fullname}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="errortext mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}"> commented on your post</p>
+                                <small class="float-right font-size-12">${getTimeFromMessage(comment.Time)}</small>
                             </div>
+                        </div>
+                    </div>
                 `;
-        container.appendChild(requestDiv);
-    })
-    if (count === 0) {
+                container.appendChild(commentDiv);
+            }
+        }
+        else if (notification.type === 'commentReply') {
+            const reply = notification.data;
+            let user = getUserFromDataReply(commentReplies, reply.CommentReply.User) ?? getUserFromData(comments, reply.CommentReply.User) ;
+
+            if (user) {
+                const replyDiv = document.createElement('a');
+                replyDiv.href = `/Profile?Id=${reply.UserId}&&commentId=${reply.CommentReply.CommentId}`;
+                replyDiv.className = "iq-sub-card";
+                replyDiv.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <div class="">
+                            <img class="avatar-40 rounded" src="${user.ProfilePhotoUrl}" alt="">
+                        </div>
+                        <div class="ms-3 w-100">
+                            <h6 class="mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${user.Fullname}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="errortext mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}"> replied to your comment</p>
+                                <small class="float-right font-size-12">${getTimeFromMessage(reply.CommentReply.Time)}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(replyDiv);
+            }
+        }
+        else if (notification.type === 'commentLike') {
+            const like = notification.data;
+            const likeDiv = document.createElement('a');
+            likeDiv.href = `/Profile?Id=${like.UserId}&&commentId=${like.CommentLike.ConnectId}`;
+            likeDiv.className = "iq-sub-card";
+            likeDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <img class="avatar-40 rounded" src="${like.CommentLike.User.ProfilePhotoUrl}" alt="">
+                    </div>
+                    <div class="ms-3 w-100">
+                        <h6 class="mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}">${like.CommentLike.User.Fullname}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="errortext mb-0 ${document.body.classList.contains('bg-dark') ? 'text-white' : ''}"> reacted your comment on a post</p>
+                            <small class="float-right font-size-12">${getTimeFromMessage(like.CommentLike.createDate)}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(likeDiv);
+        }
+    });
+
+    if (notifications.length === 0) {
         const noRequestsMessage = document.createElement('div');
         noRequestsMessage.textContent = 'No notifications to display';
         noRequestsMessage.classList.add("text-center");
         container.appendChild(noRequestsMessage);
     }
+    updateNotificationBadgeG();
 }
 ///Current
 async function fetchFriendRequests() {
@@ -145,6 +350,15 @@ connection.on("ReceiveFriendRequest", function (userId, friendUserId, name) {
 connection.on("AcceptFriendRequest", function (userId, friendUserId, name) {
     showToast(`${name} has accepted your friend request.`, `success`, userId);
     fetchFriendRequests().then(() => updateNotificationBadgeM());
+    fetchFriendRequestOtherNoti().then(() => updateNotificationBadgeG());
+});
+
+connection.on("NewNoti", function (userId,type, name) {
+    if (type == '1') showToast(`${name} has added new post.`, `info`, userId);
+    if (type == '2') showToast(`${name} has reacted to your post.`, `info`, userId);
+    if (type == '3') showToast(`${name} has comment to your post.`, `info`, userId);
+    if (type == '4') showToast(`${name} has reply to your comment.`, `info`, userId);
+    if (type == '5') showToast(`${name} has liked your comment.`, `info`, userId);
     fetchFriendRequestOtherNoti().then(() => updateNotificationBadgeG());
 });
 
@@ -317,11 +531,22 @@ function handleAcceptFriendSearch(button) {
     fetchFriendRequests();
 }
 ////Status friend
+function moveUserToTop(userId) {
+    const friendElement = document.getElementById(`friend-${userId}`);
+    if (friendElement) {
+        const parentElement = friendElement.parentElement;
+        parentElement.removeChild(friendElement);
+        parentElement.insertBefore(friendElement, parentElement.firstChild);
+    }
+}
+
+
 connection.on("UserConnected", function (userId, username) {
     const friendElement = document.getElementById(`friend-${userId}`);
     if (friendElement) {
         friendElement.querySelector(".iq-profile-avatar").classList.remove("status-offline");
         friendElement.querySelector(".iq-profile-avatar").classList.add("status-online");
+        moveUserToTop(userId); // Di chuyển người dùng lên đầu danh sách
     }
 });
 
@@ -330,6 +555,7 @@ connection.on("UserDisconnected", function (userId) {
     if (friendElement) {
         friendElement.querySelector(".iq-profile-avatar").classList.remove("status-online");
         friendElement.querySelector(".iq-profile-avatar").classList.add("status-offline");
+        moveUserToBottom(userId);
     }
 });
 
@@ -339,6 +565,16 @@ connection.on("ReceiveOnlineUsers", function (onlineUsers) {
         if (friendElement) {
             friendElement.querySelector(".iq-profile-avatar").classList.remove("status-offline");
             friendElement.querySelector(".iq-profile-avatar").classList.add("status-online");
+            moveUserToTop(userId); // Di chuyển người dùng lên đầu danh sách
         }
     });
 });
+
+function moveUserToBottom(userId) {
+    const friendElement = document.getElementById(`friend-${userId}`);
+    if (friendElement) {
+        const parentElement = friendElement.parentElement;
+        parentElement.removeChild(friendElement);
+        parentElement.appendChild(friendElement);
+    }
+}

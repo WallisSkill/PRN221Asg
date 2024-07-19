@@ -836,6 +836,7 @@
 
 
     function updateNotificationBadgeG() {
+        document.querySelector(".noti-noti").style.display = '';
         const number = document.querySelectorAll(".noti-list .iq-sub-card").length ?? 0;
         if (number == 0) document.querySelector(".noti-noti").style.display = 'none';
         document.querySelector(".noti-count").innerHTML = number;
@@ -929,7 +930,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         const currentPath = window.location.pathname;
         const menuLinks = document.querySelectorAll('#iq-sidebar-toggle a');
-        console.log(currentPath.length);
         menuLinks.forEach(link => {
             if (currentPath.includes('/Profile')) {
                 // Use .includes() for Profile link

@@ -125,100 +125,53 @@ $(document).ready(function () {
     });
 
     let form = document.getElementById('postForm');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Prevent default form submission
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        let formData = new FormData(e.target);
+            let formData = new FormData(e.target);
 
-        try {
-            let response = await fetch('/Index?handler=CreatePost', {
-                method: 'POST',
-                body: formData
-            });
+            try {
+                let response = await fetch('/Index?handler=CreatePost', {
+                    method: 'POST',
+                    body: formData
+                });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                let responseData = await response.json();
+
+                form.reset();
+                document.getElementById('caption').value = '';
+                $('#post_Caption').val('');
+
+                if ($('#imagePreview').hasClass('slick-initialized')) {
+                    $('#imagePreview').slick('unslick').empty();
+                } else {
+                    $('#imagePreview').empty();
+                }
+
+                addNewPostToDOM(responseData);
+
+                dataTransfer = new DataTransfer();
+                fileInput.files = dataTransfer.files;
+                fileInput.value = '';
+                connection.invoke("NewPost", CURRENT_USER_ID, CURRENT_USER_NAME)
+                    .catch(err => console.error(err.toString()));
+
+                $(".newpost").slick({
+                    infinite: false
+                });
+
+            } catch (error) {
+                console.error('Error posting data:', error);
             }
-
-            let responseData = await response.json();
-
-            // Clear the form fields
-            form.reset();
-            document.getElementById('caption').value = '';
-            $('#post_Caption').val('');
-
-            // Clear the preview
-            if ($('#imagePreview').hasClass('slick-initialized')) {
-                $('#imagePreview').slick('unslick').empty();
-            } else {
-                $('#imagePreview').empty();
-            }
-
-            // Add new post to the top of the post list
-            addNewPostToDOM(responseData);
-
-            // Clear dataTransfer and fileInput
-            dataTransfer = new DataTransfer();
-            fileInput.files = dataTransfer.files;
-            fileInput.value = '';
-
-            // Reinitialize the slick slider
-            $(".newpost").slick({
-                infinite: false
-            });
-
-        } catch (error) {
-            console.error('Error posting data:', error);
-        }
-    });
-});
-
-form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    let formData = new FormData();
-    formData = new FormData(e.target);
-
-    try {
-        let response = await fetch('/Index?handler=CreatePost', {
-            method: 'POST',
-            body: formData
         });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        let responseData = await response.json();
-
-        // Clear the form fields
-        form.reset();
-        document.getElementById('caption').value = '';
-        $('#post_Caption').val('');
-
-        // Clear the preview
-        $('#imagePreview').slick('unslick').empty();
-
-        // Add new post to the top of the post list
-        addNewPostToDOM(responseData);
-        $(".newpost").slick({
-            infinite: false
-        });
-        // Ensure the fileInput is cleared
-        let fileInput = document.getElementById('fileInput');
-        dataTransfer = new DataTransfer();
-        fileInput.files = dataTransfer.files;
-        fileInput.value = ''; 
-
-        // Log the fileInput files to confirm it's empty
-        console.log(fileInput.files);
-
-        // Reinitialize the slick slider
-        
-
-    } catch (error) {
-        console.error('Error posting data:', error);
     }
 });
+
 function addNewPostToDOM(data) {
     const postList = document.getElementById('postList');
     var newPostHtml = `
@@ -407,47 +360,45 @@ function deletePost(postId, event) {
 
 const form_update = document.getElementById('postForm-update');
 
-form_update.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent default form submission
+if (form_update) {
+    form_update.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
 
-    const formData = new FormData(e.target);
-    // formData.append('imageNames', document.getElementById('existingPhoto').value);
+        const formData = new FormData(e.target);
+        // formData.append('imageNames', document.getElementById('existingPhoto').value);
 
-    try {
-        // Send form data to the server using fetch
-        const response = await fetch('/EditPost', {
-            method: 'POST',
-            body: formData
-        });
+        try {
+            const response = await fetch('/EditPost', {
+                method: 'POST',
+                body: formData
+            });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const responseData = await response.json();
+
+            console.log('Post successful:', responseData);
+
+            document.getElementById('caption').value = '';
+
+            $(".newpost").slick({
+                infinite: false
+            });
+
+        } catch (error) {
+            console.error('Error posting data:', error);
         }
-
-        const responseData = await response.json();
-
-        console.log('Post successful:', responseData);
-
-        // Clear the form fields
-        document.getElementById('caption').value = '';
-
-        // Add new post to the top of the post list
-
-        $(".newpost").slick({
-            infinite: false
-        });
-
-    } catch (error) {
-        console.error('Error posting data:', error);
-    }
-});
+    });
+}
 
 function deletePhoto(index) {
 
     var existingPhotoInput = document.getElementById('existingPhoto');
     var existingPhotoUrls = existingPhotoInput.value.split('||');
     if (index !== -1) {
-        existingPhotoUrls.splice(index, 1); // Xóa URL khỏi mảng
-        existingPhotoInput.value = existingPhotoUrls.join('||'); // Cập nhật giá trị biến hidden
+        existingPhotoUrls.splice(index, 1);
+        existingPhotoInput.value = existingPhotoUrls.join('||');
     }
 }
