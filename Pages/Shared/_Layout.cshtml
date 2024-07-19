@@ -21,13 +21,27 @@
     <link rel="stylesheet" type="text/css" href="./css/slick.css" />
     <link rel="stylesheet" type="text/css" href="./css/slick-theme.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src='./js/lodash.js'></script>
-    <script src="./js/signalR.js"></script>
-    <script src="./js/jquery.js"></script>
+    @if (User.FindFirstValue(ClaimTypes.Role).Equals("User"))
+    {
+        <script src='./js/lodash.js'></script>
+        <script src="./js/signalR.js"></script>
+        <script src="./js/jquery.js"></script>
 
-    <script src="./js/toast.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="./js/toast.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    }
+
+    @if (User.FindFirstValue(ClaimTypes.Role).Equals("Admin"))
+    {
+        <script src='../js/lodash.js'></script>
+        <script src="../js/signalR.js"></script>
+        <script src="../js/jquery.js"></script>
+
+        <script src="../js/toast.js"></script>
+        <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    }
+
+
     <!-- Wrapper End-->
     <!-- Backend Bundle JavaScript -->
     <script src="~/assets/js/libs.min.js"></script>
@@ -72,6 +86,7 @@
                 <div id="sidebar-scrollbar">
                     <nav class="iq-sidebar-menu">
                         <ul id="iq-sidebar-toggle" class="iq-menu">
+                            @if(User.FindFirstValue(ClaimTypes.Role).Equals("User")){
                             <li class="">
                                 <a href="/" class=" ">
                                     <i class="las la-home"></i><span>HomePage</span>
@@ -87,6 +102,14 @@
                                     <i class="las la-bookmark"></i><span>Saved</span>
                                 </a>
                             </li>
+                            }
+                            @if (User.FindFirstValue(ClaimTypes.Role).Equals("Admin")) {
+                            <li class="">
+                                <a href="./HomePage" class=" ">
+                                    <i class="las la-home"></i><span>HomePage</span>
+                                </a>
+                            </li>
+                            }
                             @* <li class=" ">
                             <a href="~/app/todo.html" class=" ">
                             <i class="las la-check-circle"></i><span>Todo</span>
@@ -380,48 +403,60 @@
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav  ms-auto navbar-list">
+                                 @if (User.FindFirstValue(ClaimTypes.Role).Equals("User")) {
                                 <li>
                                     <a href="~/" class="  d-flex align-items-center">
                                         <i class="ri-home-line"></i>
                                     </a>
                                 </li>
-                                <li onclick="fetchFriendRequests()" class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false">
-                                        <i class="ri-group-line"></i>
-                                        <h1 class="notification-badge request-noti"></h1>
-                                    </a>
-                                    <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title">
-                                                    <h5 class="mb-0 text-white">Friend Request</h5>
+                                 }
+                                @if (User.FindFirstValue(ClaimTypes.Role).Equals("Admin"))
+                                {
+                                    <li>
+                                        <a href="/Admin/HomePage" class="  d-flex align-items-center">
+                                            <i class="ri-home-line"></i>
+                                        </a>
+                                    </li>
+                                }
+                                @if (User.FindFirstValue(ClaimTypes.Role).Equals("User"))
+                                {
+                                    <li onclick="fetchFriendRequests()" class="nav-item dropdown">
+                                        <a href="#" class="dropdown-toggle" id="group-drop" data-bs-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                            <i class="ri-group-line"></i>
+                                            <h1 class="notification-badge request-noti"></h1>
+                                        </a>
+                                        <div class="sub-drop sub-drop-large dropdown-menu" aria-labelledby="group-drop">
+                                            <div class="card shadow-none m-0">
+                                                <div class="card-header d-flex justify-content-between bg-primary">
+                                                    <div class="header-title">
+                                                        <h5 class="mb-0 text-white">Friend Request</h5>
+                                                    </div>
+                                                    <small class="badge req-count bg-light text-dark "></small>
                                                 </div>
-                                                <small class="badge req-count bg-light text-dark "></small>
-                                            </div>
-                                            <div class="card-body p-0 request-list">
-                                                @* <div class="text-center"> *@
-                                                @*     <a href="#" class=" btn text-primary">View More Request</a> *@
-                                                @* </div> *@
+                                                <div class="card-body p-0 request-list">
+                                                    @* <div class="text-center"> *@
+                                                    @*     <a href="#" class=" btn text-primary">View More Request</a> *@
+                                                    @* </div> *@
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a onclick="fetchFriendRequestOtherNoti().then(() => updateNotificationBadgeG());" href="#" class="search-toggle dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
-                                        <i class="ri-notification-4-line"></i>
-                                        <h1 class="notification-badge noti-noti"></h1>
-                                    </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="notification-drop">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary">
-                                                    <h5 class="mb-0 text-white">All Notifications</h5>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a onclick="fetchFriendRequestOtherNoti().then(() => updateNotificationBadgeG());" href="#" class="search-toggle dropdown-toggle" id="notification-drop" data-bs-toggle="dropdown">
+                                            <i class="ri-notification-4-line"></i>
+                                            <h1 class="notification-badge noti-noti"></h1>
+                                        </a>
+                                        <div class="sub-drop dropdown-menu" aria-labelledby="notification-drop">
+                                            <div class="card shadow-none m-0">
+                                                <div class="card-header d-flex justify-content-between bg-primary">
+                                                    <div class="header-title bg-primary">
+                                                        <h5 class="mb-0 text-white">All Notifications</h5>
+                                                    </div>
+                                                    <small class="badge bg-light text-dark noti-count"></small>
                                                 </div>
-                                                <small class="badge bg-light text-dark noti-count"></small>
-                                            </div>
-                                            <div class="card-body p-0 noti-list">
-                                                @*<a href="#" class="iq-sub-card">
+                                                <div class="card-body p-0 noti-list">
+                                                    @*<a href="#" class="iq-sub-card">
                                                 <div class="d-flex align-items-center">
                                                 <div class="">
                                                 <img class="avatar-40 rounded" src="~/assets/images/user/01.jpg" alt="">
@@ -477,28 +512,29 @@
                                                 </div>
                                                 </div>
                                                 </a>*@
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
-                                        <i class="ri-message-line"></i>
-                                        <h1 class="notification-badge message-noti"></h1>
-                                    </a>
-                                    <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
-                                        <div class="card shadow-none m-0">
-                                            <div class="card-header d-flex justify-content-between bg-primary">
-                                                <div class="header-title bg-primary d-flex justify-content-between align-items-center w-100">
-                                                    <h5 class="mb-0 text-white">All Messages</h5>
-                                                    <span class="ml-auto text-white unrep"></span>
                                                 </div>
                                             </div>
-                                            <div class="card-body p-0 chat-noti">
+                                        </div>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a href="#" class="dropdown-toggle" id="listMess" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="fetchListMess();">
+                                            <i class="ri-message-line"></i>
+                                            <h1 class="notification-badge message-noti"></h1>
+                                        </a>
+                                        <div class="sub-drop dropdown-menu" aria-labelledby="mail-drop" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)">
+                                            <div class="card shadow-none m-0">
+                                                <div class="card-header d-flex justify-content-between bg-primary">
+                                                    <div class="header-title bg-primary d-flex justify-content-between align-items-center w-100">
+                                                        <h5 class="mb-0 text-white">All Messages</h5>
+                                                        <span class="ml-auto text-white unrep"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body p-0 chat-noti">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                }
                                 <li class="nav-item">
                                     <a style="color:#50b5FF">
                                         <i id="changeView" class="ri-sun-line" onclick="toggleDarkMode()"></i>
@@ -507,8 +543,15 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <li class="nav-item dropdown">
-                                        <a href="#" class="  d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <img src="@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
+                                        <a href="#" class="d-flex align-items-center dropdown-toggle" id="drop-down-arrow" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @if (!User.FindFirstValue(ClaimTypes.Role).Equals("Admin"))
+                                            {
+                                                <img src="@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
+                                            }
+                                            else
+                                            {
+                                              <img src=".@User.FindFirstValue("profile_picture")" class="img-fluid rounded-circle me-3" alt="user">
+                                            }
                                             <div class="caption">
                                                 <h6 class="mb-0 line-height">@User.FindFirstValue(ClaimTypes.GivenName)</h6>
                                             </div>
@@ -521,59 +564,64 @@
                                                         <span class="text-white font-size-12">Available</span>
                                                     </div>
                                                 </div>
-                                                <div class="card-body p-0 ">
-                                                    <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class="iq-sub-card iq-bg-primary-hover">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="rounded card-icon bg-soft-primary">
-                                                                <i class="ri-file-user-line"></i>
+                                                
+                                                    <div class="card-body p-0 ">
+                                                    @if (User.FindFirstValue(ClaimTypes.Role).Equals("User"))
+                                                    {
+                                                        <a href="/Profile?Id=@User.FindFirstValue(ClaimTypes.NameIdentifier)" class="iq-sub-card iq-bg-primary-hover">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="rounded card-icon bg-soft-primary">
+                                                                    <i class="ri-file-user-line"></i>
+                                                                </div>
+                                                                <div class="ms-3">
+                                                                    <h6 class="mb-0 ">My Profile</h6>
+                                                                    <p class="mb-0 font-size-12">View personal profile details.</p>
+                                                                </div>
                                                             </div>
-                                                            <div class="ms-3">
-                                                                <h6 class="mb-0 ">My Profile</h6>
-                                                                <p class="mb-0 font-size-12">View personal profile details.</p>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                    @* <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover"> *@
-                                                    @*     <div class="d-flex align-items-center"> *@
-                                                    @*         <div class="rounded card-icon bg-soft-warning"> *@
-                                                    @*             <i class="ri-profile-line"></i> *@
-                                                    @*         </div> *@
-                                                    @*         <div class="ms-3"> *@
-                                                    @*             <h6 class="mb-0 ">Edit Profile</h6> *@
-                                                    @*             <p class="mb-0 font-size-12">Modify your personal details.</p> *@
-                                                    @*         </div> *@
-                                                    @*     </div> *@
-                                                    @* </a> *@
-                                                    @* <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover"> *@
-                                                    @*     <div class="d-flex align-items-center"> *@
-                                                    @*         <div class="rounded card-icon bg-soft-info"> *@
-                                                    @*             <i class="ri-account-box-line"></i> *@
-                                                    @*         </div> *@
-                                                    @*         <div class="ms-3"> *@
-                                                    @*             <h6 class="mb-0 ">Account settings</h6> *@
-                                                    @*             <p class="mb-0 font-size-12">Manage your account parameters.</p> *@
-                                                    @*         </div> *@
-                                                    @*     </div> *@
-                                                    @* </a> *@
-                                                    @* <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover"> *@
-                                                    @*     <div class="d-flex align-items-center"> *@
-                                                    @*         <div class="rounded card-icon bg-soft-danger"> *@
-                                                    @*             <i class="ri-lock-line"></i> *@
-                                                    @*         </div> *@
-                                                    @*         <div class="ms-3"> *@
-                                                    @*             <h6 class="mb-0 ">Privacy Settings</h6> *@
-                                                    @*             <p class="mb-0 font-size-12"> *@
-                                                    @*                 Control your privacy parameters. *@
-                                                    @*             </p> *@
-                                                    @*         </div> *@
-                                                    @*     </div> *@
-                                                    @* </a> *@
-                                                    <div class="d-inline-block w-100 text-center p-3">
-                                                        <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary iq-sign-btn" role="button">
-                                                            Sign out<i class="ri-login-box-line ms-2"></i>
                                                         </a>
+                                                        @* <a href="~/app/profile-edit.html" class="iq-sub-card iq-bg-warning-hover"> *@
+                                                        @*     <div class="d-flex align-items-center"> *@
+                                                        @*         <div class="rounded card-icon bg-soft-warning"> *@
+                                                        @*             <i class="ri-profile-line"></i> *@
+                                                        @*         </div> *@
+                                                        @*         <div class="ms-3"> *@
+                                                        @*             <h6 class="mb-0 ">Edit Profile</h6> *@
+                                                        @*             <p class="mb-0 font-size-12">Modify your personal details.</p> *@
+                                                        @*         </div> *@
+                                                        @*     </div> *@
+                                                        @* </a> *@
+                                                        @* <a href="~/app/account-setting.html" class="iq-sub-card iq-bg-info-hover"> *@
+                                                        @*     <div class="d-flex align-items-center"> *@
+                                                        @*         <div class="rounded card-icon bg-soft-info"> *@
+                                                        @*             <i class="ri-account-box-line"></i> *@
+                                                        @*         </div> *@
+                                                        @*         <div class="ms-3"> *@
+                                                        @*             <h6 class="mb-0 ">Account settings</h6> *@
+                                                        @*             <p class="mb-0 font-size-12">Manage your account parameters.</p> *@
+                                                        @*         </div> *@
+                                                        @*     </div> *@
+                                                        @* </a> *@
+                                                        @* <a href="~/app/privacy-setting.html" class="iq-sub-card iq-bg-danger-hover"> *@
+                                                        @*     <div class="d-flex align-items-center"> *@
+                                                        @*         <div class="rounded card-icon bg-soft-danger"> *@
+                                                        @*             <i class="ri-lock-line"></i> *@
+                                                        @*         </div> *@
+                                                        @*         <div class="ms-3"> *@
+                                                        @*             <h6 class="mb-0 ">Privacy Settings</h6> *@
+                                                        @*             <p class="mb-0 font-size-12"> *@
+                                                        @*                 Control your privacy parameters. *@
+                                                        @*             </p> *@
+                                                        @*         </div> *@
+                                                        @*     </div> *@
+                                                        @* </a> *@
+                                                        }
+
+                                                        <div class="d-inline-block w-100 text-center p-3">
+                                                            <a asp-page="/Login" asp-page-handler="Logout" class="btn btn-primary iq-sign-btn" role="button">
+                                                                Sign out<i class="ri-login-box-line ms-2"></i>
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </li>
@@ -639,7 +687,7 @@
             </div>
             </div> *@
         </div>
-        <script src="./js/DarkModeManager.js"></script>
+
         <script>
 
             ////////////////////////////
@@ -728,11 +776,18 @@
     <script src="~/assets/js/lottie.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
+ @if(User.FindFirstValue(ClaimTypes.Role).Equals("User")){
+<script src="./js/DarkModeManager.js"></script>
+ }
+@if (User.FindFirstValue(ClaimTypes.Role).Equals("Admin"))
+{
+    <script src="../js/DarkModeManager.js"></script>
+}
 <script>
     const CURRENT_USER_ID = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
     const CURRENT_USER_NAME = '@User.FindFirstValue(ClaimTypes.GivenName)';
     const CURRENT_USER_IMAGE = '@User.FindFirstValue("profile_picture")';
+    const CURRENT_USER_ROLE = '@User.FindFirstValue(ClaimTypes.Role)';
     const body = document.body;
 
 
@@ -803,20 +858,73 @@
 
 
 </html>
-<script src="./js/connection.js"></script>
-<script src="./js/ConnectionHandler/ConnectionHandler.js"></script>
-<script src="./js/chatbox/chatBoxHandler.js"></script>
-<script src="./js/Post/commentHandler.js"></script>
-<script src="./js/Post/SavePostHandler.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
+@if (User.FindFirstValue(ClaimTypes.Role).Equals("User")){
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="./js/connection.js"></script>
+    <script src="./js/ConnectionHandler/ConnectionHandler.js"></script>
+    <script src="./js/chatbox/chatBoxHandler.js"></script>
+    <script src="./js/Post/commentHandler.js"></script>
+    <script src="./js/Post/SavePostHandler.js"></script>
+}
+
+@if (User.FindFirstValue(ClaimTypes.Role).Equals("Admin")){
+ <script src="~/js/Admin/UserHandler.js"></script>
+<script src="../js/site.js" asp-append-version="true"></script>
+<script src="../js/connection.js"></script>
+<script src="../js/ConnectionHandler/ConnectionHandler.js"></script>
+<script src="../js/chatbox/chatBoxHandler.js"></script>
+<script src="../js/Post/commentHandler.js"></script>
+<script src="../js/Post/SavePostHandler.js"></script>
+}
+
+@if (User.FindFirstValue(ClaimTypes.Role).Equals("User"))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
         fetchListMess();
         fetchFriendRequests().then(() => updateNotificationBadgeM());
         fetchFriendRequestOtherNoti(CURRENT_USER_ID).then(() => updateNotificationBadgeG());
         updateNotificationBadgeM();
-    });
-</script>
+        });
 
+        async function checkLockStatus() {
+            try {
+                var formData = new FormData();
+                const response = await fetch('/Login?handler=CheckingLock', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Account Disabled',
+                        text: result.message || 'Your account has been disabled',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/Login'; // Redirect to login page after logout
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    allowOutsideClick: false,
+                    allowEscapeKey:false,
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was an error checking the account status.'
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkLockStatus);
+    </script>
+}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const currentPath = window.location.pathname;

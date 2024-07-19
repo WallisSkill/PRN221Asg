@@ -3,7 +3,7 @@
 @{
     Layout = null;
 }
-@model PRN221_Assignment.Pages.LoginModel
+@model PRN221_Assignment.Pages.Admin.LoginAdminModel
 @{
 }
 
@@ -13,7 +13,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-    <title>LoginPage</title>
+    <title>LoginAdminPage</title>
 
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
     <link rel="stylesheet" href="../assets/css/libs.min.css">
@@ -51,18 +51,18 @@
                                 <ul class="swiper-wrapper list-inline m-0 p-0 ">
                                     <li class="swiper-slide">
                                         <img src="../assets/images/login/1.png" class="img-fluid mb-4" alt="logo">
-                                        <h4 class="mb-1 text-white">Find new friends</h4>
-                                        <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                                        <h4 class="mb-1 text-white">This is Admin Page</h4>
+                                        <p>Control user activity</p>
                                     </li>
                                     <li class="swiper-slide">
                                         <img src="../assets/images/login/2.png" class="img-fluid mb-4" alt="logo">
-                                        <h4 class="mb-1 text-white">Connect with the world</h4>
-                                        <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                                        <h4 class="mb-1 text-white">Boss</h4>
+                                        <p>Filter post and comment</p>
                                     </li>
                                     <li class="swiper-slide">
                                         <img src="../assets/images/login/3.png" class="img-fluid mb-4" alt="logo">
-                                        <h4 class="mb-1 text-white">Create new events</h4>
-                                        <p>It is a long established fact that a reader will be distracted by the readable content.</p>
+                                        <h4 class="mb-1 text-white">The Creator</h4>
+                                        <p>Fully role create, update, delete user</p>
                                     </li>
                                 </ul>
                             </div>
@@ -72,16 +72,13 @@
                         <div class="sign-in-from">
                             <h1 class="mb-0">Sign in</h1>
                             <form class="mt-4" method="post">
-                                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
-
                                 <div class="form-group">
                                     <label class="form-label" for="exampleInputEmail1">Username</label>
-                                    <input asp-for="user.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter username" required>
+                                    <input asp-for="User.Username" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Enter username" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="exampleInputPassword1">Password</label>
-                                    <a href="/RecoverPassword" class="float-end">Forgot password?</a>
-                                    <input asp-for="user.Password" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password" required>
+                                    <label class="form-label" for="exampleInputPassword1">Secret Key</label>
+                                    <input asp-for="User.Key" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Key" required>
                                 </div>
                                 <div class=" w-100" style="display: flex; justify-content: space-between">
                                     <p style="color: orangered">@Model.error</p>

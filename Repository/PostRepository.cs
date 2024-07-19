@@ -300,6 +300,11 @@ public partial class PostRepository : IPostRepository
         return _context.Posts.FirstOrDefault(x => x.PostId == postId);
     }
 
+    public List<int> GetAllUserId()
+    {
+        return _context.Users.Select(x => x.UserId).ToList();
+    }
+
     public void RemoveComment(int cmdId)
     {
         var comments = _context.Comments.Where(x => x.ParentId == cmdId).ToList();

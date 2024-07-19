@@ -12,7 +12,7 @@ using PRN221_Assignment.Services.Interface;
 
 namespace PRN221_Assignment.Pages;
 
-[Authorize]
+[Authorize(Roles = "User,Admin")]
 [RequiredArgsConstructor]
 public partial class IndexModel : PageModel
 {

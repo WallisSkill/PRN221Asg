@@ -30,6 +30,13 @@ public partial class PostService : IPostService
         return listFollowerId.Distinct().ToList();
     }
 
+    private List<int> GetAllUser()
+    {
+        var listFriendId = _postRepository.GetAllUserId();
+        
+        return listFriendId.Distinct().ToList();
+    }
+
     public List<PostData> GetAllPostOfFriendAndFollower(int Id = 0)
     {
         var listUsers = new List<int>();
@@ -40,6 +47,10 @@ public partial class PostService : IPostService
         else
         {
             listUsers = GetAllFriendAndFollowerId();
+            if(Id == -1)
+            {
+                listUsers = GetAllUser();
+            }
         }
         var listPost = _postRepository.GetAllPost(listUsers.ToList());
 
